@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import  User from "../objects/User";
+import  User from "../DTO/User";
 import { UserContext } from "../context/UserContext";
 import { AuthApi } from "../service/AuthApi";
 

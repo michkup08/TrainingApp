@@ -6,7 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import ChatsPage from './assets/components/ChatsPage.tsx';
 import LoginPage from './assets/components/LoginPage.tsx';
 import RegisterPage from './assets/components/RegisterPage.tsx';
-import Calendar from './assets/components/Calendar.tsx';
+import TrainingPlanPage from './assets/components/TrainingPlanPage.tsx';
 
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/chats" element={<ChatsPage/>}/>
-            <Route path='/trainingPlan' element={<Calendar/>}/>
+            <Route path='/trainingPlan' element={<TrainingPlanPage/>}/>
         </Routes>
       </UserProvider>
     </div>

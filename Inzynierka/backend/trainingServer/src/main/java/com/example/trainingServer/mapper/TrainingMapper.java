@@ -21,6 +21,7 @@ public class TrainingMapper {
                 training.getDay(),
                 training.getStart_time(),
                 training.getStop_time(),
+                training.getComplete_percent(),
                 training.getExercises() != null ?
                         training.getExercises().stream().map(ExerciseMapper::toExerciseDTO).collect(Collectors.toList()) : null
         );
@@ -38,6 +39,7 @@ public class TrainingMapper {
         training.setDay(trainingDTO.getDay());
         training.setStart_time(trainingDTO.getStartTime());
         training.setStop_time(trainingDTO.getStopTime());
+        training.setComplete_percent(trainingDTO.getCompletePercent());
         // Additional relationships like TrainingPlan should be set outside of this method
         return training;
     }

@@ -1,27 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import '../css/Calendar.css';
+import { TrainingApi } from '../service/TrainingApi';
+import { UserContext } from '../context/UserContext';
+import Training from '../DTO/Training';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
 
-const Calendar = () => {
-    const [events, setEvents] = useState([]);
+const TrainingPlanPage = () => {
+    const trainingApi = new TrainingApi();
+    const user = useContext(UserContext);
+    const [trainings, setTrainings] = useState<Training[]>([]);
     const [currentDay, setCurrentDay] = useState(new Date().getDay() - 1);
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
     const [selectedDay, setSelectedDay] = useState(null);
     const [dialogVisible, setDialogVisible] = useState(false);
-    const [eventStart, setEventStart] = useState('');
-    const [eventEnd, setEventEnd] = useState('');
+    const [trainingStart, setTrainingStart] = useState('');
+    const [trainingEnd, setTrainingEnd] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
 
+    const fetchTrainingPlan = async() => {
+        const resp = await trainingApi.TrainingPlan(user.id!);
+        if(resp)
+        {
+            setTrainings(resp.trenings);
+        }
+    }
+
     useEffect(() => {
-        setEvents([]);
+        setTrainings([]);
         const interval = setInterval(() => {
             setCurrentDay(new Date().getDay() - 1);
             setCurrentTime(new Date().toLocaleTimeString());
         }, 1000);
         return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        fetchTrainingPlan();
+    }, [user]);
 
     const handleRightClick = (dayIndex, e) => {
         e.preventDefault();
@@ -30,17 +47,17 @@ const Calendar = () => {
     };
 
     const handleAddEvent = () => {
-        if (eventStart && eventEnd && eventStart < eventEnd) {
-            setEvents([...events, { day: selectedDay, start: eventStart, end: eventEnd }]);
+        if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
+            setTrainings([...trainings, { day: selectedDay, startTime: trainingStart, stopTime: trainingEnd }]);
             setDialogVisible(false);
-            setEventStart('');
-            setEventEnd('');
+            setTrainingStart('');
+            setTrainingEnd('');
         } else {
             alert('Invalid time range.');
         }
     };
 
-    const timeToPosition = (time) => {
+    const timeToPosition = (time: string) => {
         const [hours, minutes] = time.split(':').map(Number);
         return (hours - 3) * 60 + minutes;
     };
@@ -68,16 +85,16 @@ const Calendar = () => {
                         className={`day-column ${currentDay === dayIndex ? 'current-day' : ''}`}
                         onContextMenu={(e) => handleRightClick(dayIndex, e)}
                     >
-                        {events.filter(event => event.day === dayIndex).map((event, idx) => (
+                        {trainings.filter(training => training.day === dayIndex).map((training, idx) => (
                             <div
                                 key={idx}
                                 className="event"
                                 style={{
-                                    top: `${timeToPosition(event.start)}px`,
-                                    height: `${timeToPosition(event.end) - timeToPosition(event.start)}px`
+                                    top: `${timeToPosition(training.startTime)}px`,
+                                    height: `${timeToPosition(training.stopTime) - timeToPosition(training.startTime)}px`
                                 }}
                             >
-                                {event.start} - {event.end}
+                                {training.startTime} - {training.stopTime}
                             </div>
                         ))}
                     </div>
@@ -86,10 +103,10 @@ const Calendar = () => {
             {dialogVisible && (
                 <div className="dialog">
                     <div>
-                        <label>Start: <input type="time" value={eventStart} onChange={(e) => setEventStart(e.target.value)} /></label>
+                        <label>Start: <input type="time" value={trainingStart} onChange={(e) => setTrainingStart(e.target.value)} /></label>
                     </div>
                     <div>
-                        <label>End: <input type="time" value={eventEnd} onChange={(e) => setEventEnd(e.target.value)} /></label>
+                        <label>End: <input type="time" value={trainingEnd} onChange={(e) => setTrainingEnd(e.target.value)} /></label>
                     </div>
                     <button onClick={handleAddEvent}>Add Event</button>
                     <button onClick={() => setDialogVisible(false)}>Cancel</button>
@@ -99,4 +116,4 @@ const Calendar = () => {
     );
 };
 
-export default Calendar;
+export default TrainingPlanPage;

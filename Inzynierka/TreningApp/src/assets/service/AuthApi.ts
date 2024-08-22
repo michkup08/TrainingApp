@@ -1,5 +1,5 @@
 import axios from "axios";
-import User from "../objects/User";
+import User from "../DTO/User";
 
 
 export const axiosInstance= axios.create();
@@ -57,4 +57,5 @@ export class AuthApi {
         const user:User = {};
         return user;
     }
+
 }

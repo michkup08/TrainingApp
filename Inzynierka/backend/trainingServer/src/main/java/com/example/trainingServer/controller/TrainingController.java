@@ -43,4 +43,11 @@ public class TrainingController {
         }
         return dtos;
     }
+
+    @GetMapping("/trainingPlan/{userId}")
+    public TrainingPlanDTO getTrainingPlan(@PathVariable long userId) {
+
+        TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
+        return trainingPlanMapper.toTrainingPlanDTO(tp);
+    }
 }

@@ -17,5 +17,6 @@ public class TrainingDTO {
     int day;
     String startTime;
     String stopTime;
+    int completePercent;
     List<ExerciseDTO> exercises;
 }

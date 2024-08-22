@@ -1,4 +1,4 @@
 import { createContext } from "react";
-import User from "../objects/User";
+import User from "../DTO/User";
 
 export const UserContext = createContext<User>({});

@@ -2,8 +2,10 @@ package com.example.trainingServer.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.Set;
 
@@ -37,6 +39,9 @@ public class Training {
 
     @Column(name = "stop_time")
     private String stop_time;
+
+    @Column(name = "complete_percent")
+    private int complete_percent;
 
     @ManyToOne
     @JsonIgnore
