@@ -1,8 +1,10 @@
 package com.example.trainingServer.controller;
 
+import com.example.trainingServer.DTO.ExerciseDTO;
 import com.example.trainingServer.DTO.TrainingPlanDTO;
 import com.example.trainingServer.entities.Exercise;
 import com.example.trainingServer.entities.TrainingPlan;
+import com.example.trainingServer.mapper.ExerciseMapper;
 import com.example.trainingServer.mapper.TrainingPlanMapper;
 import com.example.trainingServer.repositories.ExerciseRepository;
 import com.example.trainingServer.repositories.TrainingPlanRepository;
@@ -17,20 +19,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/training")
 public class TrainingController {
+    private final ExerciseMapper exerciseMapper;
     ExerciseRepository exerciseRepository;
     TrainingPlanRepository trainingPlanRepository;
 
     private final TrainingPlanMapper trainingPlanMapper;
 
-    TrainingController(ExerciseRepository exerciseRepository, TrainingPlanRepository trainingPlanRepository, TrainingPlanMapper trainingPlanMapper) {
+    TrainingController(ExerciseRepository exerciseRepository, TrainingPlanRepository trainingPlanRepository, TrainingPlanMapper trainingPlanMapper, ExerciseMapper exerciseMapper) {
         this.exerciseRepository = exerciseRepository;
         this.trainingPlanRepository = trainingPlanRepository;
         this.trainingPlanMapper = trainingPlanMapper;
+        this.exerciseMapper = exerciseMapper;
     }
 
     @GetMapping("/allExercises")
-    public List<Exercise> getAllExercises() {
-        return exerciseRepository.findAll();
+    public List<ExerciseDTO> getAllExercises() {
+
+        List<Exercise> el = exerciseRepository.findAll();
+        List<ExerciseDTO> dtos = new ArrayList<>();
+        for (Exercise e : el) {
+            dtos.add(exerciseMapper.toExerciseDTO(e));
+        }
+        return dtos;
     }
 
     @GetMapping("/trainingPlans/{userId}")

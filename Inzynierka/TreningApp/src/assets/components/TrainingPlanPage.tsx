@@ -3,6 +3,7 @@ import '../css/Calendar.css';
 import { TrainingApi } from '../service/TrainingApi';
 import { UserContext } from '../context/UserContext';
 import Training from '../DTO/Training';
+import Exercise from '../DTO/Exercise';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -11,10 +12,11 @@ const TrainingPlanPage = () => {
     const trainingApi = new TrainingApi();
     const user = useContext(UserContext);
     const [trainings, setTrainings] = useState<Training[]>([]);
+    const [exercises, setExercises] = useState<Exercise[]>([]);
     const [currentDay, setCurrentDay] = useState(new Date().getDay() - 1);
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
     const [selectedDay, setSelectedDay] = useState(null);
-    const [dialogVisible, setDialogVisible] = useState(false);
+    const [addTrainingDialogVisible, setAddTrainingDialogVisible] = useState(false);
     const [trainingStart, setTrainingStart] = useState('');
     const [trainingEnd, setTrainingEnd] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
@@ -27,8 +29,16 @@ const TrainingPlanPage = () => {
         }
     }
 
+    const fetchExercises = async() => {
+        const resp = await trainingApi.AllExercises();
+        if(resp)
+        {
+            setExercises(resp);
+        }
+    }
+
     useEffect(() => {
-        setTrainings([]);
+        fetchExercises();
         const interval = setInterval(() => {
             setCurrentDay(new Date().getDay() - 1);
             setCurrentTime(new Date().toLocaleTimeString());
@@ -43,13 +53,13 @@ const TrainingPlanPage = () => {
     const handleRightClick = (dayIndex, e) => {
         e.preventDefault();
         setSelectedDay(dayIndex);
-        setDialogVisible(true);
+        setAddTrainingDialogVisible(true);
     };
 
     const handleAddEvent = () => {
         if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
             setTrainings([...trainings, { day: selectedDay, startTime: trainingStart, stopTime: trainingEnd }]);
-            setDialogVisible(false);
+            setAddTrainingDialogVisible(false);
             setTrainingStart('');
             setTrainingEnd('');
         } else {
@@ -100,17 +110,23 @@ const TrainingPlanPage = () => {
                     </div>
                 ))}
             </div>
-            {dialogVisible && (
-                <div className="dialog">
-                    <div>
-                        <label>Start: <input type="time" value={trainingStart} onChange={(e) => setTrainingStart(e.target.value)} /></label>
+            {addTrainingDialogVisible && 
+            (
+                <>
+                    <div className='portal_background' onClick={() => setAddTrainingDialogVisible(false)}/>
+                    <div className="dialog">
+                        <div>
+                            <label>Start: <input type="time" value={trainingStart} onChange={(e) => setTrainingStart(e.target.value)} /></label>
+                        </div>
+                        <div>
+                            <label>End: <input type="time" value={trainingEnd} onChange={(e) => setTrainingEnd(e.target.value)} /></label>
+                        </div>
+                        <button onClick={handleAddEvent}>Add Training</button>
+                        <button onClick={() => setAddTrainingDialogVisible(false)}>Cancel</button>
                     </div>
-                    <div>
-                        <label>End: <input type="time" value={trainingEnd} onChange={(e) => setTrainingEnd(e.target.value)} /></label>
-                    </div>
-                    <button onClick={handleAddEvent}>Add Event</button>
-                    <button onClick={() => setDialogVisible(false)}>Cancel</button>
-                </div>
+                    
+                </>
+                
             )}
         </div>
     );

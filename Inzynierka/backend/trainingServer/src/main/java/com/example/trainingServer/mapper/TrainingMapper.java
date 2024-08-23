@@ -1,12 +1,11 @@
 package com.example.trainingServer.mapper;
 
 import com.example.trainingServer.DTO.TrainingDTO;
+import com.example.trainingServer.DTO.ExerciseWithParametersDTO;
 import com.example.trainingServer.entities.Training;
-import org.springframework.stereotype.Component;
-
+import com.example.trainingServer.entities.ExerciseWithParameters;
 import java.util.stream.Collectors;
 
-@Component
 public class TrainingMapper {
 
     // Converts Training entity to TrainingDTO
@@ -22,8 +21,8 @@ public class TrainingMapper {
                 training.getStart_time(),
                 training.getStop_time(),
                 training.getComplete_percent(),
-                training.getExercises() != null ?
-                        training.getExercises().stream().map(ExerciseMapper::toExerciseDTO).collect(Collectors.toList()) : null
+                training.getExerciseWithParameters() != null ?
+                        training.getExerciseWithParameters().stream().map(ExerciseWithParametersMapper::toExerciseWithParametersDTO).collect(Collectors.toList()) : null
         );
     }
 
@@ -40,7 +39,7 @@ public class TrainingMapper {
         training.setStart_time(trainingDTO.getStartTime());
         training.setStop_time(trainingDTO.getStopTime());
         training.setComplete_percent(trainingDTO.getCompletePercent());
-        // Additional relationships like TrainingPlan should be set outside of this method
+        // Relationships like TrainingPlan and ExerciseWithParameters should be set outside this method
         return training;
     }
 }

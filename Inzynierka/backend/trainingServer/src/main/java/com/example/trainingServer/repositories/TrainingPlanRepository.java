@@ -13,13 +13,13 @@ public interface TrainingPlanRepository extends JpaRepository<TrainingPlan, Long
 
     @Query("SELECT DISTINCT tp FROM TrainingPlan tp " +
             "JOIN FETCH tp.trainings as tr " +
-            "JOIN FETCH tr.exercises as exe " +
+            "JOIN FETCH tr.exerciseWithParameters as exe " +
             "WHERE tp.user.userId = :userId")
     List<TrainingPlan> findByUserUserIdExtended(@Param("userId") Long id);
 
     @Query("SELECT DISTINCT tp FROM TrainingPlan tp " +
             "JOIN FETCH tp.trainings as tr " +
-            "JOIN FETCH tr.exercises as exe " +
+            "JOIN FETCH tr.exerciseWithParameters as exe " +
             "WHERE tp.userActivated.userId = :userId")
     TrainingPlan findByUserActivatedUserIdExtended(@Param("userId") Long id);
 }

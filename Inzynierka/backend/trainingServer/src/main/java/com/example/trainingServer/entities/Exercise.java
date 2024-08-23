@@ -27,7 +27,10 @@ public class Exercise {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany
+    @Column(name = "default_value")
+    private String default_value;
+
+    @OneToMany(mappedBy = "exercise")
     @JsonBackReference
-    private Set<Training> training;
+    private Set<ExerciseWithParameters> exercises_With_Parameters;
 }

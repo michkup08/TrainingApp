@@ -25,11 +25,11 @@ public class Training {
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinTable(
-            name = "exercises_training",
+            name = "exercises_with_parameters_training",
             joinColumns = @JoinColumn(name = "training_training_id"),
-            inverseJoinColumns = @JoinColumn(name = "exercise_exercise_id")
+            inverseJoinColumns = @JoinColumn(name = "exercise_with_parameters_id")
     )
-    private Set<Exercise> exercises;
+    private Set<ExerciseWithParameters> exerciseWithParameters;
 
     @Column(name = "day")
     private int day;

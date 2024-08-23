@@ -43,8 +43,24 @@ export class TrainingApi {
             }))
         };
 
-        console.log(trainingPlan);
-
         return trainingPlan;
+    }
+
+    AllExercises = async (): Promise<Exercise[]> => {
+        
+        const resp = await axiosInstance.get(this.baseURL + `/allExercises`);
+
+        const exercisesData = resp.data;
+
+        console.log(exercisesData);
+        const exercises: Exercise[] = exercisesData.map((exercise: Exercise) => ({
+            id: exercise.id,
+            name: exercise.name,
+            description: exercise.description
+        }))
+
+        console.log(exercises);
+
+        return exercises;
     }
 }
