@@ -8,10 +8,9 @@ import com.example.trainingServer.mapper.ExerciseMapper;
 import com.example.trainingServer.mapper.TrainingPlanMapper;
 import com.example.trainingServer.repositories.ExerciseRepository;
 import com.example.trainingServer.repositories.TrainingPlanRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.trainingServer.repositories.TrainingRepository;
+import com.example.trainingServer.requests.SetTrainingCompleteRequest;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +18,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/training")
 public class TrainingController {
-    private final ExerciseMapper exerciseMapper;
+
     ExerciseRepository exerciseRepository;
     TrainingPlanRepository trainingPlanRepository;
+    TrainingRepository trainingRepository;
 
     private final TrainingPlanMapper trainingPlanMapper;
+    private final ExerciseMapper exerciseMapper;
 
-    TrainingController(ExerciseRepository exerciseRepository, TrainingPlanRepository trainingPlanRepository, TrainingPlanMapper trainingPlanMapper, ExerciseMapper exerciseMapper) {
+    TrainingController(ExerciseRepository exerciseRepository, TrainingPlanRepository trainingPlanRepository, TrainingPlanMapper trainingPlanMapper, ExerciseMapper exerciseMapper, TrainingRepository trainingRepository) {
         this.exerciseRepository = exerciseRepository;
         this.trainingPlanRepository = trainingPlanRepository;
         this.trainingPlanMapper = trainingPlanMapper;
         this.exerciseMapper = exerciseMapper;
+        this.trainingRepository = trainingRepository;
     }
 
     @GetMapping("/allExercises")
@@ -59,5 +61,10 @@ public class TrainingController {
 
         TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
         return trainingPlanMapper.toTrainingPlanDTO(tp);
+    }
+
+    @PutMapping("/traningComplete")
+    public void traningComplete(@RequestBody SetTrainingCompleteRequest setTrainingCompleteRequest) {
+        trainingRepository.setCompletePercent(setTrainingCompleteRequest.getCompletePercent(), setTrainingCompleteRequest.getTrainingId());
     }
 }

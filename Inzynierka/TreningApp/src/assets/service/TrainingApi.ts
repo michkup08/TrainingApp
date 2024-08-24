@@ -2,6 +2,7 @@ import axios from "axios";
 import TrainingPlan from "../DTO/TrainingPlan";
 import Training from "../DTO/Training";
 import Exercise from "../DTO/Exercise";
+import ExerciseWithParameters from "../DTO/ExerciseWithParameters";
 
 
 export const axiosInstance= axios.create();
@@ -21,7 +22,6 @@ export class TrainingApi {
             return trainingPlan;
         }
         const resp = await axiosInstance.get(this.baseURL + `/trainingPlan/${user_id}`);
-        console.log(resp);
 
         const trainingPlanData = resp.data;
 
@@ -35,10 +35,15 @@ export class TrainingApi {
                 startTime: training.startTime,
                 stopTime: training.stopTime,
                 completePercent: training.completePercent,
-                exercises: training.exercises.map((exercise: Exercise) => ({
-                    id: exercise.id,
-                    name: exercise.name,
-                    description: exercise.description
+                exercises: training.exercises.map((exerciseWithParameters: ExerciseWithParameters) => ({
+                    id: exerciseWithParameters.id,
+                    parameters: exerciseWithParameters.parameters,
+                    exercise: ({
+                        id: exerciseWithParameters.exercise.id,
+                        name: exerciseWithParameters.exercise.name,
+                        description: exerciseWithParameters.exercise.description,
+                        defaultValue: exerciseWithParameters.exercise.defaultValue
+                    })
                 }))
             }))
         };
@@ -47,20 +52,24 @@ export class TrainingApi {
     }
 
     AllExercises = async (): Promise<Exercise[]> => {
-        
         const resp = await axiosInstance.get(this.baseURL + `/allExercises`);
-
         const exercisesData = resp.data;
-
-        console.log(exercisesData);
         const exercises: Exercise[] = exercisesData.map((exercise: Exercise) => ({
             id: exercise.id,
             name: exercise.name,
-            description: exercise.description
+            description: exercise.description,
+            defaultValue: exercise.defaultValue
         }))
 
-        console.log(exercises);
-
         return exercises;
+    }
+
+    SetTrainingComplete = async (completePercent:number, trainingId:number): Promise<boolean> => {
+        
+        console.log(completePercent, trainingId);
+        const resp = await axiosInstance.put(this.baseURL + `/traningComplete`, {completePercent:completePercent, trainingId:trainingId});
+        if(resp) return true;
+        return false;
+        
     }
 }

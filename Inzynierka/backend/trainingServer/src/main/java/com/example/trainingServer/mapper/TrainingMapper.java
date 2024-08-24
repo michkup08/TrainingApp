@@ -15,7 +15,7 @@ public class TrainingMapper {
         }
 
         return new TrainingDTO(
-                Math.toIntExact(training.getTraining_id()),
+                training.getTraining_id(),
                 training.getName(),
                 training.getDay(),
                 training.getStart_time(),

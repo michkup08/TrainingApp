@@ -15,7 +15,7 @@ public class TrainingPlanMapper {
         }
 
         return new TrainingPlanDTO(
-                Math.toIntExact(trainingPlan.getId()),
+                trainingPlan.getId(),
                 trainingPlan.getName(),
                 trainingPlan.getTrainings() != null ?
                         trainingPlan.getTrainings().stream().map(TrainingMapper::toTrainingDTO).collect(Collectors.toList()) : null

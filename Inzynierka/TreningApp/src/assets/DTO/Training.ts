@@ -1,4 +1,4 @@
-import Exercise from "./Exercise";
+import ExerciseWithParameters from "./ExerciseWithParameters";
 
 export default interface Training {
     id: number;
@@ -7,5 +7,5 @@ export default interface Training {
     startTime: string;
     stopTime: string;
     completePercent: number;
-    exercises: Exercise[];
+    exercises: ExerciseWithParameters[];
 }

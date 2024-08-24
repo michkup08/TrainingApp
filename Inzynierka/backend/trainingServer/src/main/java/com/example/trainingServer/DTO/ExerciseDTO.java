@@ -11,7 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseDTO {
-    private int id;
+    private Long id;
     private String name;
     private String description;
+    private String defaultValue;
 }

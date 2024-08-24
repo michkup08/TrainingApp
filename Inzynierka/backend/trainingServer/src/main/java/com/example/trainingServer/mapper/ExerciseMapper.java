@@ -14,9 +14,10 @@ public class ExerciseMapper {
         }
 
         return new ExerciseDTO(
-                Math.toIntExact(exercise.getExercise_id()),
+                exercise.getExercise_id(),
                 exercise.getName(),
-                exercise.getDescription()
+                exercise.getDescription(),
+                exercise.getDefault_value()
         );
     }
 

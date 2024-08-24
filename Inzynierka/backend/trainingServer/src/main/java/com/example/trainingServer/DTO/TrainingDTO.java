@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrainingDTO {
-    int id;
+    Long id;
     String name;
     int day;
     String startTime;

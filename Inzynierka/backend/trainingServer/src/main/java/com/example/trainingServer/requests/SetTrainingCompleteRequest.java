@@ -9,12 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
-
-    private String login;
-    private String password;
-    private String email;
-    private String role;
-    private String name;
-    private String surname;
+public class SetTrainingCompleteRequest {
+    private long trainingId;
+    private int completePercent;
 }

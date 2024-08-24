@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -29,7 +30,7 @@ public class Training {
             joinColumns = @JoinColumn(name = "training_training_id"),
             inverseJoinColumns = @JoinColumn(name = "exercise_with_parameters_id")
     )
-    private Set<ExerciseWithParameters> exerciseWithParameters;
+    private List<ExerciseWithParameters> exerciseWithParameters;
 
     @Column(name = "day")
     private int day;

@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrainingPlanDTO {
-    private int id;
+    private Long id;
     private String name;
     List<TrainingDTO> trainingPlanDTOs;
 }
