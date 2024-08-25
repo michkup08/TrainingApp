@@ -42,7 +42,8 @@ const TrainingPlanPage = () => {
     useEffect(() => {
         fetchExercises();
         const interval = setInterval(() => {
-            setCurrentDay(new Date().getDay() - 1);
+            const day = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+            setCurrentDay(day);
             setCurrentTime(new Date().toLocaleTimeString());
         }, 1000);
         return () => clearInterval(interval);
@@ -118,7 +119,8 @@ const TrainingPlanPage = () => {
                                 }}
                                 style={{
                                     top: `${timeToPosition(training.startTime)}px`,
-                                    height: `${timeToPosition(training.stopTime) - timeToPosition(training.startTime)}px`
+                                    height: `${timeToPosition(training.stopTime) - timeToPosition(training.startTime)}px`,
+                                    background: currentDay < dayIndex ? `#add8e6` : training.completePercent===100 ? `green` : training.completePercent===0 ? `red` : `linear-gradient(green ${training.completePercent}%, red)`
                                 }}
                             >
                                 {training.startTime} - {training.stopTime}
@@ -153,23 +155,26 @@ const TrainingPlanPage = () => {
                         {trainings.map((training)=>(
                             training.id==selectedTrainingId && (
                                 <>
-                                    <div className='training_details_header'>{training.name}</div>
-                                    
-                                    <div>{daysOfWeek[training.day]}</div>
-                                    <br/><br/>
-                                    <div>
-                                        {training.exercises.map((exercise)=>(
-                                            <div className='training_details_header'>{ 
-                                                exercise.exercise.name + ' : ' + exercise.parameters
-                                            }</div>
-                                        ))}
+                                    <div key={selectedTrainingId}>
+                                        <div className='training_details_header'>{training.name}</div>
+                                        
+                                        <div>{daysOfWeek[training.day]}</div>
+                                        <br/><br/>
+                                        <div>
+                                            {training.exercises.map((exercise)=>(
+                                                <div className='training_details_header'>{ 
+                                                    exercise.exercise.name + ' : ' + exercise.parameters
+                                                }</div>
+                                            ))}
+                                        </div>
+                                        <br/>
+                                        Complete: {trainingCompleteSlider} %
+                                        <br/>
+                                        {training.completePercent!=100 && <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
+                                            onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
+                                            onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
+                                            /> }
                                     </div>
-                                    <br/>
-                                    Complete: {trainingCompleteSlider} %
-                                    <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
-                                        onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
-                                        onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
-                                        /> 
                                 </>
                             )
                         ))}
