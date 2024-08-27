@@ -1,12 +1,15 @@
 package com.example.trainingServer.controller;
 
 import com.example.trainingServer.DTO.ExerciseDTO;
+import com.example.trainingServer.DTO.ExerciseWithParametersDTO;
 import com.example.trainingServer.DTO.TrainingPlanDTO;
 import com.example.trainingServer.entities.Exercise;
+import com.example.trainingServer.entities.ExerciseWithParameters;
 import com.example.trainingServer.entities.TrainingPlan;
 import com.example.trainingServer.mapper.ExerciseMapper;
 import com.example.trainingServer.mapper.TrainingPlanMapper;
 import com.example.trainingServer.repositories.ExerciseRepository;
+import com.example.trainingServer.repositories.ExerciseWithParametersRepository;
 import com.example.trainingServer.repositories.TrainingPlanRepository;
 import com.example.trainingServer.repositories.TrainingRepository;
 import com.example.trainingServer.requests.SetTrainingCompleteRequest;
@@ -19,6 +22,7 @@ import java.util.List;
 @RequestMapping("/training")
 public class TrainingController {
 
+    private final ExerciseWithParametersRepository exerciseWithParametersRepository;
     ExerciseRepository exerciseRepository;
     TrainingPlanRepository trainingPlanRepository;
     TrainingRepository trainingRepository;
@@ -26,12 +30,13 @@ public class TrainingController {
     private final TrainingPlanMapper trainingPlanMapper;
     private final ExerciseMapper exerciseMapper;
 
-    TrainingController(ExerciseRepository exerciseRepository, TrainingPlanRepository trainingPlanRepository, TrainingPlanMapper trainingPlanMapper, ExerciseMapper exerciseMapper, TrainingRepository trainingRepository) {
+    TrainingController(ExerciseRepository exerciseRepository, TrainingPlanRepository trainingPlanRepository, TrainingPlanMapper trainingPlanMapper, ExerciseMapper exerciseMapper, TrainingRepository trainingRepository, ExerciseWithParametersRepository exerciseWithParametersRepository) {
         this.exerciseRepository = exerciseRepository;
         this.trainingPlanRepository = trainingPlanRepository;
         this.trainingPlanMapper = trainingPlanMapper;
         this.exerciseMapper = exerciseMapper;
         this.trainingRepository = trainingRepository;
+        this.exerciseWithParametersRepository = exerciseWithParametersRepository;
     }
 
     @GetMapping("/allExercises")
@@ -66,5 +71,12 @@ public class TrainingController {
     @PutMapping("/traningComplete")
     public void traningComplete(@RequestBody SetTrainingCompleteRequest setTrainingCompleteRequest) {
         trainingRepository.setCompletePercent(setTrainingCompleteRequest.getCompletePercent(), setTrainingCompleteRequest.getTrainingId());
+    }
+
+    @PostMapping("/addEmptyTrainingPlan")
+    Long addEmptyTrainingPlan() {
+        TrainingPlan tp = new TrainingPlan();
+        trainingPlanRepository.save(tp);
+        return tp.getId();
     }
 }

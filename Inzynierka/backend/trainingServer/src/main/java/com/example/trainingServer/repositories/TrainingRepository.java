@@ -18,4 +18,5 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     @Modifying
     @Transactional
     void setCompletePercent(@Param("newVal") int percent, @Param("trainingId") long trainingId);
+
 }

@@ -22,4 +22,5 @@ public interface TrainingPlanRepository extends JpaRepository<TrainingPlan, Long
             "JOIN FETCH tr.exerciseWithParameters as exe " +
             "WHERE tp.userActivated.userId = :userId")
     TrainingPlan findByUserActivatedUserIdExtended(@Param("userId") Long id);
+
 }

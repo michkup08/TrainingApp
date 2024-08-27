@@ -20,7 +20,7 @@ const Navbar = () => {
             </div>
             <div className="nav-buttons">
 
-                {fullName}
+                <NavLink to='/'>{fullName}</NavLink>
                 {user.id === 0 || user.id === undefined ? (
                     <>
                         <NavLink to="/login">Login</NavLink>

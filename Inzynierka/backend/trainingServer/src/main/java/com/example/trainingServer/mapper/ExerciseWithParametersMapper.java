@@ -3,11 +3,13 @@ package com.example.trainingServer.mapper;
 import com.example.trainingServer.DTO.ExerciseWithParametersDTO;
 import com.example.trainingServer.DTO.ExerciseDTO;
 import com.example.trainingServer.entities.ExerciseWithParameters;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ExerciseWithParametersMapper {
 
     // Converts ExerciseWithParameters entity to ExerciseWithParametersDTO
-    public static ExerciseWithParametersDTO toExerciseWithParametersDTO(ExerciseWithParameters exerciseWithParameters) {
+    public ExerciseWithParametersDTO toExerciseWithParametersDTO(ExerciseWithParameters exerciseWithParameters) {
         if (exerciseWithParameters == null) {
             return null;
         }
@@ -23,7 +25,7 @@ public class ExerciseWithParametersMapper {
     }
 
     // Converts ExerciseWithParametersDTO to ExerciseWithParameters entity
-    public static ExerciseWithParameters toExerciseWithParametersEntity(ExerciseWithParametersDTO exerciseWithParametersDTO) {
+    public ExerciseWithParameters toExerciseWithParametersEntity(ExerciseWithParametersDTO exerciseWithParametersDTO) {
         if (exerciseWithParametersDTO == null) {
             return null;
         }

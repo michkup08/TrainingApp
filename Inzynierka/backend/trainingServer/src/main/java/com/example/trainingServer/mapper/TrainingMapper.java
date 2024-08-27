@@ -8,8 +8,9 @@ import java.util.stream.Collectors;
 
 public class TrainingMapper {
 
+    ExerciseWithParametersMapper exerciseWithParametersMapper = new ExerciseWithParametersMapper();
     // Converts Training entity to TrainingDTO
-    public static TrainingDTO toTrainingDTO(Training training) {
+    public TrainingDTO toTrainingDTO(Training training) {
         if (training == null) {
             return null;
         }
@@ -22,7 +23,7 @@ public class TrainingMapper {
                 training.getStop_time(),
                 training.getComplete_percent(),
                 training.getExerciseWithParameters() != null ?
-                        training.getExerciseWithParameters().stream().map(ExerciseWithParametersMapper::toExerciseWithParametersDTO).collect(Collectors.toList()) : null
+                        training.getExerciseWithParameters().stream().map(exerciseWithParametersMapper::toExerciseWithParametersDTO).collect(Collectors.toList()) : null
         );
     }
 

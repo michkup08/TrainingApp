@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 @Component
 public class TrainingPlanMapper {
 
+    TrainingMapper trainingMapper = new TrainingMapper();
+
     public TrainingPlanDTO toTrainingPlanDTO(TrainingPlan trainingPlan) {
         if (trainingPlan == null) {
             return null;
@@ -18,7 +20,7 @@ public class TrainingPlanMapper {
                 trainingPlan.getId(),
                 trainingPlan.getName(),
                 trainingPlan.getTrainings() != null ?
-                        trainingPlan.getTrainings().stream().map(TrainingMapper::toTrainingDTO).collect(Collectors.toList()) : null
+                        trainingPlan.getTrainings().stream().map(trainingMapper::toTrainingDTO).collect(Collectors.toList()) : null
         );
     }
 

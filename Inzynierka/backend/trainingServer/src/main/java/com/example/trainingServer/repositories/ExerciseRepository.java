@@ -10,5 +10,4 @@ import java.util.List;
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
-
 }
