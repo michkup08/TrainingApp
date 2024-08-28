@@ -4,8 +4,11 @@ import com.example.trainingServer.DTO.TrainingDTO;
 import com.example.trainingServer.DTO.ExerciseWithParametersDTO;
 import com.example.trainingServer.entities.Training;
 import com.example.trainingServer.entities.ExerciseWithParameters;
+import org.springframework.stereotype.Component;
+
 import java.util.stream.Collectors;
 
+@Component
 public class TrainingMapper {
 
     ExerciseWithParametersMapper exerciseWithParametersMapper = new ExerciseWithParametersMapper();
@@ -28,13 +31,15 @@ public class TrainingMapper {
     }
 
     // Converts TrainingDTO to Training entity
-    public static Training toTrainingEntity(TrainingDTO trainingDTO) {
+    public Training toTrainingEntity(TrainingDTO trainingDTO) {
         if (trainingDTO == null) {
             return null;
         }
 
         Training training = new Training();
-        training.setTraining_id(trainingDTO.getId());
+        if(trainingDTO.getId()!=null) {
+            training.setTraining_id(trainingDTO.getId());
+        }
         training.setName(trainingDTO.getName());
         training.setDay(trainingDTO.getDay());
         training.setStart_time(trainingDTO.getStartTime());

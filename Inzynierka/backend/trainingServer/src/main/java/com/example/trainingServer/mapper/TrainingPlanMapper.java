@@ -30,7 +30,9 @@ public class TrainingPlanMapper {
         }
 
         TrainingPlan trainingPlan = new TrainingPlan();
-        trainingPlan.setId(trainingPlanDTO.getId());
+        if (trainingPlanDTO.getId() != null) {
+            trainingPlan.setId(trainingPlanDTO.getId());
+        }
         trainingPlan.setName(trainingPlanDTO.getName());
         // Additional fields like user and userActivated should be set outside of this method
         return trainingPlan;

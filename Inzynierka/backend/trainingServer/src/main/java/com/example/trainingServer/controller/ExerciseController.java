@@ -26,10 +26,11 @@ public class ExerciseController {
     private final ExerciseMapper exerciseMapper;
 
     @PostMapping("/addExerciseWithParameters")
-    void addExerciseWithParameters(@RequestBody ExerciseWithParametersDTO exerciseWithParametersDTO) {
+    Long addExerciseWithParameters(@RequestBody ExerciseWithParametersDTO exerciseWithParametersDTO) {
         ExerciseWithParameters exerciseWithParameters = exerciseWithParametersMapper.toExerciseWithParametersEntity(exerciseWithParametersDTO);
         exerciseWithParameters.setExercise(exerciseMapper.toExerciseEntity(exerciseWithParametersDTO.getExercise()));
         exerciseWithParametersRepository.saveAndFlush(exerciseWithParameters);
+        return exerciseWithParameters.getExercises_with_parameters_id();
     }
 
     @PostMapping("/addExercise")

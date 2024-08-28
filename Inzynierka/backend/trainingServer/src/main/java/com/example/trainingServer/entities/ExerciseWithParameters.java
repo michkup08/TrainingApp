@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Set;
 
@@ -25,7 +27,7 @@ public class ExerciseWithParameters {
     @JsonBackReference
     private Exercise exercise;
 
-    @ManyToMany
+    @ManyToOne
     @JsonBackReference
-    private Set<Training> training;
+    private Training training;
 }
