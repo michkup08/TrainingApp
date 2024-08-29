@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./init";
+import "../css/Auth.css"
 import { AuthApi } from "../service/AuthApi";
 
 const LoginPage = () => {
@@ -30,28 +31,34 @@ const LoginPage = () => {
     }
 
     return (
-        <div id ="RegisterForm">
+        <div className ="form">
             
-            <h3>Login</h3>
+            <h3 className="authHeader">Login</h3>
             <input 
+                className="authInput"
                 name="Login" 
                 placeholder="Login"
                 onChange={(e) => setLogin(e.target.value)}
                 />
-            <h3>Password</h3>
+            <h3 className="authHeader">Password</h3>
             <input 
+                className="authInput"
                 name="password" 
                 placeholder="Password"
                 value={password} 
                 type='password'
                 onChange={(e) => setPassword(e.target.value)}/>
             
-            <h3 id="errorInfo" style={{
-                color: success ? 'green' : 'blue'
-            }}>{errorInfo}</h3>
+            <h3 
+                className="authHeader"
+                id="errorInfo" 
+                style={{
+                    color: success ? 'green' : 'rgb(219, 139, 130)'
+                }}>{errorInfo}</h3>
 
             
             <button 
+                className="authButton"
                 name = "login"
                 onClick={handleLogin}
                 style={{

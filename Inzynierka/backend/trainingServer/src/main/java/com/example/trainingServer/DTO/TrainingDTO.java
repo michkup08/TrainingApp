@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -19,4 +20,5 @@ public class TrainingDTO {
     String stopTime;
     int completePercent;
     List<ExerciseWithParametersDTO> exercises;
+    Optional<Long> planId;
 }

@@ -60,9 +60,10 @@ const RegisterPage = () => {
     }
 
     return (
-        <div id ="RegisterForm">
-            <h3>Email</h3>
+        <div className ="form">
+            <h3 className="authHeader">Email</h3>
             <input 
+                className="authInput"
                 name="Email" 
                 placeholder="Email" 
                 value={email} 
@@ -70,14 +71,16 @@ const RegisterPage = () => {
                 style={{
                     borderWidth: emailIncorrect ? '3px' : '1px',
                     borderColor: emailIncorrect ? 'red':''}}/>
-            <h3>Login</h3>
+            <h3 className="authHeader">Login</h3>
             <input 
+                className="authInput"
                 name="Login" 
                 placeholder="Login"
                 onChange={(e) => setLogin(e.target.value)}
                 />
-            <h3>Password</h3>
+            <h3 className="authHeader">Password</h3>
             <input 
+                className="authInput"
                 name="password" 
                 placeholder="Password"
                 value={password} 
@@ -86,20 +89,23 @@ const RegisterPage = () => {
                 style={{
                     borderWidth: passwordIncorrect ? '3px' : '1px',
                     borderColor: passwordIncorrect ? 'red':''}}/>
-            <h3>Name</h3>
+            <h3 className="authHeader">Name</h3>
             <input 
+                className="authInput"
                 name="Name" 
                 placeholder="Name"
                 onChange={(e) => setName(e.target.value)}/>
-            <h3>Surname</h3>
+            <h3 className="authHeader">Surname</h3>
             <input 
+                className="authInput"
                 name="Surname" 
                 placeholder="Surname"
                 onChange={(e) => setSurname(e.target.value)}/>
-            <h3 id="errorInfo" style={{
+            <h3 className="authHeader" id="errorInfo" style={{
                 color: success ? 'green' : 'blue'
             }}>{errorInfo}</h3>
             <button 
+                className="authButton"
                 name = "register"
                 onClick={handleRegister}
                 style={{

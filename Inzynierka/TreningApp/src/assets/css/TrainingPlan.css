@@ -49,6 +49,7 @@
     justify-content: center;
     font-family: Arial, sans-serif;
     margin: 40px auto; /* Wyśrodkowanie poziome */
+    margin-top: 55px;
     width: 80%;
     justify-content: space-between;
 }

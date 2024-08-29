@@ -1,0 +1,45 @@
+.form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow-y: auto;
+    background-color: #555;
+    padding: 50px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+    max-height: 70%;
+}
+
+.authInput {
+    font-size: 24px;
+    border-radius: 20px;
+    border-color: rgb(219, 139, 130);
+    background-color: rgb(219, 139, 130);
+}
+
+.authInput::placeholder {
+    color: white;
+}
+
+.authInput:focus, .authInput:not(:placeholder-shown) {
+    background-color: white;
+    border-color:bisque;
+    color: #000;
+}
+
+.authInput:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -webkit-text-fill-color: #000;
+}
+
+.authHeader {
+    font-size: 26px;
+}
+
+.authButton {
+    margin-top: 20px;
+    width: 100%;
+    border-radius: 20px;
+}
