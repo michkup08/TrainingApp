@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class TrainingMapper {
 
     ExerciseWithParametersMapper exerciseWithParametersMapper = new ExerciseWithParametersMapper();
-    TrainingPlanRepository trainingPlanRepository;
+//    TrainingPlanRepository trainingPlanRepository;
     // Converts Training entity to TrainingDTO
     public TrainingDTO toTrainingDTO(Training training) {
         if (training == null) {
@@ -45,9 +45,9 @@ public class TrainingMapper {
         if(trainingDTO.getId()!=null) {
             training.setTraining_id(trainingDTO.getId());
         }
-        if(trainingDTO.getPlanId()!=null) {
-            training.setTrainingPlan(trainingPlanRepository.findById(trainingDTO.getPlanId().get()).get());
-        }
+//        if(trainingDTO.getPlanId()!=null) {
+//            training.setTrainingPlan(trainingPlanRepository.findById(trainingDTO.getPlanId().get()).get());
+//        }
         training.setName(trainingDTO.getName());
         training.setDay(trainingDTO.getDay());
         training.setStart_time(trainingDTO.getStartTime());

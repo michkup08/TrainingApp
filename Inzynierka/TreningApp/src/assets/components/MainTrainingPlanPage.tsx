@@ -101,7 +101,6 @@ const MainTrainingPlan = () => {
                         <div
                             key={dayIndex}
                             className={`day-column ${currentDay === dayIndex ? 'current-day' : ''}`}
-                            onContextMenu={(e) => handleRightClick(dayIndex, e)}
                         >
                             {trainings.filter(training => training.day === dayIndex).map((training, idx) => (
                                 <div

@@ -7,8 +7,35 @@
 .trainingPlanManager {
     width: 15%;
     border-radius: 20px;
-    margin: 40px auto;
+    margin: 60px auto;
     border-right: #f0f8ff;
+}
+
+.trainingPlanInput {
+    width: 95%;
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.trainingPlanSelect {
+    width: 95%;
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.parametersInput {
+    width: 50%;
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    padding: 5px;
 }
 
 .planName {
@@ -20,7 +47,8 @@
 
 .planNameInput {
     width: 100%;
-    font-size: 16px;
+    font-size: 18px;
+    border-radius: 20px;
 }
 
 .planNavLink {
@@ -131,7 +159,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -40%);
     background-color: black;
     border: 1px solid #ccc;
     padding: 20px;
@@ -145,8 +173,8 @@
 }
 
 .dialog button {
-    margin-right: 10px;
     padding: 5px 10px;
+    margin-top: 20px;
 }
 
 .portal_background {
@@ -157,6 +185,14 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
+}
+
+.buttonGreen {
+    background-color: green;
+}
+
+.buttonRed {
+    background-color: red;
 }
 
 .training_details_header {

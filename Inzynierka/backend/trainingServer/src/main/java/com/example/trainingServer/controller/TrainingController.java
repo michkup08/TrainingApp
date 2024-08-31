@@ -27,10 +27,10 @@ import java.util.List;
 public class TrainingController {
 
     private final ExerciseWithParametersRepository exerciseWithParametersRepository;
-    ExerciseRepository exerciseRepository;
-    TrainingPlanRepository trainingPlanRepository;
-    TrainingRepository trainingRepository;
-    UserRepository userRepository;
+    private final ExerciseRepository exerciseRepository;
+    private final TrainingPlanRepository trainingPlanRepository;
+    private final TrainingRepository trainingRepository;
+    private final UserRepository userRepository;
 
     private final TrainingPlanMapper trainingPlanMapper;
     private final ExerciseMapper exerciseMapper;
@@ -58,6 +58,13 @@ public class TrainingController {
             dtos.add(trainingPlanMapper.toTrainingPlanDTO(tp));
         }
         return dtos;
+    }
+
+    @GetMapping("/trainingPlanById/{planId}")
+    public TrainingPlanDTO getTrainingPlanById(@PathVariable long planId) {
+
+        TrainingPlan tp = trainingPlanRepository.findById(planId).get();
+        return trainingPlanMapper.toTrainingPlanDTO(tp);
     }
 
     @GetMapping("/trainingPlan/{userId}")
@@ -128,5 +135,6 @@ public class TrainingController {
         training.setExerciseWithParameters(ewpl);
         trainingRepository.saveAndFlush(training);
     }
+
 
 }
