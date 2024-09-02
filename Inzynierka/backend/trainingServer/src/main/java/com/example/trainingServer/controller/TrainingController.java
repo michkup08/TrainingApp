@@ -136,5 +136,5 @@ public class TrainingController {
         trainingRepository.saveAndFlush(training);
     }
 
-
+    
 }

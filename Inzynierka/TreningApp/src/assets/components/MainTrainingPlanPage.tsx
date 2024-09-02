@@ -75,8 +75,8 @@ const MainTrainingPlan = () => {
             <div className='trainingPlanManager'>
                 <div className='planName'><h3>{planName}</h3></div>
                 <nav>
-                    <NavLink to='/' className='planNavLink'>Edit my main plan</NavLink>
-                    <NavLink to='/' className='planNavLink'>My training plans</NavLink>
+                    <Link to='/' className='planNavLink'>Edit my main plan</Link>
+                    <Link to='usersPlans' className='planNavLink'>My training plans</Link>
                     <Link to='new' className='planNavLink'>Add new plan</Link>
                 </nav>
                 

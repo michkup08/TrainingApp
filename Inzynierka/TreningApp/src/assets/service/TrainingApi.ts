@@ -51,6 +51,47 @@ export class TrainingApi {
         return trainingPlan;
     }
 
+    TrainingPlans = async (user_id:number): Promise<TrainingPlan[]> => {
+
+        if(!user_id)
+        {
+            const trainingPlan: TrainingPlan = {
+                id: 0,
+                name: "No active plan",
+                trenings: []
+            }
+            return [trainingPlan];
+        }
+        const resp = await axiosInstance.get(this.baseURL + `/trainingPlans/${user_id}`);
+
+        const trainingPlansData = resp.data;
+   
+        const trainingPlans: TrainingPlan[] = trainingPlansData.map((trainingPlanData: any) => ({
+            id: trainingPlanData.id,
+            name: trainingPlanData.name,
+            trenings: trainingPlanData.trainingPlanDTOs.map((training: Training) => ({
+                id: training.id,
+                name: training.name,
+                day: training.day,
+                startTime: training.startTime,
+                stopTime: training.stopTime,
+                completePercent: training.completePercent,
+                exercises: training.exercises.map((exerciseWithParameters: ExerciseWithParameters) => ({
+                    id: exerciseWithParameters.id,
+                    parameters: exerciseWithParameters.parameters,
+                    exercise: ({
+                        id: exerciseWithParameters.exercise.id,
+                        name: exerciseWithParameters.exercise.name,
+                        description: exerciseWithParameters.exercise.description,
+                        defaultValue: exerciseWithParameters.exercise.defaultValue
+                    })
+                }))
+            }))
+        }));
+
+        return trainingPlans;
+    }
+
     TrainingPlanById = async (plan_id:number): Promise<TrainingPlan> => {
 
         if(!plan_id)
@@ -118,8 +159,11 @@ export class TrainingApi {
     }
 
     AddTrainingToPlan = async (training:Training, planId:number) => {
-        console.log({id:training.id, name:training.name, day:training.day, startTime:training.startTime, stopTime:training.stopTime, exercises:training.exercises, planId:planId});
         await axiosInstance.post(this.baseURL + `/addTraining`, {id:training.id, name:training.name, day:training.day, startTime:training.startTime, stopTime:training.stopTime, exercises:training.exercises, planId:planId});
+    }
+
+    UpdateTraining = async (training:Training, planId:number) => {
+        await axiosInstance.put(this.baseURL + `/updateTraining`, {id:training.id, name:training.name, day:training.day, startTime:training.startTime, stopTime:training.stopTime, exercises:training.exercises, planId:planId});
     }
 
     UpdatePlanName = async (planId:number, name:string) => {

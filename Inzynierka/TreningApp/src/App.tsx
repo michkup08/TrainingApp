@@ -7,7 +7,8 @@ import ChatsPage from './assets/components/ChatsPage.tsx';
 import LoginPage from './assets/components/LoginPage.tsx';
 import RegisterPage from './assets/components/RegisterPage.tsx';
 import MainTrainingPlan from './assets/components/MainTrainingPlanPage.tsx';
-import NewTrainingPlan from './assets/components/NewTrainingPlan.tsx';
+import EditTrainingPlan from './assets/components/EditTrainingPlan.tsx';
+import MyPlansPage from './assets/components/MyPlansPage.tsx';
 
 
 function App() {
@@ -22,7 +23,8 @@ function App() {
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/chats" element={<ChatsPage/>}/>
             <Route path='/trainingPlan' element={<MainTrainingPlan/>}/>
-            <Route path='/trainingPlan/new' element={<NewTrainingPlan/>}/>
+            <Route path='/trainingPlan/new' element={<EditTrainingPlan/>}/>
+            <Route path='/trainingPlan/usersPlans' element={<MyPlansPage/>}/>
         </Routes>
       </UserProvider>
     </div>

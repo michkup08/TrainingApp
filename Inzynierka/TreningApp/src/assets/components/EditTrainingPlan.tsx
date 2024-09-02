@@ -10,7 +10,7 @@ import ExerciseWithParameters from '../DTO/ExerciseWithParameters';
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
 
-const NewTrainingPlan = () => {
+const EditTrainingPlan = () => {
     const trainingApi = new TrainingApi();
     const user = useContext(UserContext);
     const [planId, setPlanId] = useState(0);
@@ -31,15 +31,18 @@ const NewTrainingPlan = () => {
         if(resp)
         {
             setExercises(resp);
-            console.log(exercises);
         }
     }
 
+    const confirm = () => {
+        sessionStorage.removeItem('editTrainingPlan');
+    }
+
     const fetchTrainingPlan = async() => {
-        const resp = await trainingApi.TrainingPlanById(planId);
+        console.log("planid ", planId);
+        const resp = await trainingApi.TrainingPlanById((Number) (sessionStorage.getItem('editTrainingPlan')!));
         if(resp)
         {
-            console.log(resp);
             setTrainings(resp.trenings);
             setPlanName(resp.name);
         }
@@ -52,7 +55,6 @@ const NewTrainingPlan = () => {
             setPlanId(resp);
             sessionStorage.setItem('editTrainingPlan', String(resp));
             setPlanName('New plan');
-            console.log(resp);
         }
     }
 
@@ -61,6 +63,7 @@ const NewTrainingPlan = () => {
     }, []);
 
     useEffect(() => {
+        console.log(user);
         if(user)
         {
             if(sessionStorage.getItem('editTrainingPlan'))
@@ -73,17 +76,29 @@ const NewTrainingPlan = () => {
                 initializeTraining();
             }
         }
-    }, [user]);
+    }, [user,]);
 
     useEffect(() => {
-        if(!addTrainingDialogVisible)
+        if(!addTrainingDialogVisible && !detailsTrainingDialogVisible)
         {
             setTrainingStart('');
             setTrainingEnd('');
             setExercisesWithParameters([]);
             setTrainingName('New training')
         }
-    }, [addTrainingDialogVisible])
+        else if(detailsTrainingDialogVisible)
+        {
+            const training = trainings.find(training => training.id === selectedTrainingId);
+            if(training)
+            {
+                setExercisesWithParameters(training!.exercises);
+                setTrainingName(training!.name);
+                setTrainingStart(training!.startTime);
+                setTrainingEnd(training!.stopTime);
+            }
+            
+        }
+    }, [addTrainingDialogVisible, detailsTrainingDialogVisible])
 
     const updatePlanName = (newName:string) => {
         trainingApi.UpdatePlanName(planId, newName);
@@ -113,11 +128,25 @@ const NewTrainingPlan = () => {
         setAddTrainingDialogVisible(false);
         if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
             const training: Training = {day: selectedDay, startTime: trainingStart, stopTime: trainingEnd, exercises: exercisesWithParameters, name:trainingName};
-            trainingApi.AddTrainingToPlan(training, planId).then
+            trainingApi.AddTrainingToPlan(training, planId).then(() => {
                 fetchTrainingPlan();
-            
+            })
         }
     };
+
+    const handleUpdateTraining = async() => {
+        setAddTrainingDialogVisible(false);
+        if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
+            const training = trainings.find(training => training.id === selectedTrainingId)!;
+            training.startTime = trainingStart;
+            training.stopTime = trainingEnd;
+            training.exercises = exercisesWithParameters;
+            training.name = trainingName; 
+            trainingApi.UpdateTraining(training, planId).then(() => {
+                fetchTrainingPlan();
+            })
+        }
+    }
 
     const timeToPosition = (time: string) => {
         const [hours, minutes] = time.split(':').map(Number);
@@ -136,7 +165,7 @@ const NewTrainingPlan = () => {
         <div className='trainingPlan'>
             <div className='trainingPlanManager'>
                 <div className='planName'>Write training name:</div>
-                <div className='planName'><input className='planNameInput' type="text" defaultValue={planName}/></div>
+                <div className='planName'><input className='planNameInput' type="text" defaultValue={planName} onChange={(e) => updatePlanName(e.target.value)}/></div>
                 
             </div>
             <div className="weekly-calendar">
@@ -243,17 +272,51 @@ const NewTrainingPlan = () => {
                                     <>
                                         <div key={selectedTrainingId}>
                                             <div className='training_details_header'><h3>Write training name:</h3></div>
-                                            {/* <div className='training_details_header'>{training.name}</div> */}
+                                            <div>
+                                                <label>Name: <input className='trainingPlanInput' value={trainingName} onChange={(e) => setTrainingName(e.target.value)} /></label>
+                                            </div>
+                                            <div>
+                                                <label>Start: <input className='trainingPlanInput' type="time" value={trainingStart} onChange={(e) => setTrainingStart(e.target.value)} /></label>
+                                            </div>
+                                            <div>
+                                                <label>End: <input className='trainingPlanInput' type="time" value={trainingEnd} onChange={(e) => setTrainingEnd(e.target.value)} /></label>
+                                            </div>
                                             
                                             <div>{daysOfWeek[training.day]}</div>
-                                            <br/><br/>
-                                            <div>
-                                                {training.exercises.map((exercise)=>(
-                                                    <div className='training_details_header'>{ 
-                                                        exercise.exercise.name + ' : ' + exercise.parameters
-                                                    }</div>
+                                            <br/>
+                                            
+                                            {exercisesWithParameters.length > 0 && (
+                                                <table>
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Parameters</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {exercisesWithParameters.map((ExerciseWithParameters) => (
+                                                        <tr key={ExerciseWithParameters.id}>
+                                                        <td>{ExerciseWithParameters.exercise.name}</td>
+                                                        <td><input className='trainingPlanInput' type="text" onChange={(e) => handleUpdateExerciseParameters(ExerciseWithParameters.exercise.id, e.target.value)} defaultValue={ExerciseWithParameters.parameters}/></td>
+                                                        </tr>
+                                                    ))}
+                                                    </tbody>
+                                                </table>
+                                            )}
+                                            <h3>Select your exercises</h3>
+                                            <select className='trainingPlanSelect' onChange={handleAddExercise} defaultValue=''>
+                                                <option value='' disabled >
+                                                        Select exercise for add it to training
+                                                </option>
+                                                {exercises.map((exercise) => (
+                                                    
+                                                    <option key={exercise.id} value={exercise.id}>
+                                                        {exercise.name}
+                                                    </option>
                                                 ))}
-                                            </div>
+                                            </select>
+                                            <button className='buttonGreen' onClick={handleUpdateTraining}>Update Training</button>
+                                            <button className='buttonRed' onClick={() => setDetailsTrainingDialogVisible(false)}>Cancel</button>
                                             
                                         </div>
                                     </>
@@ -270,4 +333,4 @@ const NewTrainingPlan = () => {
     );
 };
 
-export default NewTrainingPlan;
+export default EditTrainingPlan;
