@@ -23,7 +23,7 @@ function App() {
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/chats" element={<ChatsPage/>}/>
             <Route path='/trainingPlan' element={<MainTrainingPlan/>}/>
-            <Route path='/trainingPlan/new' element={<EditTrainingPlan/>}/>
+            <Route path='/trainingPlan/edit' element={<EditTrainingPlan/>}/>
             <Route path='/trainingPlan/usersPlans' element={<MyPlansPage/>}/>
         </Routes>
       </UserProvider>

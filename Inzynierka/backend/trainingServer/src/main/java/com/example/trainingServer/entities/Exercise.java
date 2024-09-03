@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -32,5 +33,5 @@ public class Exercise {
 
     @OneToMany(mappedBy = "exercise")
     @JsonBackReference
-    private Set<ExerciseWithParameters> exercises_With_Parameters;
+    private List<ExerciseWithParameters> exercises_With_Parameters;
 }

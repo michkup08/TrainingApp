@@ -169,4 +169,14 @@ export class TrainingApi {
     UpdatePlanName = async (planId:number, name:string) => {
         await axiosInstance.put(this.baseURL + `/changeTrainingPlanName`, {id:planId, name:name});
     }
+
+    GetActivePlanId = async (userId:number) => {
+        const resp = await axiosInstance.get(this.baseURL + `/getActiveId/${userId}`);
+        if(resp) return resp.data;
+        return 0;
+    }
+
+    UpdateActivePlan = async (userId:number, planId:number) => {
+        await axiosInstance.put(this.baseURL + `/setActiveId`, {planId:planId, userId:userId});
+    }
 }

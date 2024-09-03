@@ -4,7 +4,7 @@ import { TrainingApi } from '../service/TrainingApi';
 import { UserContext } from '../context/UserContext';
 import Training from '../DTO/Training';
 import Exercise from '../DTO/Exercise';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -12,7 +12,9 @@ const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:
 const MainTrainingPlan = () => {
     const trainingApi = new TrainingApi();
     const user = useContext(UserContext);
+    const navigate = useNavigate();
     const [trainings, setTrainings] = useState<Training[]>([]);
+    const [planId, setPlanId] = useState(0);
     const [planName, setPlanName] = useState('');
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [currentDay, setCurrentDay] = useState(new Date().getDay() - 1);
@@ -30,6 +32,7 @@ const MainTrainingPlan = () => {
         {
             setTrainings(resp.trenings);
             setPlanName(resp.name);
+            setPlanId(resp.id);
         }
     }
 
@@ -70,14 +73,24 @@ const MainTrainingPlan = () => {
         //toast fail
     } 
 
+    const handleNewPlan = () => {
+        sessionStorage.removeItem('editTrainingPlan');
+        navigate('edit');
+    } 
+
+    const handleEditMainPlan = () => {
+        sessionStorage.setItem('editTrainingPlan', String(planId));
+        navigate('edit');
+    } 
+
     return (
         <div className='trainingPlan'>
             <div className='trainingPlanManager'>
                 <div className='planName'><h3>{planName}</h3></div>
                 <nav>
-                    <Link to='/' className='planNavLink'>Edit my main plan</Link>
+                    <button onClick={() => handleEditMainPlan()} className='planNavLink'>Edit my main plan</button>
                     <Link to='usersPlans' className='planNavLink'>My training plans</Link>
-                    <Link to='new' className='planNavLink'>Add new plan</Link>
+                    <button onClick={() => handleNewPlan()} className='planNavLink'>Add new plan</button>
                 </nav>
                 
             </div>

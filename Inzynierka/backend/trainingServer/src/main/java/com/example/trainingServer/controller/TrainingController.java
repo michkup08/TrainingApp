@@ -15,6 +15,7 @@ import com.example.trainingServer.mapper.TrainingPlanMapper;
 import com.example.trainingServer.repositories.*;
 import com.example.trainingServer.requests.IdAndNameRequest;
 import com.example.trainingServer.requests.SetTrainingCompleteRequest;
+import com.example.trainingServer.requests.UserAndPlanIds;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +73,27 @@ public class TrainingController {
 
         TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
         return trainingPlanMapper.toTrainingPlanDTO(tp);
+    }
+
+    @GetMapping("/getActiveId/{userId}")
+    public Long getActiveTrainingPlan(@PathVariable long userId) {
+
+        TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
+        if(tp != null) {
+            return tp.getId();
+        }
+        return null;
+    }
+
+    @PutMapping("/setActiveId")
+    public void setActiveTrainingPlan(@RequestBody UserAndPlanIds userAndPlanIds) {
+
+        TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userAndPlanIds.getUserId());
+        tp.setUserActivated(null);
+        trainingPlanRepository.saveAndFlush(tp);
+        TrainingPlan newtp = trainingPlanRepository.findById(userAndPlanIds.getPlanId()).get();
+        newtp.setUserActivated(userRepository.findById(userAndPlanIds.getUserId()).get());
+        trainingPlanRepository.saveAndFlush(newtp);
     }
 
     @PutMapping("/traningComplete")
@@ -136,5 +158,5 @@ public class TrainingController {
         trainingRepository.saveAndFlush(training);
     }
 
-    
+
 }

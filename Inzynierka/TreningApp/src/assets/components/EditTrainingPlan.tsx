@@ -4,7 +4,7 @@ import { TrainingApi } from '../service/TrainingApi';
 import { UserContext } from '../context/UserContext';
 import Training from '../DTO/Training';
 import Exercise from '../DTO/Exercise';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import ExerciseWithParameters from '../DTO/ExerciseWithParameters';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
@@ -164,6 +164,9 @@ const EditTrainingPlan = () => {
     return (
         <div className='trainingPlan'>
             <div className='trainingPlanManager'>
+                <div className='planNavLinkWrapper'>
+                    <Link className='planNavLink' to='/trainingPlan'>Back to my plan</Link>
+                </div>
                 <div className='planName'>Write training name:</div>
                 <div className='planName'><input className='planNameInput' type="text" defaultValue={planName} onChange={(e) => updatePlanName(e.target.value)}/></div>
                 

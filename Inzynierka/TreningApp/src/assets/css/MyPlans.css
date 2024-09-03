@@ -1,14 +1,72 @@
+.wrapper-plans-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.navTrainingsWrapper {
+    margin: 30px;
+    margin-top: 75px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.trainingsNavButton {
+    display: flex;
+    width: 20%;
+    margin-top: 10px;
+    align-items: center;
+    border-radius: 15px;
+    background-color: rgb(243, 93, 76);
+    color: white;
+    height: 40px;
+    justify-content: center;
+    transition: .5s;
+}
+
+.trainingsNavButton:hover {
+    border-radius: 20px;
+    background-color: white;
+    color: black;
+    transition: .5s;
+}
+
 .plans-container {
-    display: grid;
-    margin-top: 65px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    width: 90%;
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    margin-top: 20px;
 }
 
 .plan {
-    border: 1px solid #000;
     background-color: rgb(243, 93, 76);
     padding: 10px;
+    border-radius: 30px;
+    transition: .5s;
+    flex: 1 1 45%;
+}
+
+.plan:hover {
+    filter: brightness(1.3);
+    transform: scale(1.05); 
+    transition: .5s;
+}
+
+.activePlan {
+    background-color: rgb(240, 207, 207);
+    color: rgb(243, 93, 76);
+    padding: 10px;
+    border-radius: 30px;
+    transition: .5s;
+    flex: 1 1 45%;
+}
+
+.activePlan:hover {
+    filter: brightness(1.3);
+    transform: scale(1.05); 
+    transition: .5s;
 }
 
 .plan-name {
@@ -22,10 +80,20 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    border-radius: 30px;
 }
 
 .training {
-    border: 1px solid #000;
+    color: rgb(243, 93, 76);
+    background-color: white;
+    border-radius: 30px;
+    padding: 5px;
+}
+
+.activeTraining {
+    color: white;
+    background-color: rgb(243, 93, 76);
+    border-radius: 30px;
     padding: 5px;
 }
 
@@ -41,8 +109,17 @@
 }
 
 .exercise {
-    border: 1px solid #000;
+    background-color: rgb(243, 93, 76);
+    color: white;
     padding: 3px;
+    border-radius: 30px;
+}
+
+.activeExercise {
+    background-color: white;
+    color: rgb(243, 93, 76);
+    padding: 3px;
+    border-radius: 30px;
 }
 
 .exercise-name {
@@ -53,4 +130,50 @@
 .exercise-parameters {
     font-size: 0.8em;
     text-align: center;
+}
+
+.planActivationButton {
+    margin-top: 20px;
+    background-color: white;
+    color: rgb(243, 93, 76);
+    border-radius: 30px;
+    width: 100%;
+    transition: .5s;
+}
+
+.planActivationButton:hover {
+    background-color: rgb(180, 51, 37);
+    color: white;
+    transition: .5s;
+}
+
+.plusWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.plusContainer {
+    display: flex;
+    width: 70px;
+    border-radius: 30px;
+    color: rgb(243, 93, 76);
+    background-color: white;
+    height: 70px;
+    justify-content: center;
+    align-items: center;
+}
+
+.addNewTrainingSign {
+    margin-bottom: 55px;
+    font-size: 60px;
+}
+
+.addNewTrainingText {
+    font-weight: bold;
+    text-align: center;
+    font-size: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
 }
