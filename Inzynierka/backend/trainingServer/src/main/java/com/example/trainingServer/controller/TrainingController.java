@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -58,21 +59,28 @@ public class TrainingController {
         for (TrainingPlan tp : tpl) {
             dtos.add(trainingPlanMapper.toTrainingPlanDTO(tp));
         }
-        return dtos;
+        if(!dtos.isEmpty()) {
+            return dtos;
+        }
+        return null;
     }
 
     @GetMapping("/trainingPlanById/{planId}")
     public TrainingPlanDTO getTrainingPlanById(@PathVariable long planId) {
-
-        TrainingPlan tp = trainingPlanRepository.findById(planId).get();
-        return trainingPlanMapper.toTrainingPlanDTO(tp);
+        Optional<TrainingPlan> tp = trainingPlanRepository.findById(planId);
+        if(tp.isPresent()) {
+            return trainingPlanMapper.toTrainingPlanDTO(tp.get());
+        }
+        return null;
     }
 
     @GetMapping("/trainingPlan/{userId}")
     public TrainingPlanDTO getTrainingPlan(@PathVariable long userId) {
-
         TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
-        return trainingPlanMapper.toTrainingPlanDTO(tp);
+        if (tp != null) {
+            return trainingPlanMapper.toTrainingPlanDTO(tp);
+        }
+        return null;
     }
 
     @GetMapping("/getActiveId/{userId}")

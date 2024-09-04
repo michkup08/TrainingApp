@@ -19,11 +19,9 @@ const MainTrainingPlan = () => {
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [currentDay, setCurrentDay] = useState(new Date().getDay() - 1);
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
-    const [selectedDay, setSelectedDay] = useState(0);
     const [detailsTrainingDialogVisible, setDetailsTrainingDialogVisible] = useState(false);
     const [selectedTrainingId, setSelectedTrainingId] = useState(0);
-    const [trainingStart, setTrainingStart] = useState('');
-    const [trainingEnd, setTrainingEnd] = useState('');
+    const [isToday, setIsToday] = useState(false);
     const [trainingCompleteSlider, setTrainingCompleteSlider] = useState(0);
 
     const fetchTrainingPlan = async() => {
@@ -67,10 +65,8 @@ const MainTrainingPlan = () => {
         const resp = await trainingApi.SetTrainingComplete(completePercent, trainingId);
         if(resp)
         {
-            //toast success
             fetchTrainingPlan();
         }
-        //toast fail
     } 
 
     const handleNewPlan = () => {
@@ -92,7 +88,6 @@ const MainTrainingPlan = () => {
                     <Link to='usersPlans' className='planNavLink'>My training plans</Link>
                     <button onClick={() => handleNewPlan()} className='planNavLink'>Add new plan</button>
                 </nav>
-                
             </div>
             <div className="weekly-calendar">
                 <div className="header">
@@ -121,6 +116,7 @@ const MainTrainingPlan = () => {
                                     className="event"
                                     onClick={() => {
                                         setSelectedTrainingId(training.id);
+                                        setIsToday(currentDay === dayIndex);
                                         setTrainingCompleteSlider(training.completePercent);
                                         setDetailsTrainingDialogVisible(true);
                                     }}
@@ -158,20 +154,21 @@ const MainTrainingPlan = () => {
                                             </div>
                                             <br/>
                                             Complete: {trainingCompleteSlider} %
-                                            <br/>
-                                            {training.completePercent!=100 && <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
-                                                onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
-                                                onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
-                                                /> }
+                                            {isToday && (
+                                                <>
+                                                    <br/>
+                                                    {training.completePercent!=100 && <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
+                                                        onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
+                                                        onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
+                                                        /> }
+                                                </>
+                                            )}
                                         </div>
                                     </>
                                 )
                             ))}
-                            
                         </div>
-                        
                     </>
-                    
                 )}
             </div>
         </div>

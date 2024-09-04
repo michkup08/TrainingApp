@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @Setter
@@ -13,12 +14,18 @@ public class UserStatistics {
     @Id
     @Column(name = "user_statistics_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userStatisticsId; //Or Integer instead of int
+    private long userStatisticsId;
 
     @OneToOne(mappedBy = "userStatistics")
     @JsonIgnore
     private User user;
 
-    @Column(name = "days_in_a_row")
+    @Column(name = "days_in_a_row", nullable = false, columnDefinition = "int default 0")
     private int daysInARow;
+
+    @Column(name = "totalTrainings", nullable = false, columnDefinition = "int default 0")
+    private int totalTrainings;
+
+    @Column(name = "totalExercises", nullable = false, columnDefinition = "int default 0")
+    private int totalExercises;
 }

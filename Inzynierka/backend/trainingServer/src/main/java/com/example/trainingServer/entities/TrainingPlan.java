@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,5 +31,5 @@ public class TrainingPlan {
 
     @OneToMany(mappedBy = "trainingPlan")
     @JsonIgnore
-    private Set<Training> trainings;
+    private List<Training> trainings;
 }
