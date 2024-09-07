@@ -1,8 +1,10 @@
 package com.example.trainingServer.controller;
 
+import com.example.trainingServer.DTO.UserStatisticsDTO;
 import com.example.trainingServer.entities.Role;
 import com.example.trainingServer.entities.UserStatistics;
 import com.example.trainingServer.functionalities.AuthTokenGenerator;
+import com.example.trainingServer.mapper.UserStatisticsMapper;
 import com.example.trainingServer.repositories.UserStatisticsRepository;
 import com.example.trainingServer.requests.LoginRequest;
 import com.example.trainingServer.entities.User;
@@ -22,6 +24,7 @@ import java.util.List;
 public class UserController {
     private final UserRepository userRepository;
     private final UserStatisticsRepository userStatisticsRepository;
+    private final UserStatisticsMapper userStatisticsMapper;
 
 
     @PostMapping("/login")
@@ -104,5 +107,22 @@ public class UserController {
             e.printStackTrace();
         }
         return new AuthResponse(0, null, null, null, null, null, null);
+    }
+
+    @GetMapping("/userStatistics/{userId}")
+    UserStatisticsDTO getUserStatistics(@PathVariable long userId)
+    {
+        try
+        {
+            UserStatistics userStatistics = userStatisticsRepository.findByUser(userRepository.findByUserId(userId));
+            if(userStatistics != null) {
+                return userStatisticsMapper.toDTO(userStatistics);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new UserStatisticsDTO((long)0,0,0,0);
     }
 }

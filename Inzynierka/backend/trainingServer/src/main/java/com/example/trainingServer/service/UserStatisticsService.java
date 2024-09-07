@@ -10,10 +10,12 @@ import com.example.trainingServer.repositories.UserRepository;
 import com.example.trainingServer.repositories.UserStatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserStatisticsService {
@@ -27,13 +29,19 @@ public class UserStatisticsService {
     @Autowired
     private TrainingRepository trainingRepository;
 
+    @Transactional
     public void updateUserStatistics(long userId)
     {
         int today = LocalDateTime.now().getDayOfWeek().getValue() - 1;
         User user = userRepository.findByUserId(userId);
         TrainingPlan trainingPlan = user.getActivePlan();
+        if (trainingPlan == null)
+        {
+            return;
+        }
         int sumOfTrainingsCompletePercent = 0, additionalExercises = 0, additionalTrainings = 0;
         List<Training> trainings = new ArrayList<>();
+
         for(Training training : trainingPlan.getTrainings())
         {
             if(training.getDay()==today)
@@ -44,7 +52,7 @@ public class UserStatisticsService {
                 {
                     additionalTrainings++;
                 }
-                additionalExercises += (int) training.getExerciseWithParameters().size() * training.getComplete_percent();
+                additionalExercises += training.getExerciseWithParameters().size() * training.getComplete_percent() / 100;
             }
         }
         if(!trainings.isEmpty())

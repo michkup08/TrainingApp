@@ -6,21 +6,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TrainingPlanRepository extends JpaRepository<TrainingPlan, Long> {
 
     @Query("SELECT DISTINCT tp FROM TrainingPlan tp " +
-            "JOIN FETCH tp.trainings as tr " +
-            "JOIN FETCH tr.exerciseWithParameters as exe " +
+            "JOIN tp.trainings as tr " +
+            "JOIN tr.exerciseWithParameters as exe " +
             "WHERE tp.user.userId = :userId")
     List<TrainingPlan> findByUserUserIdExtended(@Param("userId") Long id);
 
     @Query("SELECT DISTINCT tp FROM TrainingPlan tp " +
-            "JOIN FETCH tp.trainings as tr " +
-            "JOIN FETCH tr.exerciseWithParameters as exe " +
+            "JOIN tp.trainings as tr " +
+            "JOIN tr.exerciseWithParameters as exe " +
             "WHERE tp.userActivated.userId = :userId")
-    TrainingPlan findByUserActivatedUserIdExtended(@Param("userId") Long id);
+    Optional<TrainingPlan> findByUserActivatedUserIdExtended(@Param("userId") Long id);
 
 }

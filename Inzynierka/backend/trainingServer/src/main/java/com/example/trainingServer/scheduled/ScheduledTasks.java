@@ -13,7 +13,7 @@ public class ScheduledTasks {
 
     private UserRepository userRepository;
 
-    @Scheduled(cron = "45 11 * * *")
+    @Scheduled(cron = "0 45 23 * * *")
     public void scheduledTasks()
     {
         userRepository.findAll().forEach(user -> {

@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface UserStatisticsRepository extends JpaRepository<UserStatistics, Long> {
-
+  public UserStatistics findByUser(User user);
 }

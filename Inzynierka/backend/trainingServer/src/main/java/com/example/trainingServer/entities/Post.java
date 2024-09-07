@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,10 +22,11 @@ public class Post {
     private String context;
 
     @ManyToOne
+    @JoinColumn(name = "sender_id", referencedColumnName = "user_id")
     @JsonIgnore
     private User senderId;
 
     @OneToMany
     @JsonIgnore
-    private Set<Comment> comments;
+    private List<Comment> comments;
 }

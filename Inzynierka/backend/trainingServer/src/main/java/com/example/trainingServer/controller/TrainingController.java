@@ -76,19 +76,19 @@ public class TrainingController {
 
     @GetMapping("/trainingPlan/{userId}")
     public TrainingPlanDTO getTrainingPlan(@PathVariable long userId) {
-        TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
-        if (tp != null) {
-            return trainingPlanMapper.toTrainingPlanDTO(tp);
+        Optional<TrainingPlan> tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
+        if (tp.isPresent()) {
+            return trainingPlanMapper.toTrainingPlanDTO(tp.get());
         }
-        return null;
+        return new TrainingPlanDTO((long)0,"",new ArrayList<>());
     }
 
     @GetMapping("/getActiveId/{userId}")
     public Long getActiveTrainingPlan(@PathVariable long userId) {
 
-        TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
-        if(tp != null) {
-            return tp.getId();
+        Optional<TrainingPlan> tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
+        if (tp.isPresent()) {
+            return tp.get().getId();
         }
         return null;
     }
@@ -96,12 +96,16 @@ public class TrainingController {
     @PutMapping("/setActiveId")
     public void setActiveTrainingPlan(@RequestBody UserAndPlanIds userAndPlanIds) {
 
-        TrainingPlan tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userAndPlanIds.getUserId());
-        tp.setUserActivated(null);
-        trainingPlanRepository.saveAndFlush(tp);
+        Optional<TrainingPlan> tpOpt = trainingPlanRepository.findByUserActivatedUserIdExtended(userAndPlanIds.getUserId());
+        if (tpOpt.isPresent()) {
+            TrainingPlan tp = tpOpt.get();
+            tp.setUserActivated(null);
+            trainingPlanRepository.saveAndFlush(tp);
+        }
         TrainingPlan newtp = trainingPlanRepository.findById(userAndPlanIds.getPlanId()).get();
         newtp.setUserActivated(userRepository.findById(userAndPlanIds.getUserId()).get());
         trainingPlanRepository.saveAndFlush(newtp);
+
     }
 
     @PutMapping("/traningComplete")

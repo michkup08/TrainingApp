@@ -65,31 +65,35 @@ export class TrainingApi {
         const resp = await axiosInstance.get(this.baseURL + `/trainingPlans/${user_id}`);
 
         const trainingPlansData = resp.data;
-   
-        const trainingPlans: TrainingPlan[] = trainingPlansData.map((trainingPlanData: any) => ({
-            id: trainingPlanData.id,
-            name: trainingPlanData.name,
-            trenings: trainingPlanData.trainingPlanDTOs.map((training: Training) => ({
-                id: training.id,
-                name: training.name,
-                day: training.day,
-                startTime: training.startTime,
-                stopTime: training.stopTime,
-                completePercent: training.completePercent,
-                exercises: training.exercises.map((exerciseWithParameters: ExerciseWithParameters) => ({
-                    id: exerciseWithParameters.id,
-                    parameters: exerciseWithParameters.parameters,
-                    exercise: ({
-                        id: exerciseWithParameters.exercise.id,
-                        name: exerciseWithParameters.exercise.name,
-                        description: exerciseWithParameters.exercise.description,
-                        defaultValue: exerciseWithParameters.exercise.defaultValue
-                    })
+        
+        if(trainingPlansData)
+        {
+            const trainingPlans: TrainingPlan[] = trainingPlansData.map((trainingPlanData: any) => ({
+                id: trainingPlanData.id,
+                name: trainingPlanData.name,
+                trenings: trainingPlanData.trainingPlanDTOs.map((training: Training) => ({
+                    id: training.id,
+                    name: training.name,
+                    day: training.day,
+                    startTime: training.startTime,
+                    stopTime: training.stopTime,
+                    completePercent: training.completePercent,
+                    exercises: training.exercises.map((exerciseWithParameters: ExerciseWithParameters) => ({
+                        id: exerciseWithParameters.id,
+                        parameters: exerciseWithParameters.parameters,
+                        exercise: ({
+                            id: exerciseWithParameters.exercise.id,
+                            name: exerciseWithParameters.exercise.name,
+                            description: exerciseWithParameters.exercise.description,
+                            defaultValue: exerciseWithParameters.exercise.defaultValue
+                        })
+                    }))
                 }))
-            }))
-        }));
+            }));
 
-        return trainingPlans;
+            return trainingPlans;
+        }
+        return [];
     }
 
     TrainingPlanById = async (plan_id:number): Promise<TrainingPlan> => {
