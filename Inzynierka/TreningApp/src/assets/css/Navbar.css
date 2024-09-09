@@ -33,3 +33,8 @@
 .navbar .active {
   background-color: #555;
 }
+
+.homeImage {
+  width: 30px;
+  margin-top: 5px;
+}

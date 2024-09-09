@@ -15,8 +15,15 @@ const Navbar = () => {
         <nav className="navbar">
             
             <div className="left">
-                <NavLink to="/">Home<i className="fi fi-rr-home"></i></NavLink>
-                <NavLink to="/trainingPlan">Training Plan</NavLink>
+                {/* <NavLink to="/"><img src='/images/home.png' className='homeImage'/></NavLink> */}
+                <NavLink to="/">Home</NavLink>
+                {user.id != 0 && (
+                    <>
+                        <NavLink to="/trainingPlan">Training Plan</NavLink>
+                        <NavLink to="/chats">Chats</NavLink>
+                    </>
+                )}
+                
             </div>
             <div className="nav-buttons">
 

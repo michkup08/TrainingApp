@@ -22,28 +22,25 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-
     @Bean
-    @ConditionalOnProperty(value = "spring.security.enabled", havingValue = "false")
-    SecurityFilterChain securityDisabled(HttpSecurity http) throws Exception {
-
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(configurer->
-                        configurer.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(configurer -> configurer
-                        .anyRequest().permitAll());
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Add CORS configuration
+                .authorizeHttpRequests(authz -> authz
+                        .anyRequest().permitAll()
+                );
         return http.build();
     }
-
 }
 
 
