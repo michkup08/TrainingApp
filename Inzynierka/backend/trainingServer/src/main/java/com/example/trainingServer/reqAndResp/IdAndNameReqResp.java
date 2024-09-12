@@ -1,4 +1,4 @@
-package com.example.trainingServer.requests;
+package com.example.trainingServer.reqAndResp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IdAndNameRequest {
+public class IdAndNameReqResp {
     private String name;
     private long id;
 }

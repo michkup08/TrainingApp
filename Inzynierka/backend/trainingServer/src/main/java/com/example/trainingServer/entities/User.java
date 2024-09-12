@@ -72,6 +72,12 @@ public class User {
     @JoinColumn(name = "post_id")
     private Set<Post> posts;
 
+    @OneToMany(mappedBy = "userOne")
+    private List<Chat> chatsAsUserOne;
+
+    @OneToMany(mappedBy = "userTwo")
+    private List<Chat> chatsAsUserTwo;
+
     public User() {
     }
 

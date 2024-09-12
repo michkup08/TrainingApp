@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExerciseMapper {
 
-    // Converts Exercise entity to ExerciseDTO
     public static ExerciseDTO toExerciseDTO(Exercise exercise) {
         if (exercise == null) {
             return null;
@@ -21,7 +20,6 @@ public class ExerciseMapper {
         );
     }
 
-    // Converts ExerciseDTO to Exercise entity
     public static Exercise toExerciseEntity(ExerciseDTO exerciseDTO) {
         if (exerciseDTO == null) {
             return null;
@@ -31,7 +29,6 @@ public class ExerciseMapper {
         exercise.setExercise_id(exerciseDTO.getId());
         exercise.setName(exerciseDTO.getName());
         exercise.setDescription(exerciseDTO.getDescription());
-        // Additional relationships like Training set should be set outside of this method
         return exercise;
     }
 }

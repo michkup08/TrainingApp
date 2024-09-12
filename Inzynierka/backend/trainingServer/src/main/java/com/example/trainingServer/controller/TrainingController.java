@@ -13,7 +13,7 @@ import com.example.trainingServer.mapper.ExerciseWithParametersMapper;
 import com.example.trainingServer.mapper.TrainingMapper;
 import com.example.trainingServer.mapper.TrainingPlanMapper;
 import com.example.trainingServer.repositories.*;
-import com.example.trainingServer.requests.IdAndNameRequest;
+import com.example.trainingServer.reqAndResp.IdAndNameReqResp;
 import com.example.trainingServer.requests.SetTrainingCompleteRequest;
 import com.example.trainingServer.requests.UserAndPlanIds;
 import lombok.AllArgsConstructor;
@@ -114,7 +114,7 @@ public class TrainingController {
     }
 
     @PostMapping("/addEmptyTrainingPlan")
-    public Long addEmptyTrainingPlan(@RequestBody IdAndNameRequest idAndNameRequest) {
+    public Long addEmptyTrainingPlan(@RequestBody IdAndNameReqResp idAndNameRequest) {
         TrainingPlan tp = new TrainingPlan();
         tp.setUser(userRepository.findById(idAndNameRequest.getId()).get());
         tp.setName(idAndNameRequest.getName());
@@ -123,7 +123,7 @@ public class TrainingController {
     }
 
     @PutMapping("/changeTrainingPlanName")
-    public void changeTrainingPlanName(@RequestBody IdAndNameRequest idAndNameRequest) {
+    public void changeTrainingPlanName(@RequestBody IdAndNameReqResp idAndNameRequest) {
         TrainingPlan tp = trainingPlanRepository.findById(idAndNameRequest.getId()).get();
         tp.setName(idAndNameRequest.getName());
         trainingPlanRepository.saveAndFlush(tp);

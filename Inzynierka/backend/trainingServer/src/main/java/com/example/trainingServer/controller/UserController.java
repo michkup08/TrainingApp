@@ -6,6 +6,7 @@ import com.example.trainingServer.entities.UserStatistics;
 import com.example.trainingServer.functionalities.AuthTokenGenerator;
 import com.example.trainingServer.mapper.UserStatisticsMapper;
 import com.example.trainingServer.repositories.UserStatisticsRepository;
+import com.example.trainingServer.reqAndResp.IdAndNameReqResp;
 import com.example.trainingServer.requests.LoginRequest;
 import com.example.trainingServer.entities.User;
 import com.example.trainingServer.repositories.UserRepository;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/users")
@@ -124,5 +128,35 @@ public class UserController {
             e.printStackTrace();
         }
         return new UserStatisticsDTO((long)0,0,0,0);
+    }
+
+    @GetMapping("/usersByReg/{fragment}")
+    List<IdAndNameReqResp> getUsersByNameFragment(@PathVariable String fragment)
+    {
+        try
+        {
+            String reg = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+"+fragment+"[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+";
+            Pattern pattern = Pattern.compile(reg);
+            List<User> all = userRepository.findAll();
+            List<IdAndNameReqResp> fits = new ArrayList<>();
+            for(User user: all)
+            {
+                if(fits.size()>=20)
+                {
+                    break;
+                }
+                Matcher matcher = pattern.matcher(user.getName()+" "+user.getSurname());
+                if(matcher.matches())
+                {
+                    fits.add(new IdAndNameReqResp(user.getName() + " " + user.getSurname(), user.getUserId()));
+                }
+            }
+            return fits;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }
