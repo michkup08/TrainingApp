@@ -6,7 +6,7 @@ export const axiosInstance= axios.create();
 export class UsersApi {
     baseURL: string = "http://localhost:8080/trainingappdb/users";
 
-    UsersSearch = async (req:string): Promise<User[]> => {
+    usersSearch = async (req:string): Promise<User[]> => {
         const resp = await axiosInstance.get(this.baseURL + `/usersByReg/${req}`);
         const usersData = resp.data;
         const users: User[] = usersData.map((user: User) => ({
@@ -15,5 +15,9 @@ export class UsersApi {
         }))
 
         return users;
+    }
+
+    userFullName = async (userId:number): Promise<string> => {
+        const resp = await axiosInstance.get(this.baseURL + `/usersByReg/${req}`);
     }
 }

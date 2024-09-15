@@ -2,13 +2,12 @@ package com.example.trainingServer.controller;
 
 import com.example.trainingServer.DTO.PostDTO;
 import com.example.trainingServer.entities.Post;
+import com.example.trainingServer.entities.User;
 import com.example.trainingServer.mapper.PostMapper;
 import com.example.trainingServer.repositories.PostRepository;
 import com.example.trainingServer.repositories.UserRepository;
 import com.example.trainingServer.requests.PostsFetchRequest;
 import com.example.trainingServer.service.PostService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -38,14 +37,16 @@ public class PostsController {
     private final PostMapper postMapper;
 
     private final PostService postService;
+    private final UserRepository userRepository;
 
     @Value("${post-images-dir}")
     private String postImagesDir;
 
-    public PostsController(PostRepository postRepository, PostMapper postMapper, PostService postService) {
+    public PostsController(PostRepository postRepository, PostMapper postMapper, PostService postService, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.postService = postService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/unicalPosts")
@@ -65,6 +66,8 @@ public class PostsController {
                 PostDTO postDTO = postMapper.toDTO(post);
                 String image = postService.getBase64ImageForPost(post);
                 postDTO.setImage(image);
+                User sender = userRepository.findByUserId(post.getSenderId().getUserId());
+                postDTO.setSenderFullName(sender.getName()+" "+sender.getSurname());
                 postDTOs.add(postDTO);
             }
             return postDTOs;
@@ -73,6 +76,22 @@ public class PostsController {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    @PostMapping("/post")
+    public long addPost(@RequestBody PostDTO postsDTO)
+    {
+        try {
+            User sender = userRepository.findByUserId(postsDTO.getSenderId());
+            Post newPost = postMapper.toEntity(postsDTO);
+            newPost.setSenderId(sender);
+            postRepository.saveAndFlush(newPost);
+            return newPost.getPost_id();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @PostMapping("/image")

@@ -21,6 +21,7 @@ const ChatsPage = () => {
     const [message, setMessage] = useState('');
     const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const fetchChats = async() => {
         const resp = await chatsApi.UsersChats(user.id!);
@@ -69,29 +70,8 @@ const ChatsPage = () => {
 
     const onConnected = (stomp:Client) => {
         setConnected(true);
-        //stomp.subscribe('/chatroom/public', onMessageReceived);
         stomp.subscribe(`/user/${user.id}/private`, onPrivateMessage);
-        //userJoin(stomp);
     };
-
-    // const userJoin = (stomp:Client) => {
-    //     const chatMessage = {
-    //         senderId: user.id,
-    //         senderName: `${user.name} ${user.surname}`,
-    //         status: 'JOIN'
-    //     };
-    //     stomp.send('/app/message', {}, JSON.stringify(chatMessage));
-    // };
-
-    // const onMessageReceived = (payload) => {
-    //     const payloadData = JSON.parse(payload.body);
-
-    //     if (payloadData.status === 'JOIN') {
-    //         if (!privateChats.find(chat => chat.userId === payloadData.senderId)) {
-    //             setPrivateChats(prev => [...prev, new Chat(payloadData.senderId, payloadData.senderName, '', [])]);
-    //         }
-    //     }
-    // };
 
     const onPrivateMessage = (payload) => {
         const payloadData = JSON.parse(payload.body);
@@ -166,13 +146,14 @@ const ChatsPage = () => {
     }
 
     const handleSearchChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
         if (!event.target.value) {
             setUsers([]);
             return;
         }
         try {
             setLoadingUsers(true);
-            const resp = await usersApi.UsersSearch(event.target.value);
+            const resp = await usersApi.usersSearch(event.target.value);
             setUsers(resp);
         } catch (err) {
             console.log("error during searching users");
@@ -180,6 +161,11 @@ const ChatsPage = () => {
             setLoadingUsers(false);
         }
     };
+
+    const getInitials = (name:string) => {
+        const parts = name.split(' ');
+        return parts.map(part => part[0].toUpperCase()).join('');
+    }
 
     return (
         <div className="container">
@@ -222,9 +208,9 @@ const ChatsPage = () => {
                             .map((chat, index) =>
                                 (chat.messages || []).map((message, i) => (
                                     <li key={i} className={`message ${message.senderId === user.id ? 'self' : ''}`}>
-                                        {message.senderId !== user.id && <div className="avatar">{message.senderName}</div>}
+                                        {message.senderId !== user.id ? <div className="avatar">{getInitials(message.senderName)}</div> :
+                                        <div className="avatar self">{getInitials(message.senderName)}</div>}
                                         <div className="message-data">{message.message}</div>
-                                        {message.senderId === user.id && <div className="avatar self">{message.senderName}</div>}
                                     </li>
                                 ))
                             )
@@ -238,13 +224,12 @@ const ChatsPage = () => {
                             value={message}
                             onChange={handleMessage}
                         />
-                        <button
-                            type="button"
+                        { tabId != 0 && (<button
                             className="send-button"
                             onClick={sendPrivateValue}
                         >
                             Send
-                        </button>
+                        </button>)}
                     </div>
                 </div>
             </div>

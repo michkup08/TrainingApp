@@ -65,11 +65,6 @@ public class User {
     @OneToMany
     @JsonIgnore
     @JoinColumn(name = "post_id")
-    private List<Post> post;
-
-    @OneToMany
-    @JsonIgnore
-    @JoinColumn(name = "post_id")
     private Set<Post> posts;
 
     @OneToMany(mappedBy = "userOne")

@@ -1,16 +1,19 @@
 /* General container styling */
 .container {
     display: flex;
+    width: 100%;
     height: 100vh;
-    background-color: #1c1e21; /* Messenger's dark mode background */
+    background-color: #1c1e21;
     color: white;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 /* Chat box wrapper */
 .chat-box {
+    margin-top: 65px;
     display: flex;
     width: 100%;
+    height: 88%;
 }
 
 /* Member list (sidebar) styling */
@@ -41,7 +44,7 @@
 
 .member-list li {
     padding: 15px;
-    margin: 5px 0;
+    margin: 15px 0;
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -55,14 +58,16 @@
 }
 
 .member-list li.active {
-    background-color: #006AFF; /* Active tab color */
+    background-color: rgb(243, 93, 76);
+    transition: .5s;
 }
 
 .member-list li.active:hover {
-    background-color: #0056cc;
+    background-color: white;
+    color: black;
+    transition: .5s;
 }
 
-/* Chat content (main panel) styling */
 .chat-content {
     width: 70%;
     background-color: #1c1e21;
@@ -72,7 +77,6 @@
     padding: 10px;
 }
 
-/* Chat messages list */
 .chat-messages {
     list-style: none;
     padding: 0;
@@ -81,7 +85,6 @@
     overflow-y: auto;
 }
 
-/* Individual message styling */
 .message {
     display: flex;
     margin-bottom: 15px;
@@ -91,7 +94,7 @@
 .message .avatar {
     width: 40px;
     height: 40px;
-    background-color: #006AFF;
+    background-color: #4e4f50;
     color: white;
     font-weight: bold;
     border-radius: 50%;
@@ -99,6 +102,7 @@
     align-items: center;
     justify-content: center;
     margin-right: 10px;
+    margin-left: 10px;
 }
 
 .message.self {
@@ -119,10 +123,9 @@
 }
 
 .message.self .message-data {
-    background-color: #006AFF;
+    background-color: rgb(243, 93, 76);
 }
 
-/* Message input section */
 .send-message {
     display: flex;
     padding: 10px 0;
@@ -141,13 +144,16 @@
 
 .send-button {
     padding: 10px 20px;
-    background-color: #006AFF;
+    background-color: rgb(243, 93, 76);
     color: white;
     border: none;
     border-radius: 20px;
     cursor: pointer;
+    transition: .5s;
 }
 
 .send-button:hover {
-    background-color: #0056cc;
+    background-color: white;
+    color: black;
+    transition: .5s;
 }

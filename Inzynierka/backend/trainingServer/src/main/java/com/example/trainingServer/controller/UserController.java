@@ -135,7 +135,7 @@ public class UserController {
     {
         try
         {
-            String reg = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+"+fragment+"[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+";
+            String reg = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*"+fragment+"[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*";
             Pattern pattern = Pattern.compile(reg);
             List<User> all = userRepository.findAll();
             List<IdAndNameReqResp> fits = new ArrayList<>();
@@ -158,5 +158,12 @@ public class UserController {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    @GetMapping("/getFullNameById/{userId}")
+    String getFullName(@PathVariable long userId)
+    {
+        User user = userRepository.findByUserId(userId);
+        return user.getName()+" "+user.getSurname();
     }
 }

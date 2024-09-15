@@ -12,6 +12,7 @@ import lombok.Setter;
 public class PostDTO {
     private long id;
     private long senderId;
+    private String senderFullName;
     private String context;
     private String image;
 }

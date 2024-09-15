@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -22,7 +21,7 @@ public class Post {
     private String context;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "sender_id_user_id", referencedColumnName = "user_id")
     @JsonIgnore
     private User senderId;
 

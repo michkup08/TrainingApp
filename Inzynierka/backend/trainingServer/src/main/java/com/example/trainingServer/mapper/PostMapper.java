@@ -2,7 +2,6 @@ package com.example.trainingServer.mapper;
 
 import com.example.trainingServer.DTO.PostDTO;
 import com.example.trainingServer.entities.Post;
-import com.example.trainingServer.entities.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,11 +15,12 @@ public class PostMapper {
         return dto;
     }
 
-    public Post toEntity(PostDTO postDTO, User sender) {
+    public Post toEntity(PostDTO postDTO) {
         Post post = new Post();
-        post.setPost_id(postDTO.getId());
+        if(postDTO.getId()!=0) {
+            post.setPost_id(postDTO.getId());
+        }
         post.setContext(postDTO.getContext());
-        post.setSenderId(sender);
         return post;
     }
 }
