@@ -1,3 +1,7 @@
+body {
+    
+}
+
 .posts-container {
     margin: 0 auto;
     margin-top: 55px;
@@ -5,6 +9,30 @@
     padding: 20px;
     background-color: #1e1e1e;
     color: #fff;
+}
+
+.posts-container input {
+    background-color: rgb(243, 93, 76);
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: rgb(243, 93, 76);
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.custom-file-upload:hover {
+    background-color: rgb(220, 80, 65);
+}
+
+.sendPostButton {
+    border-radius: 20px;
+    margin: 10px;
 }
 
 .post-card {
@@ -33,6 +61,13 @@
 
 .postContextWrapper {
     margin: auto 15px;
+}
+
+.postContextWrapper textarea {
+    font-size: 18px;
+    width: 95%;
+    border-radius: 20px;
+    padding: 10px;
 }
 
 .post-info {
@@ -94,4 +129,10 @@
 
 .load-more-btn:hover {
     background-color: #287dc9;
+}
+
+.custom-file-upload {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
 }

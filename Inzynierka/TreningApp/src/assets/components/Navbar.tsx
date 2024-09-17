@@ -27,7 +27,7 @@ const Navbar = () => {
             </div>
             <div className="nav-buttons">
 
-                <NavLink to='/'>{fullName}</NavLink>
+                {fullName && <NavLink to='/profileEdition'>{fullName}</NavLink>}
                 {user.id === 0 || user.id === undefined ? (
                     <>
                         <NavLink to="/login">Login</NavLink>

@@ -68,15 +68,15 @@ const PostsList = () => {
                 const imageResp = await postsApi.postImageUpload(formData);
                 if(imageResp)
                 {
+                    setNewPostText('');
                     setNewImageUrl(null);
                     setSelectedImage(null);
-                    console.log("succes postiong post with image");
                     return;
                 }
             }
             if(postId)
             {
-                console.log("success posting post");
+                setNewPostText('');
                 return;
             }
         }
@@ -93,19 +93,23 @@ const PostsList = () => {
                     </div>
                 </div>
                 <div className="postContextWrapper">
-                    <input
+                    <textarea 
+                        name="multi-row"
                         placeholder="Write your post"
                         value={newPostText}
                         onChange={e => setNewPostText(e.target.value)}
                     />
                 </div>
-                <input type="file" accept="image/*" onChange={e => handleImageSelect(e)} />
+                <input type="file" accept="image/*" id="fileInput" onChange={handleImageSelect} style={{ display: 'none' }} />
+                <label htmlFor="fileInput" className="custom-file-upload">
+                    Choose Image
+                </label>
                 {newImageUrl && <img 
                     src={newImageUrl}
                     alt="Post image" 
                     className="post-image"
                 />}
-                <button onClick={handleAddNewPost}>Send</button>
+                <button className="sendPostButton" onClick={handleAddNewPost}>Send</button>
             </div>}
             {posts.map((post:Post, index:number) => (
                 <div key={index} className="post-card">
@@ -120,12 +124,11 @@ const PostsList = () => {
                     <div className="postContextWrapper">
                         <h4>{post.context}</h4>
                     </div>
-                    
-                    <img 
+                    {post.image && (<img 
                         src={`data:image/jpeg;base64,${post.image}`} 
                         alt="Post image" 
                         className="post-image"
-                    />
+                    />)}
                     <div className="post-actions">
                         <button className="like-btn">❤️</button>
                         <button className="comment-btn">💬</button>

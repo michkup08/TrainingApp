@@ -13,8 +13,15 @@ import com.example.trainingServer.repositories.UserRepository;
 import com.example.trainingServer.requests.RegisterRequest;
 import com.example.trainingServer.responses.AuthResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -26,6 +33,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
+
     private final UserRepository userRepository;
     private final UserStatisticsRepository userStatisticsRepository;
     private final UserStatisticsMapper userStatisticsMapper;
@@ -165,5 +173,19 @@ public class UserController {
     {
         User user = userRepository.findByUserId(userId);
         return user.getName()+" "+user.getSurname();
+    }
+
+    @PostMapping("/image")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("No file selected");
+        }
+        try {
+            Path path = Paths.get("trainingServer/src/postsImages/" + file.getOriginalFilename());
+            Files.write(path, file.getBytes());
+            return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error while uploading file");
+        }
     }
 }

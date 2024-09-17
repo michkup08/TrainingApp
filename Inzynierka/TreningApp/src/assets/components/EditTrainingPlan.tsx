@@ -4,7 +4,7 @@ import { TrainingApi } from '../service/TrainingApi';
 import { UserContext } from '../context/UserContext';
 import Training from '../DTO/Training';
 import Exercise from '../DTO/Exercise';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ExerciseWithParameters from '../DTO/ExerciseWithParameters';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
