@@ -1,5 +1,6 @@
 package com.example.trainingServer.controller;
 
+import com.example.trainingServer.DTO.UserDTO;
 import com.example.trainingServer.DTO.UserStatisticsDTO;
 import com.example.trainingServer.entities.Role;
 import com.example.trainingServer.entities.UserStatistics;
@@ -11,14 +12,20 @@ import com.example.trainingServer.requests.LoginRequest;
 import com.example.trainingServer.entities.User;
 import com.example.trainingServer.repositories.UserRepository;
 import com.example.trainingServer.requests.RegisterRequest;
+import com.example.trainingServer.requests.UpdateUserRequest;
 import com.example.trainingServer.responses.AuthResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -88,7 +95,6 @@ public class UserController {
                 stringBuilder.append(String.format("%02x", b));
             }
             String newToken = AuthTokenGenerator.generateToken();
-
             Role role = Role.valueOf(registerRequest.getRole().toUpperCase());
             UserStatistics userStatistics = new UserStatistics();
             userStatisticsRepository.saveAndFlush(userStatistics);
@@ -181,11 +187,93 @@ public class UserController {
             return ResponseEntity.badRequest().body("No file selected");
         }
         try {
-            Path path = Paths.get("trainingServer/src/postsImages/" + file.getOriginalFilename());
+            Path path = Paths.get("trainingServer/src/profileImages/" + file.getOriginalFilename());
             Files.write(path, file.getBytes());
             return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error while uploading file");
         }
+    }
+
+    @GetMapping("/image/{filename}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        String[] supportedExtensions = {".jpg", ".jpeg", ".png", ".gif"};
+        Path path = null;
+        for (String extension : supportedExtensions) {
+            Path possiblePath = Paths.get("trainingServer/src/profileImages/" + filename + extension);
+            if (Files.exists(possiblePath)) {
+                path = possiblePath;
+                break;
+            }
+        }
+        if (path != null && Files.isReadable(path)) {
+            try {
+                Resource resource = new UrlResource(path.toUri());
+                String contentType = Files.probeContentType(path);
+                if (resource.exists() && resource.isReadable()) {
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.parseMediaType(contentType))
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                            .body(resource);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            }
+            catch (MalformedURLException e) {
+                return ResponseEntity.status(500).body(null);
+            }
+            catch (IOException e) {
+                return ResponseEntity.status(500).body(null);
+            }
+
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/updateUser")
+    public String updateUser(@RequestBody UpdateUserRequest updateUserRequest)
+    {
+        try {
+            MessageDigest messagedigest = MessageDigest.getInstance("MD5");
+            User user = userRepository.findByUserId(updateUserRequest.getUserId());
+            messagedigest.update(updateUserRequest.getOldPassword().getBytes());
+            byte[] digestOld = messagedigest.digest();
+            StringBuilder stringBuilderOld = new StringBuilder();
+            for(byte b : digestOld)
+            {
+                stringBuilderOld.append(String.format("%02x", b));
+            }
+            user.setPassword(stringBuilderOld.toString());
+            if(stringBuilderOld.toString().equals(user.getPassword()))
+            {
+                if(!updateUserRequest.getPassword().isEmpty())
+                {
+
+                    messagedigest.update(updateUserRequest.getPassword().getBytes());
+                    byte[] digest = messagedigest.digest();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for(byte b : digest)
+                    {
+                        stringBuilder.append(String.format("%02x", b));
+                    }
+                    user.setPassword(stringBuilder.toString());
+                }
+                if(!updateUserRequest.getLogin().isEmpty())
+                {
+                    user.setLogin(updateUserRequest.getLogin());
+                }
+                if(!updateUserRequest.getEmail().isEmpty())
+                {
+                    user.setEmail(updateUserRequest.getEmail());
+                }
+                userRepository.saveAndFlush(user);
+                return "User updated successfully";
+            }
+            return "Password does not match";
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Error during update";
     }
 }

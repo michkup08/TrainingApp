@@ -1,21 +1,18 @@
-package com.example.trainingServer.DTO;
+package com.example.trainingServer.requests;
 
-import com.example.trainingServer.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-    private long user_id;
+public class UpdateUserRequest {
+    private long userId;
     private String login;
     private String password;
     private String email;
-    private Role role;
-    private String name;
-    private String surname;
+    private String oldPassword;
 }

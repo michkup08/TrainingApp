@@ -39,8 +39,6 @@ const PostsList = () => {
         const file = event.target.files[0];
         if (file && file.type.startsWith('image/')) {
             setSelectedImage(file);
-
-            // Generate a preview URL for the selected image
             const reader = new FileReader();
             reader.onloadend = () => {
                 setNewImageUrl(reader.result);
@@ -106,7 +104,6 @@ const PostsList = () => {
                 </label>
                 {newImageUrl && <img 
                     src={newImageUrl}
-                    alt="Post image" 
                     className="post-image"
                 />}
                 <button className="sendPostButton" onClick={handleAddNewPost}>Send</button>
