@@ -7,8 +7,10 @@ export const axiosInstance= axios.create();
 export class AuthApi {
     baseURL: string = "http://localhost:8080/trainingappdb/users";
 
-    Register = async (login:string, password:string, email:string, name:string, surname:string): Promise<User> => {
-        const resp = await axiosInstance.post(this.baseURL + '/register',{login:login, password:password, email:email, role: "CLIENT", name:name, surname:surname});
+    Register = async (login:string, password:string, email:string, name:string, surname:string, isTrainer:boolean, description:string, price:string, availability:string): Promise<User> => {
+        const resp = await axiosInstance.post(this.baseURL + '/register', isTrainer ? 
+            {login:login, password:password, email:email, role: "TRAINER", name:name, surname:surname, description:description, price:price, availability:availability}
+            : {login:login, password:password, email:email, role: "CLIENT", name:name, surname:surname});
         console.log(resp);
         const user:User = {
             id : resp.data.user_id,

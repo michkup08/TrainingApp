@@ -1,11 +1,12 @@
 package com.example.trainingServer.controller;
 
-import com.example.trainingServer.DTO.UserDTO;
 import com.example.trainingServer.DTO.UserStatisticsDTO;
 import com.example.trainingServer.entities.Role;
+import com.example.trainingServer.entities.TrainerProfile;
 import com.example.trainingServer.entities.UserStatistics;
 import com.example.trainingServer.functionalities.AuthTokenGenerator;
 import com.example.trainingServer.mapper.UserStatisticsMapper;
+import com.example.trainingServer.repositories.TrainerProfileRepository;
 import com.example.trainingServer.repositories.UserStatisticsRepository;
 import com.example.trainingServer.reqAndResp.IdAndNameReqResp;
 import com.example.trainingServer.requests.LoginRequest;
@@ -15,7 +16,6 @@ import com.example.trainingServer.requests.RegisterRequest;
 import com.example.trainingServer.requests.UpdateUserRequest;
 import com.example.trainingServer.responses.AuthResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +44,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserStatisticsRepository userStatisticsRepository;
     private final UserStatisticsMapper userStatisticsMapper;
-
+    private final TrainerProfileRepository trainerProfileRepository;
 
     @PostMapping("/login")
     AuthResponse login(@RequestBody LoginRequest loginRequest)
@@ -99,6 +99,12 @@ public class UserController {
             UserStatistics userStatistics = new UserStatistics();
             userStatisticsRepository.saveAndFlush(userStatistics);
             User newUser = new User(registerRequest.getLogin(), stringBuilder.toString(), registerRequest.getEmail(), role, registerRequest.getName(), registerRequest.getSurname(), newToken);
+            if(role == Role.TRAINER)
+            {
+                TrainerProfile trainerProfile = new TrainerProfile(registerRequest.getDescription(), registerRequest.getPrice(), registerRequest.getAvailability());
+                trainerProfileRepository.saveAndFlush(trainerProfile);
+                newUser.setTrainer_profile(trainerProfile);
+            }
             newUser.setUserStatistics(userStatistics);
             newUser = userRepository.saveAndFlush(newUser);
             return new AuthResponse(newUser.getUserId(), newUser.getLogin(), newUser.getEmail(), newUser.getRole(), newUser.getName(), newUser.getSurname(), newUser.getAuthToken());

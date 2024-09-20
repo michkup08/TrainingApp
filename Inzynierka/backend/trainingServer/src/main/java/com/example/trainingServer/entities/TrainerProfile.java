@@ -13,7 +13,7 @@ public class TrainerProfile {
     @Id
     @Column(name = "trainer_profile_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long trainer_profile_id; //Or Integer instead of int
+    private long trainer_profile_id;
 
     @OneToOne(mappedBy = "trainer_profile")
     @JsonIgnore
@@ -27,4 +27,12 @@ public class TrainerProfile {
 
     @Column(name = "availability")
     private String availability;
+
+    public TrainerProfile(String descriptions, String offer, String availability) {
+        this.descriptions = descriptions;
+        this.offer = offer;
+        this.availability = availability;
+    }
+
+    public TrainerProfile() {}
 }

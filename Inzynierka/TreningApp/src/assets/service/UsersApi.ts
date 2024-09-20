@@ -35,7 +35,6 @@ export class UsersApi {
         if (!formData) {
           return false;
         }
-    
         try {
           await axios.post(this.baseURL + "/image", formData, {
             headers: {
