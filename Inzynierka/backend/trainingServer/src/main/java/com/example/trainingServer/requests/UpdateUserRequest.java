@@ -15,4 +15,9 @@ public class UpdateUserRequest {
     private String password;
     private String email;
     private String oldPassword;
+    private String role;
+    private long trainerProfileId;
+    private String description;
+    private String price;
+    private String availability;
 }

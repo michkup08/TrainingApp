@@ -272,6 +272,23 @@ public class UserController {
                 {
                     user.setEmail(updateUserRequest.getEmail());
                 }
+                if(updateUserRequest.getRole().equals("TRAINER"))
+                {
+                    TrainerProfile trainerProfile = trainerProfileRepository.getReferenceById(updateUserRequest.getTrainerProfileId());
+                    if(!updateUserRequest.getDescription().isEmpty())
+                    {
+                        trainerProfile.setDescriptions(updateUserRequest.getDescription());
+                    }
+                    if(!updateUserRequest.getPrice().isEmpty())
+                    {
+                        trainerProfile.setOffer(updateUserRequest.getPrice());
+                    }
+                    if(!updateUserRequest.getAvailability().isEmpty())
+                    {
+                        trainerProfile.setAvailability(updateUserRequest.getAvailability());
+                    }
+                    trainerProfileRepository.saveAndFlush(trainerProfile);
+                }
                 userRepository.saveAndFlush(user);
                 return "User updated successfully";
             }

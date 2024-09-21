@@ -4,10 +4,13 @@ import UserStats from '../DTO/UserStats';
 import { StatsApi } from '../service/StatsApi';
 import '../css/ProfileEdition.css'
 import { UsersApi } from '../service/UsersApi';
+import { TrainerApi } from '../service/TrainerApi';
+import TrainerProfile from '../DTO/TrainerProfile';
 
 export default function ProfileEdition() {
   const usersApi = new UsersApi();
   const statsApi = new StatsApi();
+  const trainerApi = new TrainerApi();
   const user = useContext(UserContext);
   const [userStats, setUserStats] = useState<UserStats>({id: 0, daysInARow: 0, totalTrainings: 0, totalExercises: 0});
   const [profileImageUrl, setProfileImageUrl] = useState('');
@@ -17,13 +20,24 @@ export default function ProfileEdition() {
   const [newLogin, setNewLogin] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
+
+  const [newDescriptionInput, setNewDescriptionInput] = useState(false);
+  const [newPriceInput, setNewPriceInput] = useState(false);
+  const [newAvailabilityInput, setNewAvailabilityInput] = useState(false);
+  const [newDescription, setNewDescription] = useState('');
+  const [newPrice, setNewPrice] = useState('');
+  const [newAvailability, setNewAvailability] = useState('');
+
   const [oldPassword, setOldPassword] = useState('');
   const [newImageUrl, setNewImageUrl] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const [trainerProfile, setTrainerProfile] = useState<TrainerProfile|null>(null);
+
   useEffect(() => {
     fetchStats();
     fetchProfileImage();
+    fetchTrainerProfile();
   }, [user]);
 
   const fetchStats = async() => {
@@ -33,6 +47,17 @@ export default function ProfileEdition() {
       if(resp)
       {
         setUserStats(resp);
+      }
+    }
+  }
+
+  const fetchTrainerProfile = async() => {
+    if(user && user.id && user.role==='TRAINER')
+    {
+      const resp = await trainerApi.trainerProfile(user.id!);
+      if(resp)
+      {
+        setTrainerProfile(resp);
       }
     }
   }
@@ -68,7 +93,29 @@ export default function ProfileEdition() {
 };
 
   const handleUpdateUser = async() => {
-    const resp = await usersApi.userUpdate(user.id!, newLogin, newPassword, newEmail, oldPassword);
+    const isTrainer = Boolean(user.role==='TRAINER');
+    console.log(user.id!, 
+      newLogin, 
+      newPassword, 
+      newEmail, 
+      oldPassword, 
+      Boolean(user.role==='TRAINER'), 
+      trainerProfile?.id || 0, 
+      newDescription, 
+      newPrice, 
+      newAvailability);
+    const resp = await usersApi.userUpdate(
+      user.id!, 
+      newLogin, 
+      newPassword, 
+      newEmail, 
+      oldPassword, 
+      user.role!, 
+      trainerProfile?.id || 0, 
+      newDescription, 
+      newPrice, 
+      newAvailability
+    );
     if(resp && selectedImage)
     {
       console.log(resp);
@@ -100,6 +147,21 @@ export default function ProfileEdition() {
     setNewEmail('');
   }
 
+  const handleChangeDescriptionInput = () => {
+    setNewDescriptionInput(!newDescriptionInput);
+    setNewDescription('');
+  }
+
+  const handleChangePriceInput = () => {
+    setNewPriceInput(!newPriceInput);
+    setNewPrice('');
+  }
+
+  const handleChangeAvailabilityInput = () => {
+    setNewAvailabilityInput(!newAvailabilityInput);
+    setNewAvailability('');
+  }
+
   return (
     <div className='profileContainer'>
       <div className='profileStatsWrapper'>
@@ -128,7 +190,20 @@ export default function ProfileEdition() {
         <button onClick={handleChangeEmailInput} className='changeUserButton'>{newEmailInput ? 'Discard changes' : 'Change email'}</button>
         {newEmailInput && <input className='userDataInput' value={newEmail} onChange={e => {setNewEmail(e.target.value)}} placeholder='New email'/>}
         <br/>
-        {(Boolean(newLogin) || Boolean(newPassword) || Boolean(newEmail) || Boolean(selectedImage)) && (
+        {user.role==='TRAINER' &&
+          <>
+            <h3 className='userEmail'>{trainerProfile?.description}</h3>
+            <button onClick={handleChangeDescriptionInput} className='changeUserButton'>{newDescriptionInput ? 'Discard changes' : 'Change description'}</button>
+            {newDescriptionInput && <input className='userDataInput' value={newDescription} onChange={e => {setNewDescription(e.target.value)}} placeholder='New description'/>}
+            <h3 className='userEmail'>{trainerProfile?.price}</h3>
+            <button onClick={handleChangePriceInput} className='changeUserButton'>{newPriceInput ? 'Discard changes' : 'Change price'}</button>
+            {newPriceInput && <input className='userDataInput' value={newPrice} onChange={e => {setNewPrice(e.target.value)}} placeholder='New price' />}
+            <h3 className='userEmail'>{trainerProfile?.availability}</h3>
+            <button onClick={handleChangeAvailabilityInput} className='changeUserButton'>{newEmailInput ? 'Discard changes' : 'Change availability'}</button>
+            {newAvailabilityInput && <input className='userDataInput' value={newAvailability} onChange={e => {setNewAvailability(e.target.value)}} placeholder='New availability'/>}
+          </>
+        }
+        {(Boolean(newLogin) || Boolean(newPassword) || Boolean(newEmail) || Boolean(selectedImage) || Boolean(newDescription) || Boolean(newPrice) || Boolean(newAvailability)) && (
           <>
             <input className='userDataInput' type='password' value={oldPassword} onChange={e => {setOldPassword(e.target.value)}} placeholder='CurrentPassword'/>
             <button className='changeUserButton' onClick={handleUpdateUser} >Confirm changes</button>

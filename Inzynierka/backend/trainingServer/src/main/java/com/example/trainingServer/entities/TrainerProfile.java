@@ -28,6 +28,10 @@ public class TrainerProfile {
     @Column(name = "availability")
     private String availability;
 
+    @OneToOne
+    @JsonIgnore
+    private User user;
+
     public TrainerProfile(String descriptions, String offer, String availability) {
         this.descriptions = descriptions;
         this.offer = offer;
