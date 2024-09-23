@@ -1,0 +1,38 @@
+.trainers-container {
+    margin: 0 auto;
+    margin-top: 55px;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+.trainers-container input {
+    background-color: rgb(243, 93, 76);
+}
+
+.trainer-card {
+    background-color: #262626;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border: 1px solid #333;
+    display: flex;
+}
+
+.trainer-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.trainer-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+

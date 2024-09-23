@@ -136,7 +136,7 @@ const PostsList = () => {
                 </div>
             ))}
             <button onClick={handleLoadMore} disabled={loading} className="load-more-btn">
-                {loading ? 'Loading...' : 'Więcej postów'}
+                {loading ? 'Loading...' : 'More posts'}
             </button>
         </div>
     );

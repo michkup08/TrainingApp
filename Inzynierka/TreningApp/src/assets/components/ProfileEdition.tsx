@@ -65,14 +65,14 @@ export default function ProfileEdition() {
   const handleImageSelect = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
-        setSelectedImage(file);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setNewImageUrl(reader.result);
-        };
-        reader.readAsDataURL(file);
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewImageUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
     } else {
-        alert("Please select a valid image file.");
+      alert("Please select a valid image file.");
     }
   };
 
@@ -93,17 +93,6 @@ export default function ProfileEdition() {
 };
 
   const handleUpdateUser = async() => {
-    const isTrainer = Boolean(user.role==='TRAINER');
-    console.log(user.id!, 
-      newLogin, 
-      newPassword, 
-      newEmail, 
-      oldPassword, 
-      Boolean(user.role==='TRAINER'), 
-      trainerProfile?.id || 0, 
-      newDescription, 
-      newPrice, 
-      newAvailability);
     const resp = await usersApi.userUpdate(
       user.id!, 
       newLogin, 
@@ -118,7 +107,6 @@ export default function ProfileEdition() {
     );
     if(resp && selectedImage)
     {
-      console.log(resp);
       const formData = new FormData();
       const renamedFile = new File([selectedImage], `${user.id}.${getFileExtension(selectedImage)}`);
       formData.append("file", renamedFile);

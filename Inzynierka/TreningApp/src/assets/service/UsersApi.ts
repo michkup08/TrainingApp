@@ -16,7 +16,6 @@ export class UsersApi {
 
         return users;
     }
-
     
     fetchProfileImage = async (userId:number):Promise<string> => {
         try {

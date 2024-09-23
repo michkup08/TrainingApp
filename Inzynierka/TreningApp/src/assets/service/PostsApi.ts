@@ -65,7 +65,6 @@ export class PostsApi {
     return [];
   }
 
-  //returned value is new post id
   addPost = async (post:Post): Promise<number> => {
     try {
       console.log(post);

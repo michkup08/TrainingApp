@@ -10,6 +10,7 @@ import MainTrainingPlan from './assets/components/MainTrainingPlanPage.tsx';
 import EditTrainingPlan from './assets/components/EditTrainingPlan.tsx';
 import MyPlansPage from './assets/components/MyPlansPage.tsx';
 import ProfileEdition from './assets/components/ProfileEdition.tsx';
+import TrainersList from './assets/components/TrainersPage.tsx';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/profileEdition" element={<ProfileEdition/>}/>
             <Route path="/chats" element={<ChatsPage/>}/>
+            <Route path="/trainers" element={<TrainersList/>}/>
             <Route path='/trainingPlan' element={<MainTrainingPlan/>}/>
             <Route path='/trainingPlan/edit' element={<EditTrainingPlan/>}/>
             <Route path='/trainingPlan/usersPlans' element={<MyPlansPage/>}/>

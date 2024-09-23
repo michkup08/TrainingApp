@@ -15,9 +15,9 @@ public class TrainerProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long trainer_profile_id;
 
-    @OneToOne(mappedBy = "trainer_profile")
-    @JsonIgnore
-    private User trainer;
+//    @OneToOne(mappedBy = "trainer_profile")
+//    @JsonIgnore
+//    private User trainer;
 
     @Column(name = "descriptions")
     private String descriptions;
@@ -33,6 +33,13 @@ public class TrainerProfile {
     private User user;
 
     public TrainerProfile(String descriptions, String offer, String availability) {
+        this.descriptions = descriptions;
+        this.offer = offer;
+        this.availability = availability;
+    }
+
+    public TrainerProfile(long id, String descriptions, String offer, String availability) {
+        this.trainer_profile_id = id;
         this.descriptions = descriptions;
         this.offer = offer;
         this.availability = availability;
