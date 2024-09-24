@@ -8,8 +8,10 @@ import { UsersApi } from '../service/UsersApi';
 import User from '../DTO/User';
 import { ChatsApi } from '../service/ChatsApi';
 import '../css/Chats.css'
+import { useLocation } from 'react-router-dom';
 
 const ChatsPage = () => {
+    const location = useLocation();
     const user = useContext(UserContext);
     const usersApi = new UsersApi();
     const chatsApi = new ChatsApi();
@@ -22,6 +24,18 @@ const ChatsPage = () => {
     const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        if (user.id && !connected) {
+            fetchChats().then(() => {
+                if(location.state)
+                {
+                    selectUserToChat(location.state.trainerId, location.state.fullName);
+                }
+            })
+            connect();
+        }
+    }, [user.id]);
 
     const fetchChats = async() => {
         const resp = await chatsApi.UsersChats(user.id!);
@@ -51,13 +65,6 @@ const ChatsPage = () => {
             );
         }
     }
-
-    useEffect(() => {
-        if (user.id && !connected) {
-            fetchChats();
-            connect();
-        }
-    }, [user.id]);
 
     const connect = () => {
         if (!stompClientRef.current) {

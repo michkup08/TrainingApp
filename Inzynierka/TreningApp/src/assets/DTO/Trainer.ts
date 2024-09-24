@@ -6,4 +6,5 @@ export default interface Trainer {
     description: string;
     price: string;
     availability: string;
+    trainerId: number;
 }

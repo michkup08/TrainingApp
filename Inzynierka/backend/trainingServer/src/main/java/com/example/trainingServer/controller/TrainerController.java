@@ -53,6 +53,7 @@ public class TrainerController {
                 User trainer = userRepository.findByUserId(trainerProfile.getUser().getUserId());
                 trainerDTO.setFullName(trainer.getName()+" "+trainer.getSurname());
                 trainerDTO.setEmail(trainer.getEmail());
+                trainerDTO.setTrainerId(trainer.getUserId());
                 trainersDTOs.add(trainerDTO);
             }
             return trainersDTOs;

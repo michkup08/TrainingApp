@@ -14,6 +14,7 @@ public class TrainerProfileDTO {
     private String fullName;
     private String email;
     private String profileImage;
+    private long trainerId;
     private String description;
     private String price;
     private String availability;
