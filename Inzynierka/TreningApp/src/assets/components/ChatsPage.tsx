@@ -9,12 +9,15 @@ import User from '../DTO/User';
 import { ChatsApi } from '../service/ChatsApi';
 import '../css/Chats.css'
 import { useLocation } from 'react-router-dom';
+import TrainingPlan from '../DTO/TrainingPlan';
+import { TrainingApi } from '../service/TrainingApi';
 
 const ChatsPage = () => {
     const location = useLocation();
     const user = useContext(UserContext);
     const usersApi = new UsersApi();
     const chatsApi = new ChatsApi();
+    const trainingsApi = new TrainingApi();
     const stompClientRef = useRef<Client>(null);
     const [privateChats, setPrivateChats] = useState<Chat[]>([]);
     const [tabId, setTabId] = useState(0);
@@ -24,6 +27,7 @@ const ChatsPage = () => {
     const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [trainingPlans, setTrainingPlans] = useState<TrainingPlan[]>([]);
 
     useEffect(() => {
         if (user.id && !connected) {
@@ -36,6 +40,25 @@ const ChatsPage = () => {
             connect();
         }
     }, [user.id]);
+
+    useEffect(() => {
+        const currentChat = privateChats.filter(chat => chat.userId === tabId);
+        if(currentChat.length>0 && currentChat[0].messages && currentChat[0].messages.length>0)
+        {
+            currentChat[0].messages.map((message) => {
+                if (message.trainingId) {
+                    const existingPlan = findPlanById(message.trainingId);
+                    if (!existingPlan) {
+                        trainingsApi.TrainingPlanById(message.trainingId).then(resp => {
+                            setTrainingPlans(prev => [...prev, resp]);
+                            console.log("weszło");
+                        })
+                    }
+                }
+            });
+        }
+        
+    }, [privateChats, tabId]);
 
     const fetchChats = async() => {
         const resp = await chatsApi.UsersChats(user.id!);
@@ -174,6 +197,14 @@ const ChatsPage = () => {
         return parts.map(part => part[0].toUpperCase()).join('');
     }
 
+    const findPlanById = (id: number) => {
+        return trainingPlans.find(plan => plan.id === id);
+    };
+
+    const handleCopyPlanToMyPlans = (trainingId: number) => {
+        trainingsApi.CopyPlanAndSetUser(user.id!, trainingId);
+    }
+
     return (
         <div className="container">
             <div className="chat-box">
@@ -217,7 +248,34 @@ const ChatsPage = () => {
                                     <li key={i} className={`message ${message.senderId === user.id ? 'self' : ''}`}>
                                         {message.senderId !== user.id ? <div className="avatar">{getInitials(message.senderName)}</div> :
                                         <div className="avatar self">{getInitials(message.senderName)}</div>}
-                                        <div className="message-data">{message.message}</div>
+                                        <div className="message-data">
+                                            {!message.trainingId ? 
+                                                message.message :
+                                                (
+                                                    <div className={"plan"}>
+                                                        <div className="plan-name">{findPlanById(message.trainingId)?.name}</div>
+                                                        <div className="trainings-container">
+                                                            {findPlanById(message.trainingId)?.trenings.map((training, trainingIndex) => (
+                                                                <div key={trainingIndex} className={"training"}>
+                                                                    <div className="training-name">{training.name}</div>
+                                                                    <div className="exercises-container">
+                                                                        {training.exercises.map((exercise, exerciseIndex) => (
+                                                                            <div key={exerciseIndex} className={"exercise"}>
+                                                                                <div className="exercise-name">{exercise.exercise.name}</div>
+                                                                                <div className="exercise-parameters">{exercise.parameters}</div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        {(
+                                                            <button className='planActivationButton' onClick={() => handleCopyPlanToMyPlans(message.trainingId)}>Add to my plans</button>
+                                                        )}
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
                                     </li>
                                 ))
                             )

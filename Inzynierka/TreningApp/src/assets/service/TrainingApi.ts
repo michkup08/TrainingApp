@@ -183,4 +183,8 @@ export class TrainingApi {
     UpdateActivePlan = async (userId:number, planId:number) => {
         await axiosInstance.put(this.baseURL + `/setActiveId`, {planId:planId, userId:userId});
     }
+
+    CopyPlanAndSetUser = async(userId:number, planId:number) => {
+        await axiosInstance.post(this.baseURL + `/copyTrainingPlan`, {planId:planId, userId:userId});
+    }
 }

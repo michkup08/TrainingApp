@@ -14,6 +14,7 @@ import com.example.trainingServer.mapper.TrainingMapper;
 import com.example.trainingServer.mapper.TrainingPlanMapper;
 import com.example.trainingServer.repositories.*;
 import com.example.trainingServer.reqAndResp.IdAndNameReqResp;
+import com.example.trainingServer.requests.CopyPlanReq;
 import com.example.trainingServer.requests.SetTrainingCompleteRequest;
 import com.example.trainingServer.requests.UserAndPlanIds;
 import lombok.AllArgsConstructor;
@@ -120,6 +121,44 @@ public class TrainingController {
         tp.setName(idAndNameRequest.getName());
         trainingPlanRepository.saveAndFlush(tp);
         return tp.getId();
+    }
+
+    @PostMapping("/copyTrainingPlan")
+    public boolean copyTrainingPlan(@RequestBody CopyPlanReq copyPlanReq) {
+        try {
+            TrainingPlan oryginalTp = trainingPlanRepository.findById(copyPlanReq.getPlanId()).get();
+            TrainingPlan copyTp = new TrainingPlan();
+            copyTp.setUser(userRepository.findByUserId(copyPlanReq.getUserId()));
+            copyTp.setName(oryginalTp.getName()+" - copy");
+            trainingPlanRepository.saveAndFlush(copyTp);
+            for(Training training: oryginalTp.getTrainings()) {
+                Training copyTraining = new Training();
+                copyTraining.setTrainingPlan(copyTp);
+                copyTraining.setName(training.getName());
+                copyTraining.setComplete_percent(0);
+                copyTraining.setDay(training.getDay());
+                copyTraining.setStart_time(training.getStart_time());
+                copyTraining.setStop_time(training.getStop_time());
+                trainingRepository.saveAndFlush(copyTraining);
+                List<ExerciseWithParameters> trainingsExercises = new ArrayList<>();
+                for (ExerciseWithParameters exerciseWithParameters: training.getExerciseWithParameters())
+                {
+                    ExerciseWithParameters copyExerciseWithParameters = new ExerciseWithParameters();
+                    //copyExerciseWithParameters.setTraining(copyTraining);
+                    copyExerciseWithParameters.setExercise(exerciseWithParameters.getExercise());
+                    copyExerciseWithParameters.setParameters(exerciseWithParameters.getParameters());
+                    exerciseWithParametersRepository.saveAndFlush(copyExerciseWithParameters);
+                    trainingsExercises.add(exerciseWithParameters);
+                }
+                copyTraining.setExerciseWithParameters(trainingsExercises);
+                trainingRepository.saveAndFlush(copyTraining);
+            }
+            return true;
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @PutMapping("/changeTrainingPlanName")

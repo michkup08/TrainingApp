@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,4 +19,5 @@ public class MessageDTO {
     private String receiverName;
     private String message;
     private String date;
+    private Long trainingId;
 }

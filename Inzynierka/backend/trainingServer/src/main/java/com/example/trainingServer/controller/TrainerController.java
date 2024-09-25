@@ -36,7 +36,7 @@ public class TrainerController {
     }
 
     @GetMapping("/trainers/{page}")
-    public List<TrainerProfileDTO> getNewPosts(@PathVariable int page)
+    public List<TrainerProfileDTO> getTrainers(@PathVariable int page)
     {
         try {
             Pageable pageable = PageRequest.of(page, 5);

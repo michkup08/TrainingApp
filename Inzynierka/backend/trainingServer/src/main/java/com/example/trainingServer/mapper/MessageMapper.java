@@ -4,6 +4,8 @@ import com.example.trainingServer.entities.Message;
 import com.example.trainingServer.DTO.MessageDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class MessageMapper {
 
@@ -18,6 +20,7 @@ public class MessageMapper {
         message.setReceiverName(messageDTO.getReceiverName());
         message.setContent(messageDTO.getMessage());
         message.setDate(messageDTO.getDate());
+        message.setTrainingId(messageDTO.getTrainingId());
         return message;
     }
 
@@ -32,6 +35,8 @@ public class MessageMapper {
         messageDTO.setReceiverName(message.getReceiverName());
         messageDTO.setMessage(message.getContent());
         messageDTO.setDate(message.getDate());
+        messageDTO.setTrainingId(message.getTrainingId());
+
         return messageDTO;
     }
 }

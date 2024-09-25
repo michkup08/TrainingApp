@@ -35,9 +35,8 @@ public class Message {
     @Column(name = "date")
     private String date;
 
-//    @Column(name = "status")
-//    @Enumerated(EnumType.STRING)
-//    private Status status;
+    @Column(name="training_id")
+    private Long trainingId;
 
     @ManyToOne
     @JoinColumn(name = "chat_id", referencedColumnName = "chat_id")

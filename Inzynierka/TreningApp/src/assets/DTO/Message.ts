@@ -7,4 +7,5 @@ export default interface Message {
     message:string;
     date:string;
     status:string;
+    trainingId:number;
 }

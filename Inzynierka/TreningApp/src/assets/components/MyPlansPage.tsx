@@ -54,6 +54,11 @@ function MyPlansPage() {
         })
     }
 
+    const handlePlanSend = (e: React.MouseEvent<HTMLButtonElement>, planId:number) => {
+        e.stopPropagation();
+        console.log("send plan: " + planId);
+    }
+
     return (
 
         <div className='wrapper-plans-container'>
@@ -78,8 +83,9 @@ function MyPlansPage() {
                             ))}
                         </div>
                         {plan.id != activeId && (
-                            <button className='planActivationButton' onClick={(e) => handlePlanActivation(e,plan.id)}>Activate</button>
+                            <button className='planActivationButton' onClick={(e) => handlePlanActivation(e, plan.id)}>Activate</button>
                         )}
+                        <button className='planActivationButton' onClick={(e) => handlePlanSend(e, plan.id)}>Send</button>
                     </div>
                 ))}
                 <div className={"plan"} onClick={() => handleGoToNewPlanPage()}>

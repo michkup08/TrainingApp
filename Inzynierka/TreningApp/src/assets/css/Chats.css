@@ -120,6 +120,7 @@
     color: white;
     max-width: 70%;
     word-wrap: break-word;
+    display: flex;
 }
 
 .message.self .message-data {
@@ -156,4 +157,8 @@
     background-color: white;
     color: black;
     transition: .5s;
+}
+
+.planNameShared {
+    min-height: 40px;
 }

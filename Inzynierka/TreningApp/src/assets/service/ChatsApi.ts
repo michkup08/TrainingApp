@@ -29,7 +29,8 @@ export class ChatsApi {
             receiverId: message.receiverId,
             receiverName: message.receiverName,
             message: message.message,
-            date: message.date
+            date: message.date,
+            trainingId: message.trainingId
         }))
         console.log(messages);
         return messages;
