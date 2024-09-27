@@ -30,16 +30,31 @@ const ChatsPage = () => {
     const [trainingPlans, setTrainingPlans] = useState<TrainingPlan[]>([]);
 
     useEffect(() => {
-        if (user.id && !connected) {
-            fetchChats().then(() => {
-                if(location.state)
-                {
-                    selectUserToChat(location.state.trainerId, location.state.fullName);
-                }
-            })
-            connect();
-        }
+        const initializeChats = async () => {
+            if (user.id && !connected) {
+                await fetchChats(); 
+                setPrivateChats((currentChats) => {
+                    if (location.state && !currentChats.find(chat => chat.userId === location.state.trainerId)) {
+                        selectUserToChat(location.state.trainerId, location.state.fullName);
+                    }
+                    else {
+                        if(location.state)
+                        {
+                            setTabId(location.state.trainerId);
+                            setTabName(location.state.fullName);
+                            optionalFetchHistory(currentChats.find(chat => chat.userId === location.state.trainerId)?.id);
+                        }
+                    }
+                    return currentChats;
+                });
+    
+                connect();
+            }
+        };
+    
+        initializeChats();
     }, [user.id]);
+    
 
     useEffect(() => {
         const currentChat = privateChats.filter(chat => chat.userId === tabId);
@@ -51,7 +66,6 @@ const ChatsPage = () => {
                     if (!existingPlan) {
                         trainingsApi.TrainingPlanById(message.trainingId).then(resp => {
                             setTrainingPlans(prev => [...prev, resp]);
-                            console.log("weszło");
                         })
                     }
                 }
@@ -132,6 +146,7 @@ const ChatsPage = () => {
 
     const onError = (err:Error) => {
         console.error('WebSocket Error:', err);
+        connect();
     };
 
     const handleMessage = (event) => {
@@ -167,9 +182,12 @@ const ChatsPage = () => {
 
     const selectUserToChat = (id:number, name:string) => {
         const existingChat = privateChats.find(chat => chat.userId === id);
+        console.log(privateChats);
         if (!existingChat) {
             const newChat = new Chat(id!, name!, '', []);
+            
             setPrivateChats(prev => [...prev, newChat]);
+            console.log(newChat);
         }
         setTabId(id!);
         setTabName(name!);
@@ -221,7 +239,7 @@ const ChatsPage = () => {
                 <ul>
                     {users.length === 0 && !loadingUsers && <p>No records</p>}
                     {users.map(user => (
-                        <li key={user.id} onClick={() => selectUserToChat(user.id!, user.name!)}>
+                        <li key={user.id} onClick={() => selectUserToChat(user.id!, user.name!)}>{/*that select user works correctly, and don't make duplicates*/}
                             {user.name}
                         </li>
                     ))}

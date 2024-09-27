@@ -144,11 +144,11 @@ public class TrainingController {
                 for (ExerciseWithParameters exerciseWithParameters: training.getExerciseWithParameters())
                 {
                     ExerciseWithParameters copyExerciseWithParameters = new ExerciseWithParameters();
-                    //copyExerciseWithParameters.setTraining(copyTraining);
+                    copyExerciseWithParameters.setTraining(copyTraining);
                     copyExerciseWithParameters.setExercise(exerciseWithParameters.getExercise());
                     copyExerciseWithParameters.setParameters(exerciseWithParameters.getParameters());
                     exerciseWithParametersRepository.saveAndFlush(copyExerciseWithParameters);
-                    trainingsExercises.add(exerciseWithParameters);
+                    trainingsExercises.add(copyExerciseWithParameters);
                 }
                 copyTraining.setExerciseWithParameters(trainingsExercises);
                 trainingRepository.saveAndFlush(copyTraining);

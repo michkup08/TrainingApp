@@ -4,13 +4,21 @@ import { TrainingApi } from '../service/TrainingApi';
 import { UserContext } from '../context/UserContext';
 import '../css/MyPlans.css'
 import { Link, useNavigate } from 'react-router-dom';
+import User from '../DTO/User';
+import { UsersApi } from '../service/UsersApi';
 
 function MyPlansPage() {
     const trainingApi = new TrainingApi();
+    const usersApi = new UsersApi();
     const user = useContext(UserContext);
     const navigate = useNavigate();
     const [plans, setPlans] = useState<TrainingPlan[]>([]);
     const [activeId, setActiveId] = useState(0);
+    const [selectedPlan, setSelectedPlan] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [users, setUsers] = useState<User[]>([]);
+    const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
+    const [selectReceiverDialogVisible, setSelectReceiverDialogVisible] = useState(false);
 
     const fetchPlans = async() => {
         const resp = await trainingApi.TrainingPlans(user.id!);
@@ -56,11 +64,28 @@ function MyPlansPage() {
 
     const handlePlanSend = (e: React.MouseEvent<HTMLButtonElement>, planId:number) => {
         e.stopPropagation();
-        console.log("send plan: " + planId);
+        setSelectedPlan(planId);
+        setSelectReceiverDialogVisible(true);
     }
 
-    return (
+    const handleSearchChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+        if (!event.target.value) {
+            setUsers([]);
+            return;
+        }
+        try {
+            setLoadingUsers(true);
+            const resp = await usersApi.usersSearch(event.target.value);
+            setUsers(resp);
+        } catch (err) {
+            console.log("error during searching users");
+        } finally {
+            setLoadingUsers(false);
+        }
+    };
 
+    return (
         <div className='wrapper-plans-container'>
             <div className='navTrainingsWrapper'><Link className='trainingsNavButton' to='/trainingPlan'>Back to my main plan</Link></div>
             <div className="plans-container">
@@ -100,6 +125,28 @@ function MyPlansPage() {
                     <h1>No plans</h1>
                 )}
             </div>
+            {selectReceiverDialogVisible && (
+                <>
+                    <div className='portal_background' onClick={() => setSelectReceiverDialogVisible(false)}/>
+                    <div className="dialog">
+                        <input
+                            type="text"
+                            onChange={handleSearchChange}
+                            placeholder="Search user"
+                        />
+                        <ul>
+                            {users.length === 0 && !loadingUsers && <p>No records</p>}
+                            {users.map(user => (
+                                <li key={user.id} onClick={() => selectUserToChat(user.id!, user.name!)}>{/*that select user works correctly, and don't make duplicates*/}
+                                    {user.name}
+                                    <button>Send</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </>
+                
+            )}
         </div>
         
     );
