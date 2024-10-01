@@ -7,13 +7,11 @@ import com.example.trainingServer.entities.Message;
 import com.example.trainingServer.mapper.ChatMapper;
 import com.example.trainingServer.repositories.ChatRepository;
 import com.example.trainingServer.repositories.MessageRepository;
+import com.example.trainingServer.requests.UserAndObjectIds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import com.example.trainingServer.mapper.MessageMapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +39,21 @@ public class ChatsController {
             chatDTOs.add(chatMapper.toDTO(chat));
         }
         return chatDTOs;
+    }
+
+    @PutMapping("/turnOffNotivication")
+    public void turnOffNotivication(@RequestBody UserAndObjectIds userAndObjectIds) {
+        Chat chat = chatRepository.findByChatId(userAndObjectIds.getObjectId());
+        if (chat != null) {
+            if (chat.getUserOne().getUserId() == userAndObjectIds.getUserId()) {
+                chat.setUserOneNotification(false);
+            }
+            if (chat.getUserTwo().getUserId() == userAndObjectIds.getUserId()) {
+                chat.setUserTwoNotification(false);
+            }
+            chatRepository.save(chat);
+        }
+
     }
 
     @GetMapping("/messagesHistory/{chatId}")

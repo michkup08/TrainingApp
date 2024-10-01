@@ -6,16 +6,19 @@ export default class Chat {
     userName: string;
     lastMessageDate: string;
     messages: Message[];
+    notification: boolean;
 
     constructor(
         userId: number,
         userName: string,
         lastMessageDate: string,
-        messages: Message[]
+        messages: Message[],
+        notification?: boolean
     ) {
         this.userId = userId,
         this.userName = userName,
         this.lastMessageDate = lastMessageDate,
         this.messages = messages
+        this.notification = notification || false
     }
 }

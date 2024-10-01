@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAndPlanIds {
+public class UserAndObjectIds {
     private long userId;
-    private long planId;
+    private long objectId;
 }

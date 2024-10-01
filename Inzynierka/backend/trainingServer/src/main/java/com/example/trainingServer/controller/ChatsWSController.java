@@ -16,6 +16,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import com.example.trainingServer.mapper.MessageMapper;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -42,14 +44,32 @@ public class ChatsWSController {
 
     @MessageMapping("/private-message")
     public MessageDTO receivePrivateMessage(@Payload MessageDTO messageDTO) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         Optional<Chat> chat = chatRepository.findByUsers(messageDTO.getReceiverId(), messageDTO.getSenderId());
         if (chat.isPresent()) {
+            Chat chatForUpdate = chat.get();
             Message newMessage = messageMapper.toEntity(messageDTO);
-            newMessage.setChat(chat.get());
+            newMessage.setChat(chatForUpdate);
             messageRepository.save(newMessage);
+            chatForUpdate.setLastMessageDate(currentDateTime.format(formatter));
+            if(chatForUpdate.getUserOne().getUserId()==messageDTO.getSenderId()){
+                chatForUpdate.setUserTwoNotification(true);
+            }
+            else {
+                chatForUpdate.setUserOneNotification(true);
+            }
+            chatRepository.saveAndFlush(chatForUpdate);
         }
         else {
             Chat newChat = new Chat(userRepository.findByUserId(messageDTO.getSenderId()), userRepository.findByUserId(messageDTO.getReceiverId()), "");
+            newChat.setLastMessageDate(currentDateTime.format(formatter));
+            if(newChat.getUserOne().getUserId()==messageDTO.getSenderId()){
+                newChat.setUserTwoNotification(true);
+            }
+            else {
+                newChat.setUserOneNotification(true);
+            }
             chatRepository.saveAndFlush(newChat);
             Message newMessage = messageMapper.toEntity(messageDTO);
             newMessage.setChat(newChat);

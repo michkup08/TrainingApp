@@ -7,6 +7,11 @@ export const axiosInstance= axios.create();
 export class ChatsApi {
     baseURL: string = "http://localhost:8080/trainingappdb/chats";
 
+    parseDateTime = (dateTimeStr:string): Date => {
+        const [day, month, year, time] = dateTimeStr.split(/[- ]/);
+        return new Date(`${year}-${month}-${day}T${time}`);
+    };
+
     UsersChats = async (loggedUserId:number): Promise<Chat[]> => {
         const resp = await axiosInstance.get(this.baseURL + `/chatsSimplified/${loggedUserId}`);
         const chatsData = resp.data;
@@ -14,10 +19,20 @@ export class ChatsApi {
             id: chat.id,
             userId: loggedUserId === chat.user1Id ? chat.user2Id : chat.user1Id,
             userName: loggedUserId === chat.user1Id ? chat.user2Name : chat.user1Name,
-            lastMessageDate: chat.lastMessageDate
+            lastMessageDate: chat.lastMessageDate,
+            notification: loggedUserId === chat.user1Id ? chat.user1Notification : chat.user2Notification,
         }))
+        return chats.sort((a,b) => {
+            return this.parseDateTime(b.lastMessageDate).getTime() - this.parseDateTime(a.lastMessageDate).getTime();
+        })
+    }
 
-        return chats;
+    turnOffNotivication = async (loggedUserId:number, chatId:number) => {
+        await axiosInstance.put(this.baseURL + `/turnOffNotivication`, {
+            objectId: chatId,
+            userId: loggedUserId
+        });
+        
     }
 
     MessagesHistory = async (chatId:number): Promise<Message[]> => {
@@ -32,7 +47,6 @@ export class ChatsApi {
             date: message.date,
             trainingId: message.trainingId
         }))
-        console.log(messages);
         return messages;
     }
 }

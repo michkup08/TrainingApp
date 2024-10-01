@@ -38,10 +38,18 @@ public class Chat {
     @Column(name = "last_message_date")
     private String lastMessageDate;
 
+    @Column(name = "user_one_notification")
+    private boolean userOneNotification;
+
+    @Column(name = "user_two_notification")
+    private boolean userTwoNotification;
+
     public Chat(User userOne, User userTwo, String lastMessageDate) {
         this.userOne = userOne;
         this.userTwo = userTwo;
         this.lastMessageDate = lastMessageDate;
+        userOneNotification = false;
+        userTwoNotification = false;
         messages = new ArrayList<>();
     }
 }

@@ -16,7 +16,7 @@ import com.example.trainingServer.repositories.*;
 import com.example.trainingServer.reqAndResp.IdAndNameReqResp;
 import com.example.trainingServer.requests.CopyPlanReq;
 import com.example.trainingServer.requests.SetTrainingCompleteRequest;
-import com.example.trainingServer.requests.UserAndPlanIds;
+import com.example.trainingServer.requests.UserAndObjectIds;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,16 +95,16 @@ public class TrainingController {
     }
 
     @PutMapping("/setActiveId")
-    public void setActiveTrainingPlan(@RequestBody UserAndPlanIds userAndPlanIds) {
+    public void setActiveTrainingPlan(@RequestBody UserAndObjectIds userAndObjectIds) {
 
-        Optional<TrainingPlan> tpOpt = trainingPlanRepository.findByUserActivatedUserIdExtended(userAndPlanIds.getUserId());
+        Optional<TrainingPlan> tpOpt = trainingPlanRepository.findByUserActivatedUserIdExtended(userAndObjectIds.getUserId());
         if (tpOpt.isPresent()) {
             TrainingPlan tp = tpOpt.get();
             tp.setUserActivated(null);
             trainingPlanRepository.saveAndFlush(tp);
         }
-        TrainingPlan newtp = trainingPlanRepository.findById(userAndPlanIds.getPlanId()).get();
-        newtp.setUserActivated(userRepository.findById(userAndPlanIds.getUserId()).get());
+        TrainingPlan newtp = trainingPlanRepository.findById(userAndObjectIds.getObjectId()).get();
+        newtp.setUserActivated(userRepository.findById(userAndObjectIds.getUserId()).get());
         trainingPlanRepository.saveAndFlush(newtp);
 
     }

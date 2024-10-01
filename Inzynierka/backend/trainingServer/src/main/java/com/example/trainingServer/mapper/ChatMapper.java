@@ -17,6 +17,8 @@ public class ChatMapper {
         chat.setChatId(chatDTO.getId());
         chat.setUserOne(userOne);
         chat.setUserTwo(userTwo);
+        chat.setUserOneNotification(chatDTO.getUser1Notification());
+        chat.setUserTwoNotification(chatDTO.getUser2Notification());
         chat.setLastMessageDate(chatDTO.getLastMessageDate());
         return chat;
     }
@@ -31,6 +33,8 @@ public class ChatMapper {
         chatDTO.setUser2Id(chat.getUserTwo().getUserId());
         chatDTO.setUser1Name(chat.getUserOne().getName() + " " + chat.getUserOne().getSurname());
         chatDTO.setUser2Name(chat.getUserTwo().getName() + " " + chat.getUserTwo().getSurname());
+        chatDTO.setUser1Notification(chat.isUserOneNotification());
+        chatDTO.setUser2Notification(chat.isUserTwoNotification());
         chatDTO.setLastMessageDate(chat.getLastMessageDate());
         return chatDTO;
     }

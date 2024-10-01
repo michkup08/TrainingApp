@@ -15,5 +15,7 @@ public class ChatDTO {
     long user2Id;
     String user1Name;
     String user2Name;
+    Boolean user1Notification;
+    Boolean user2Notification;
     String lastMessageDate;
 }

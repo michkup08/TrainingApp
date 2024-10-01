@@ -1,7 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import './init';
-import { Client, over } from 'stompjs';
-import SockJS from 'sockjs-client';
 import { UserContext } from '../context/UserContext';
 import Chat from '../DTO/Chat';
 import { UsersApi } from '../service/UsersApi';
@@ -11,23 +9,23 @@ import '../css/Chats.css'
 import { useLocation } from 'react-router-dom';
 import TrainingPlan from '../DTO/TrainingPlan';
 import { TrainingApi } from '../service/TrainingApi';
+import { useWebSocket } from '../hooks/useWebSocket';
+
 
 const ChatsPage = () => {
     const location = useLocation();
     const user = useContext(UserContext);
     const usersApi = new UsersApi();
     const chatsApi = new ChatsApi();
+    const { privateChats, setPrivateChats, connected, message, setMessage, sendPrivateValue } = useWebSocket();
     const trainingsApi = new TrainingApi();
-    const stompClientRef = useRef<Client>(null);
-    const [privateChats, setPrivateChats] = useState<Chat[]>([]);
     const [tabId, setTabId] = useState(0);
     const [tabName, setTabName] = useState('');
-    const [connected, setConnected] = useState(false);
-    const [message, setMessage] = useState('');
     const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
     const [users, setUsers] = useState<User[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [trainingPlans, setTrainingPlans] = useState<TrainingPlan[]>([]);
+    const lastMessageRef = useRef<HTMLLIElement | null>(null);
 
     useEffect(() => {
         const initializeChats = async () => {
@@ -47,8 +45,6 @@ const ChatsPage = () => {
                     }
                     return currentChats;
                 });
-    
-                connect();
             }
         };
     
@@ -70,6 +66,20 @@ const ChatsPage = () => {
                     }
                 }
             });
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    handleTurnOffNotification(privateChats.find(chat => chat.userId === tabId)!);
+                }
+            }, { threshold: 1.0 });
+            if (lastMessageRef.current) {
+                observer.observe(lastMessageRef.current);
+            }
+            scrollToBottom();
+            return () => {
+                if (lastMessageRef.current) {
+                    observer.unobserve(lastMessageRef.current);
+                }
+            };
         }
         
     }, [privateChats, tabId]);
@@ -103,81 +113,8 @@ const ChatsPage = () => {
         }
     }
 
-    const connect = () => {
-        if (!stompClientRef.current) {
-            const Sock = new SockJS('http://localhost:8080/trainingappdb/ws');
-            const stomp = over(Sock);
-            stomp.connect({}, () => onConnected(stomp), onError);
-            stompClientRef.current = stomp;
-        }
-    };
-
-    const onConnected = (stomp:Client) => {
-        setConnected(true);
-        stomp.subscribe(`/user/${user.id}/private`, onPrivateMessage);
-    };
-
-    const onPrivateMessage = (payload) => {
-        const payloadData = JSON.parse(payload.body);
-        if (payloadData.status === 'JOIN') {
-            if (!privateChats.find(chat => chat.userId === payloadData.senderId)) {
-                setPrivateChats(prev => [...prev, new Chat(payloadData.senderId, payloadData.senderName, '', [])]);
-            }
-        }
-        else {
-            setPrivateChats(prevChats => {
-                const existingChat = prevChats.find(chat => chat.userId === payloadData.senderId);
-                if (existingChat) {
-                    
-                    const updatedChats = prevChats.map(chat =>
-                        chat.userId === payloadData.senderId
-                            ? { ...chat, messages: [...chat.messages, payloadData] }
-                            : chat
-                    );
-                    return updatedChats;
-                } else {
-                    const newChat = new Chat(payloadData.senderId, payloadData.senderName, '', [payloadData]);
-                    return [...prevChats, newChat];
-                }
-            });
-        }
-        
-    };
-
-    const onError = (err:Error) => {
-        console.error('WebSocket Error:', err);
-        connect();
-    };
-
     const handleMessage = (event) => {
         setMessage(event.target.value);
-    };
-
-    const sendPrivateValue = () => {
-        if (stompClientRef.current && message.trim()) {
-            const chatMessage = {
-                senderId: user.id,
-                senderName: `${user.name} ${user.surname}`,
-                receiverName: tabName,
-                receiverId: tabId,
-                message: message,
-                status: 'MESSAGE'
-            };
-    
-            if(tabId !== user.id)
-            {
-                setPrivateChats(prevChats => {
-                    const updatedChats = prevChats.map(chat =>
-                        chat.userId === tabId
-                            ? { ...chat, messages: [...chat.messages, chatMessage] }
-                            : chat
-                    );
-                    return updatedChats;
-                });
-            }
-            stompClientRef.current.send('/app/private-message', {}, JSON.stringify(chatMessage));
-            setMessage('');
-        }
     };
 
     const selectUserToChat = (id:number, name:string) => {
@@ -223,6 +160,16 @@ const ChatsPage = () => {
         trainingsApi.CopyPlanAndSetUser(user.id!, trainingId);
     }
 
+    const handleTurnOffNotification = (chat:Chat) => {
+        chatsApi.turnOffNotivication(user.id!, chat.id!);
+    }
+
+    const scrollToBottom = () => {
+        if (lastMessageRef.current) {
+            lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    };
+
     return (
         <div className="container">
             <div className="chat-box">
@@ -239,7 +186,7 @@ const ChatsPage = () => {
                 <ul>
                     {users.length === 0 && !loadingUsers && <p>No records</p>}
                     {users.map(user => (
-                        <li key={user.id} onClick={() => selectUserToChat(user.id!, user.name!)}>{/*that select user works correctly, and don't make duplicates*/}
+                        <li key={user.id} onClick={() => selectUserToChat(user.id!, user.name!)}>
                             {user.name}
                         </li>
                     ))}
@@ -248,10 +195,10 @@ const ChatsPage = () => {
                         {privateChats.map((chat, index) => (
                             <li
                                 key={index}
-                                onClick={() => { setTabName(chat.userName); setTabId(chat.userId); optionalFetchHistory(chat.id) }}
+                                onClick={() => { setTabName(chat.userName); setTabId(chat.userId); optionalFetchHistory(chat.id); handleTurnOffNotification(chat); chat.notification=false; }}
                                 className={`member ${tabId === chat.userId ? 'active' : ''}`}
                             >
-                                {chat.userName}
+                                {chat.userName} {chat.notification && <img className='notivicationImage' src='/images/dot.png' />}
                             </li>
                         ))}
                     </ul>
@@ -263,12 +210,13 @@ const ChatsPage = () => {
                             .filter(chat => chat.userId === tabId)
                             .map((chat, index) =>
                                 (chat.messages || []).map((message, i) => (
-                                    <li key={i} className={`message ${message.senderId === user.id ? 'self' : ''}`}>
+                                    <li key={i} className={`message ${message.senderId === user.id ? 'self' : ''}`} ref={ i === (chat.messages.length - 1) ? lastMessageRef : null}>
                                         {message.senderId !== user.id ? <div className="avatar">{getInitials(message.senderName)}</div> :
                                         <div className="avatar self">{getInitials(message.senderName)}</div>}
                                         <div className="message-data">
-                                            {!message.trainingId ? 
-                                                message.message :
+                                            {
+                                                !message.trainingId ? 
+                                                message.message:
                                                 (
                                                     <div className={"plan"}>
                                                         <div className="plan-name">{findPlanById(message.trainingId)?.name}</div>
@@ -309,7 +257,7 @@ const ChatsPage = () => {
                         />
                         { tabId != 0 && (<button
                             className="send-button"
-                            onClick={sendPrivateValue}
+                            onClick={() => sendPrivateValue(tabId, tabName)}
                         >
                             Send
                         </button>)}

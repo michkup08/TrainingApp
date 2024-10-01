@@ -20,4 +20,6 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
             "(c.userOne.userId = :userId ) OR " +
             "(c.userTwo.userId = :userId)")
     List<Chat> findByUser(@Param("userId") Long userId);
+
+    Chat findByChatId(Long chatId);
 }

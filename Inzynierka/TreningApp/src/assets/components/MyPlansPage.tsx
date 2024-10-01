@@ -6,8 +6,10 @@ import '../css/MyPlans.css'
 import { Link, useNavigate } from 'react-router-dom';
 import User from '../DTO/User';
 import { UsersApi } from '../service/UsersApi';
+import { useWebSocket } from '../hooks/useWebSocket';
 
 function MyPlansPage() {
+    const {sendPrivateValue} = useWebSocket();
     const trainingApi = new TrainingApi();
     const usersApi = new UsersApi();
     const user = useContext(UserContext);
@@ -85,6 +87,10 @@ function MyPlansPage() {
         }
     };
 
+    const handleSendPlan = (userId:number, userFullName:string, trainingPlanId:number) => {
+        sendPrivateValue(userId, userFullName, trainingPlanId);
+    }
+
     return (
         <div className='wrapper-plans-container'>
             <div className='navTrainingsWrapper'><Link className='trainingsNavButton' to='/trainingPlan'>Back to my main plan</Link></div>
@@ -137,7 +143,7 @@ function MyPlansPage() {
                         <ul>
                             {users.length === 0 && !loadingUsers && <p>No records</p>}
                             {users.map(user => (
-                                <li key={user.id} onClick={() => selectUserToChat(user.id!, user.name!)}>{/*that select user works correctly, and don't make duplicates*/}
+                                <li key={user.id} onClick={() => handleSendPlan(user.id!, `${user.name!} ${user.surname!}`, selectedPlan)}>
                                     {user.name}
                                     <button>Send</button>
                                 </li>
