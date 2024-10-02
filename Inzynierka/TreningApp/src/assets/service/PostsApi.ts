@@ -49,20 +49,24 @@ export class PostsApi {
     return false;
   };
   
-  getPostsList = async (earlierFechedPosts:Post[], limit:number): Promise<Post[]> => {
+  getPostsList = async (page:number, userId:number): Promise<Post[]> => {
     try {
       const response = await axios.post(this.baseURL +'/unicalPosts', {
-          posts: earlierFechedPosts,
-          limit: limit,
-          //page: page
+          page: page,
+          userId: userId
       });
-      
-      return response.data;
-      
+      return response.data; 
     } catch (error) {
         console.error('Error fetching posts:', error);
     }
     return [];
+  }
+
+  likeDislikePost = async (postId:number, userId:number) => {
+    await axios.put(this.baseURL +'/likeDislike', {
+      objectId: postId,
+      userId: userId
+    });
   }
 
   addPost = async (post:Post): Promise<number> => {

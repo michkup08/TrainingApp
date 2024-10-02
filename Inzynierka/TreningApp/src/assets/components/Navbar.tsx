@@ -2,8 +2,6 @@ import { NavLink } from 'react-router-dom';
 import '../css/Navbar.css';
 import { useContext, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
-import { useWebSocket } from '../hooks/useWebSocket';
-import { ChatsApi } from '../service/ChatsApi';
 
 const Navbar = () => {   
     const user = useContext(UserContext);

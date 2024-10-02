@@ -155,7 +155,7 @@ const EditTrainingPlan = () => {
 
     const handleUpdateExerciseParameters = (id:number, value:string) => {
         setExercisesWithParameters((prev) => 
-           prev.map((exercise) => 
+            prev.map((exercise) => 
                 exercise.exercise.id === id ? {...exercise, parameters:value} : exercise
             ) 
         );

@@ -4,6 +4,7 @@ export default interface Post {
     senderFullName: string;
     context: string;
     likes: number;
+    liked: boolean;
     date: string;
     image: string;
 }

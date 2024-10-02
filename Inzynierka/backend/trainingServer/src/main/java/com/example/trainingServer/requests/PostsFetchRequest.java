@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostsFetchRequest {
-    List<PostDTO> posts;
-    int limit;
+    int page;
+    long userId;
 }

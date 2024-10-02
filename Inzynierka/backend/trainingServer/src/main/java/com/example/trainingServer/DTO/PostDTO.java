@@ -15,4 +15,6 @@ public class PostDTO {
     private String senderFullName;
     private String context;
     private String image;
+    private long likes;
+    private boolean liked;
 }

@@ -1,16 +1,20 @@
 package com.example.trainingServer.controller;
 
 import com.example.trainingServer.DTO.PostDTO;
+import com.example.trainingServer.entities.Like;
 import com.example.trainingServer.entities.Post;
 import com.example.trainingServer.entities.User;
 import com.example.trainingServer.mapper.PostMapper;
+import com.example.trainingServer.repositories.LikeRepository;
 import com.example.trainingServer.repositories.PostRepository;
 import com.example.trainingServer.repositories.UserRepository;
 import com.example.trainingServer.requests.PostsFetchRequest;
+import com.example.trainingServer.requests.UserAndObjectIds;
 import com.example.trainingServer.service.PostService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -27,12 +31,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/posts")
 public class PostsController {
 
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
 
     private final PostMapper postMapper;
 
@@ -42,24 +50,21 @@ public class PostsController {
     @Value("${post-images-dir}")
     private String postImagesDir;
 
-    public PostsController(PostRepository postRepository, PostMapper postMapper, PostService postService, UserRepository userRepository) {
+    public PostsController(PostRepository postRepository, PostMapper postMapper, PostService postService, UserRepository userRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.postService = postService;
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
     }
 
     @PostMapping("/unicalPosts")
     public List<PostDTO> getNewPosts(@RequestBody PostsFetchRequest postsFetchRequest)
     {
         try {
-            long[] postsIds = new long[postsFetchRequest.getPosts().size()];
-            for(int i = 0; i < postsFetchRequest.getPosts().size(); i++)
-            {
-                postsIds[i] = postsFetchRequest.getPosts().get(i).getId();
-            }
-            Pageable pageable = PageRequest.of(0, postsFetchRequest.getLimit());
-            List<Post> posts = postRepository.getPosts(postsIds, pageable);
+
+            Pageable pageable = PageRequest.of(postsFetchRequest.getPage(), 5);
+            Page<Post> posts = postRepository.findAll(pageable);
             List<PostDTO> postDTOs = new ArrayList<>();
             for (Post post : posts)
             {
@@ -68,6 +73,10 @@ public class PostsController {
                 postDTO.setImage(image);
                 User sender = userRepository.findByUserId(post.getSenderId().getUserId());
                 postDTO.setSenderFullName(sender.getName()+" "+sender.getSurname());
+                List<Like> likes = likeRepository.findByPost(post);
+                List<Like> positiveLikes = likes.stream().filter(like -> like.isPositive()).collect(Collectors.toList());
+                postDTO.setLikes(positiveLikes.size());
+                postDTO.setLiked(positiveLikes.stream().anyMatch(like -> like.getSender().getUserId()==postsFetchRequest.getUserId()));
                 postDTOs.add(postDTO);
             }
             return postDTOs;
@@ -76,6 +85,28 @@ public class PostsController {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    @PutMapping("/likeDislike")
+    public void likeDislike(@RequestBody UserAndObjectIds userAndObjectIds) {
+        try {
+            Optional<Like> likeOpt = likeRepository.findBySenderAndPost(userRepository.findByUserId(userAndObjectIds.getUserId()), postRepository.findById(userAndObjectIds.getObjectId()).get());
+            if(likeOpt.isPresent()) {
+                Like like = likeOpt.get();
+                like.setPositive(!like.isPositive());
+                likeRepository.save(like);
+            }
+            else {
+                Like like = new Like();
+                like.setPositive(true);
+                like.setPost(postRepository.findById(userAndObjectIds.getObjectId()).get());
+                like.setSender(userRepository.findByUserId(userAndObjectIds.getUserId()));
+                likeRepository.save(like);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @PostMapping("/post")

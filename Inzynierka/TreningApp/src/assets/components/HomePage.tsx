@@ -8,7 +8,7 @@ import { UserContext } from "../context/UserContext";
 const PostsList = () => {
     const user = useContext(UserContext);
     const postsApi = new PostsApi();
-    const [posts, setPosts] = useState<Post>([]);
+    const [posts, setPosts] = useState<Post[]>([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
     const [newImageUrl, setNewImageUrl] = useState(null);
@@ -16,15 +16,26 @@ const PostsList = () => {
     const [newPostText, setNewPostText] = useState('');
 
     const fetchPosts = async () => {
-        setLoading(true);
-        const newPosts = await postsApi.getPostsList([], 10);
-        setPosts(prevPosts => [...prevPosts, ...newPosts]);
-        setLoading(false);
+        if(user && user.id)
+        {
+            setLoading(true);
+            const newPosts = await postsApi.getPostsList(page, user.id!);
+            if(page!=0)
+            {
+                setPosts(prevPosts => [...prevPosts, ...newPosts]);
+            }
+            else
+            {
+                setPosts(newPosts);
+            }
+            setLoading(false);
+        }
+        
     };
 
     useEffect(() => {
         fetchPosts();
-    }, [page]);
+    }, [page, user]);
 
     const handleLoadMore = () => {
         setPage(prevPage => prevPage + 1);
@@ -81,6 +92,17 @@ const PostsList = () => {
         console.log("fail postiong post");
     }
 
+    const handleLike = (postClicked: &Post) => {
+
+        postsApi.likeDislikePost(postClicked.id, user.id!).then(() => {
+            setPosts((prevPosts) => 
+                prevPosts.map((post) =>
+                    post === postClicked ? { ...post, liked: !post.liked } : post
+            )
+        )})
+        
+    }
+
     return (
         <div className="posts-container">
             {user.id!=0 && <div className="post-card">
@@ -127,7 +149,7 @@ const PostsList = () => {
                         className="post-image"
                     />)}
                     <div className="post-actions">
-                        <button className="like-btn">❤️</button>
+                        <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "black"}}>❤️</button>
                         <button className="comment-btn">💬</button>
                     </div>
                     <div className="post-details">

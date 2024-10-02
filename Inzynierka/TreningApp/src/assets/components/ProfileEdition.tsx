@@ -35,10 +35,14 @@ export default function ProfileEdition() {
   const [trainerProfile, setTrainerProfile] = useState<TrainerProfile|null>(null);
 
   useEffect(() => {
+    loadUser();
+  }, [user]);
+
+  const loadUser = async() => {
     fetchStats();
     fetchProfileImage();
     fetchTrainerProfile();
-  }, [user]);
+  }
 
   const fetchStats = async() => {
     if(user && user.id)
@@ -194,7 +198,7 @@ export default function ProfileEdition() {
         {(Boolean(newLogin) || Boolean(newPassword) || Boolean(newEmail) || Boolean(selectedImage) || Boolean(newDescription) || Boolean(newPrice) || Boolean(newAvailability)) && (
           <>
             <input className='userDataInput' type='password' value={oldPassword} onChange={e => {setOldPassword(e.target.value)}} placeholder='CurrentPassword'/>
-            <button className='changeUserButton' onClick={handleUpdateUser} >Confirm changes</button>
+            <button className='changeUserButton' onClick={() => {handleUpdateUser().then(() => {loadUser();})}} >Confirm changes</button>
           </>
           )}
       </div>
