@@ -1,5 +1,6 @@
 import axios from "axios";
 import Post from "../DTO/Post";
+import PostsComment from "../DTO/Comment";
 
 export const axiosInstance= axios.create();
 
@@ -55,7 +56,13 @@ export class PostsApi {
           page: page,
           userId: userId
       });
-      return response.data; 
+      const posts:Post[] = response.data;
+      posts.forEach(post => {
+        post.comments = [];
+        post.commentsPage = 0;
+        post.showComments = false;
+      })
+      return posts;
     } catch (error) {
         console.error('Error fetching posts:', error);
     }
@@ -71,12 +78,21 @@ export class PostsApi {
 
   addPost = async (post:Post): Promise<number> => {
     try {
-      console.log(post);
       const response = await axios.post(this.baseURL +'/post', post);
       return response.data;
     } catch (error) {
         console.error('Error fetching posts:', error);
     }
     return 0;
+  }
+
+  getCommentsList = async (page:number, postId:number): Promise<PostsComment[]> => {
+    try {
+      const response = await axios.get(this.baseURL +`/comments/${postId}/${page}`);
+      return response.data; 
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+    }
+    return [];
   }
 }

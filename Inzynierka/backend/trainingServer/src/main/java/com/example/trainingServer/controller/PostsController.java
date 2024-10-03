@@ -1,10 +1,14 @@
 package com.example.trainingServer.controller;
 
+import com.example.trainingServer.DTO.CommentDTO;
 import com.example.trainingServer.DTO.PostDTO;
+import com.example.trainingServer.entities.Comment;
 import com.example.trainingServer.entities.Like;
 import com.example.trainingServer.entities.Post;
 import com.example.trainingServer.entities.User;
+import com.example.trainingServer.mapper.CommentMapper;
 import com.example.trainingServer.mapper.PostMapper;
+import com.example.trainingServer.repositories.CommentRepository;
 import com.example.trainingServer.repositories.LikeRepository;
 import com.example.trainingServer.repositories.PostRepository;
 import com.example.trainingServer.repositories.UserRepository;
@@ -43,19 +47,23 @@ public class PostsController {
     private final LikeRepository likeRepository;
 
     private final PostMapper postMapper;
+    private final CommentMapper commentMapper;
 
     private final PostService postService;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Value("${post-images-dir}")
     private String postImagesDir;
 
-    public PostsController(PostRepository postRepository, PostMapper postMapper, PostService postService, UserRepository userRepository, LikeRepository likeRepository) {
+    public PostsController(PostRepository postRepository, PostMapper postMapper, CommentMapper commentMapper, PostService postService, UserRepository userRepository, LikeRepository likeRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
+        this.commentMapper = commentMapper;
         this.postService = postService;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
+        this.commentRepository = commentRepository;
     }
 
     @PostMapping("/unicalPosts")
@@ -80,6 +88,27 @@ public class PostsController {
                 postDTOs.add(postDTO);
             }
             return postDTOs;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    @GetMapping("/comments/{postId}/{page}")
+    public List<CommentDTO> getComments(@PathVariable Long postId, @PathVariable Integer page)
+    {
+        try {
+
+            Pageable pageable = PageRequest.of(page, 3);
+            Page<Comment> comments = commentRepository.findByPost(postRepository.getReferenceById(postId), pageable);
+            List<CommentDTO> commentDTOs = new ArrayList<>();
+            for (Comment comment : comments)
+            {
+                CommentDTO commentDTO = commentMapper.toDTO(comment);
+                commentDTOs.add(commentDTO);
+            }
+            return commentDTOs;
         }
         catch (Exception e) {
             e.printStackTrace();

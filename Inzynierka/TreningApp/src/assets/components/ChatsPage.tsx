@@ -198,7 +198,7 @@ const ChatsPage = () => {
                                 onClick={() => { setTabName(chat.userName); setTabId(chat.userId); optionalFetchHistory(chat.id); handleTurnOffNotification(chat); chat.notification=false; }}
                                 className={`member ${tabId === chat.userId ? 'active' : ''}`}
                             >
-                                {chat.userName} {chat.notification && <img className='notivicationImage' src='/images/dot.png' />}
+                                {chat.userName} {chat.notification && '🟠'}
                             </li>
                         ))}
                     </ul>

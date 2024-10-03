@@ -1,5 +1,5 @@
 import "./init";
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import '../css/HomePage.css'; // Import stylizacji
 import Post from "../DTO/Post";
 import { PostsApi } from "../service/PostsApi";
@@ -97,10 +97,29 @@ const PostsList = () => {
         postsApi.likeDislikePost(postClicked.id, user.id!).then(() => {
             setPosts((prevPosts) => 
                 prevPosts.map((post) =>
-                    post === postClicked ? { ...post, liked: !post.liked } : post
+                    post === postClicked ? { ...post, liked: !post.liked, likes: postClicked.liked ? post.likes - 1 : post.likes + 1 } : post
             )
         )})
-        
+    }
+
+    const handleCommentsActivaton = (postClicked: &Post) => {
+        setPosts((prevPosts) => 
+            prevPosts.map((post) =>
+                post === postClicked ? { ...post, showComments: !postClicked.showComments } : post
+        ))
+        if(!postClicked.comments || postClicked.comments.length==0) {
+            postsApi.getCommentsList(postClicked.commentsPage || 0, postClicked.id).then((resp) => {
+                setPosts((prevPosts) => 
+                    prevPosts.map((post) => {
+                        return post.id === postClicked.id ? { 
+                            ...post, 
+                            commentsPage: postClicked.commentsPage + 1, 
+                            comments: resp 
+                        } : post}
+                    )
+                )
+            })
+        }
     }
 
     return (
@@ -149,12 +168,25 @@ const PostsList = () => {
                         className="post-image"
                     />)}
                     <div className="post-actions">
-                        <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "black"}}>❤️</button>
-                        <button className="comment-btn">💬</button>
+                        <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "grey"}}>{post.liked ? "❤️":"🖤"}</button>
+                        <button className="comment-btn" onClick={() => handleCommentsActivaton(post)} style={{backgroundColor: post.showComments ? "white" : "grey"}}>💬</button>
                     </div>
                     <div className="post-details">
                         <span className="likes">{post.likes} likes</span>
                     </div>
+                    {post.showComments && (
+                        <ul className="chat-messages">
+                            {post.comments.map((comment, i) => (
+                                <li key={i} className={`message ${comment.senderId === user.id ? 'self' : ''}`}>
+                                    {comment.senderId !== user.id ? <div className="avatar">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div> :
+                                        <div className="avatar self">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div>}
+                                    <div className="message-data">
+                                        {comment.content}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             ))}
             <button onClick={handleLoadMore} disabled={loading} className="load-more-btn">
