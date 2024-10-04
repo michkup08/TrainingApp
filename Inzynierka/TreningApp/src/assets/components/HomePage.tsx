@@ -5,6 +5,7 @@ import Post from "../DTO/Post";
 import { PostsApi } from "../service/PostsApi";
 import { UserContext } from "../context/UserContext";
 import { UsersApi } from "../service/UsersApi";
+import AvatarComponent from "./shared/Avatar";
 
 const PostsList = () => {
     const user = useContext(UserContext);
@@ -202,7 +203,7 @@ const PostsList = () => {
             {posts.map((post:Post, index:number) => (
                 <div key={index} className="post-card">
                     <div className="post-header">
-                    <div className="avatar">{/*getUsersAvatar(post.senderId, post.senderFullName) ||*/ <>{getInitials(post.senderFullName)}</>}</div>
+                        {<AvatarComponent senderId={post.senderId} senderFullName={post.senderFullName}/>}
                         <div className="post-info">
                             <span className="username">{post.senderFullName}</span>
                             <span className="post-time">{post.dateTime}</span>
