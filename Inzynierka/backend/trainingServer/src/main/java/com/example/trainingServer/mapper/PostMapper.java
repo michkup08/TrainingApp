@@ -12,6 +12,7 @@ public class PostMapper {
         dto.setId(post.getPost_id());
         dto.setSenderId(post.getSenderId().getUserId());
         dto.setContext(post.getContext());
+        dto.setDateTime(post.getDateTime());
         return dto;
     }
 

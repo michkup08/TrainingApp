@@ -21,6 +21,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +74,7 @@ public class PostsController {
     {
         try {
 
-            Pageable pageable = PageRequest.of(postsFetchRequest.getPage(), 5);
+            Pageable pageable = PageRequest.of(postsFetchRequest.getPage(), 5, Sort.by(Sort.Direction.DESC, "dateTime"));
             Page<Post> posts = postRepository.findAll(pageable);
             List<PostDTO> postDTOs = new ArrayList<>();
             for (Post post : posts)
@@ -100,7 +103,7 @@ public class PostsController {
     {
         try {
 
-            Pageable pageable = PageRequest.of(page, 3);
+            Pageable pageable = PageRequest.of(page, 3, Sort.by(Sort.Direction.DESC, "dateTime"));
             Page<Comment> comments = commentRepository.findByPost(postRepository.getReferenceById(postId), pageable);
             List<CommentDTO> commentDTOs = new ArrayList<>();
             for (Comment comment : comments)
@@ -114,6 +117,25 @@ public class PostsController {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    @PostMapping("/comment")
+    public void addComment(@RequestBody CommentDTO commentDTO) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        try {
+            Post post = postRepository.getReferenceById(commentDTO.getPostId());
+            Comment newComment = commentMapper.toEntity(commentDTO, userRepository.findByUserId(commentDTO.getSenderId()), post);
+            newComment.setDateTime(currentDateTime.format(formatter));
+            commentRepository.saveAndFlush(newComment);
+            List<Comment> comments = post.getComments();
+            comments.add(newComment);
+            post.setComments(comments);
+            postRepository.saveAndFlush(post);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @PutMapping("/likeDislike")
@@ -141,10 +163,13 @@ public class PostsController {
     @PostMapping("/post")
     public long addPost(@RequestBody PostDTO postsDTO)
     {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         try {
             User sender = userRepository.findByUserId(postsDTO.getSenderId());
             Post newPost = postMapper.toEntity(postsDTO);
             newPost.setSenderId(sender);
+            newPost.setDateTime(currentDateTime.format(formatter));
             postRepository.saveAndFlush(newPost);
             return newPost.getPost_id();
         }

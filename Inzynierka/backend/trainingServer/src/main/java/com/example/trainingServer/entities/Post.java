@@ -28,4 +28,7 @@ public class Post {
     @OneToMany
     @JsonIgnore
     private List<Comment> comments;
+
+    @Column(name = "dateTime")
+    private String dateTime;
 }

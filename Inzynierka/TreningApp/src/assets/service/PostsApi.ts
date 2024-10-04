@@ -1,6 +1,7 @@
 import axios from "axios";
 import Post from "../DTO/Post";
 import PostsComment from "../DTO/Comment";
+import User from "../DTO/User";
 
 export const axiosInstance= axios.create();
 
@@ -94,5 +95,20 @@ export class PostsApi {
         console.error('Error fetching comments:', error);
     }
     return [];
+  }
+
+  sendComment = async (postId:number, user:User, content:string) => {
+    try {
+      await axios.post(this.baseURL +'/comment', {
+        senderId: user.id,
+        senderName: user.name,
+        senderSurname: user.surname,
+        postId: postId,
+        content: content
+      });
+    }
+    catch(error) {
+      console.log("Error posting comment", error);
+    }
   }
 }

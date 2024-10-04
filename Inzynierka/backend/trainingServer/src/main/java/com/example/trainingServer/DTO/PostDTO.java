@@ -17,4 +17,5 @@ public class PostDTO {
     private String image;
     private long likes;
     private boolean liked;
+    private String dateTime;
 }

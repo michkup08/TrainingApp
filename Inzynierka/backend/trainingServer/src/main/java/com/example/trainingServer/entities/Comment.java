@@ -28,4 +28,7 @@ public class Comment {
     @JsonIgnore
     private Post post;
 
+    @Column(name = "dateTime")
+    private String dateTime;
+
 }

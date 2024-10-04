@@ -4,16 +4,19 @@ import '../css/HomePage.css'; // Import stylizacji
 import Post from "../DTO/Post";
 import { PostsApi } from "../service/PostsApi";
 import { UserContext } from "../context/UserContext";
+import { UsersApi } from "../service/UsersApi";
 
 const PostsList = () => {
     const user = useContext(UserContext);
     const postsApi = new PostsApi();
+    const usersApi = new UsersApi();
     const [posts, setPosts] = useState<Post[]>([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
     const [newImageUrl, setNewImageUrl] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [newPostText, setNewPostText] = useState('');
+    const [commentMessage, setCommandMessage] = useState('');
 
     const fetchPosts = async () => {
         if(user && user.id)
@@ -39,6 +42,22 @@ const PostsList = () => {
 
     const handleLoadMore = () => {
         setPage(prevPage => prevPage + 1);
+    };
+
+    const handleLoadMoreComments = (postClicked:Post) => {
+
+        postsApi.getCommentsList(postClicked.commentsPage, postClicked.id).then((resp) => {
+            resp=resp.reverse();
+            setPosts((prevPosts) => 
+                prevPosts.map((post) => {
+                    return post.id === postClicked.id ? { 
+                        ...post, 
+                        commentsPage: postClicked.commentsPage + 1, 
+                        comments: [...resp,...post.comments]
+                    } : post}
+                )
+            )
+        })
     };
 
     const getInitials = (name:string) => {
@@ -109,16 +128,47 @@ const PostsList = () => {
         ))
         if(!postClicked.comments || postClicked.comments.length==0) {
             postsApi.getCommentsList(postClicked.commentsPage || 0, postClicked.id).then((resp) => {
+                resp=resp.reverse();
                 setPosts((prevPosts) => 
                     prevPosts.map((post) => {
                         return post.id === postClicked.id ? { 
                             ...post, 
                             commentsPage: postClicked.commentsPage + 1, 
-                            comments: resp 
+                            comments: resp
                         } : post}
                     )
                 )
             })
+        }
+    }
+
+    const handleSendComment = (postClicked: Post) => {
+        if(commentMessage.length > 0)
+        {
+            postsApi.sendComment(postClicked.id, user, commentMessage).then(() => {
+                setPosts((prevPosts) => 
+                    prevPosts.map((post) => {
+                        return post.id === postClicked.id ? {
+                            ...post, 
+                            comments: [...post.comments, {id: 0, senderId: user.id!, senderName: user.name!, senderSurname: user.surname!, postId: postClicked.id, content:commentMessage}]
+                        } : post}
+                    )
+                )
+                setCommandMessage('');
+            })
+        }
+        
+    }
+
+    const getUsersAvatar = async(userId: number, username: string) => {
+        const imageURL = await usersApi.fetchProfileImage(userId);
+        if(imageURL)
+        {
+            (<img src="imageURL"/>)
+        }
+        else 
+        {
+            return (<>{getInitials(username)}</>)
         }
     }
 
@@ -152,10 +202,10 @@ const PostsList = () => {
             {posts.map((post:Post, index:number) => (
                 <div key={index} className="post-card">
                     <div className="post-header">
-                    <div className="avatar">{getInitials(post.senderFullName)}</div>
+                    <div className="avatar">{/*getUsersAvatar(post.senderId, post.senderFullName) ||*/ <>{getInitials(post.senderFullName)}</>}</div>
                         <div className="post-info">
                             <span className="username">{post.senderFullName}</span>
-                            <span className="post-time">{post.time}</span>
+                            <span className="post-time">{post.dateTime}</span>
                             
                         </div>
                     </div>
@@ -175,17 +225,37 @@ const PostsList = () => {
                         <span className="likes">{post.likes} likes</span>
                     </div>
                     {post.showComments && (
-                        <ul className="chat-messages">
-                            {post.comments.map((comment, i) => (
-                                <li key={i} className={`message ${comment.senderId === user.id ? 'self' : ''}`}>
-                                    {comment.senderId !== user.id ? <div className="avatar">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div> :
-                                        <div className="avatar self">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div>}
-                                    <div className="message-data">
-                                        {comment.content}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                        <>
+                            <ul className="chat-messages">
+                                {post.comments.map((comment, i) => (
+                                    <li key={i} className={`message ${comment.senderId === user.id ? 'self' : ''}`}>
+                                        {comment.senderId !== user.id ? <div className="avatar">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div> :
+                                            <div className="avatar self">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div>}
+                                        <div className="message-data">
+                                            {comment.content}
+                                        </div>
+                                    </li>
+                                ))}
+                                <button onClick={() => handleLoadMoreComments(post)} disabled={loading} className="load-more-btn">
+                                    {loading ? 'Loading...' : 'More comments'}
+                                </button>
+                            </ul>
+                            <div className="send-message">
+                                <input
+                                    type="text"
+                                    className="input-message"
+                                    placeholder="enter the command"
+                                    value={commentMessage}
+                                    onChange={(e) => {setCommandMessage(e.target.value)}}
+                                    style={{backgroundColor: "#3a3b3c"}}
+                                />
+                                <button
+                                    className="send-button"
+                                    onClick={() => handleSendComment(post)}>
+                                    Send
+                                </button>
+                            </div>
+                        </>
                     )}
                 </div>
             ))}

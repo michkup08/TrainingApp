@@ -7,7 +7,7 @@ export default interface Post {
     context: string;
     likes: number;
     liked: boolean;
-    date: string;
+    dateTime: string;
     image: string;
     showComments: boolean;
     comments: PostsComment[];
