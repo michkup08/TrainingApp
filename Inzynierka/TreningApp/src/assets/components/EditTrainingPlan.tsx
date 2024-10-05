@@ -4,14 +4,17 @@ import { TrainingApi } from '../service/TrainingApi';
 import { UserContext } from '../context/UserContext';
 import Training from '../DTO/Training';
 import Exercise from '../DTO/Exercise';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ExerciseWithParameters from '../DTO/ExerciseWithParameters';
+import { ExerciseApi } from '../service/ExerciseApi';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
 
 const EditTrainingPlan = () => {
+    const navigate = useNavigate();
     const trainingApi = new TrainingApi();
+    const exerciseApi = new ExerciseApi();
     const user = useContext(UserContext);
     const [planId, setPlanId] = useState(0);
     const [trainings, setTrainings] = useState<Training[]>([]);
@@ -36,6 +39,7 @@ const EditTrainingPlan = () => {
 
     const confirm = () => {
         sessionStorage.removeItem('editTrainingPlan');
+        navigate('/trainingPlan/usersPlans');
     }
 
     const fetchTrainingPlan = async() => {
@@ -91,6 +95,7 @@ const EditTrainingPlan = () => {
             const training = trainings.find(training => training.id === selectedTrainingId);
             if(training)
             {
+                console.log(training!.exercises);
                 setExercisesWithParameters(training!.exercises);
                 setTrainingName(training!.name);
                 setTrainingStart(training!.startTime);
@@ -161,6 +166,16 @@ const EditTrainingPlan = () => {
         );
     }
 
+    const handleDeleteExercise = (indexToRemove:number, exercisesWithParametersId: number) => {
+        setExercisesWithParameters((prevExercises) =>
+            prevExercises.filter((_, index) => index !== indexToRemove)
+        );
+        if(exercisesWithParametersId)
+        {
+            exerciseApi.DeleteExerciseWithParameters(exercisesWithParametersId);
+        }
+    }
+
     return (
         <div className='trainingPlan'>
             <div className='trainingPlanManager'>
@@ -169,7 +184,9 @@ const EditTrainingPlan = () => {
                 </div>
                 <div className='planName'>Write training name:</div>
                 <div className='planName'><input className='planNameInput' type="text" defaultValue={planName} onChange={(e) => updatePlanName(e.target.value)}/></div>
-                
+                <div className='planNavLinkWrapper'>
+                    <button className='planNavLink' onClick={confirm}>Confirm</button>
+                </div>
             </div>
             <div className="weekly-calendar">
                 <div className="header">
@@ -234,13 +251,15 @@ const EditTrainingPlan = () => {
                                     <tr>
                                         <th>Name</th>
                                         <th>Parameters</th>
+                                        <th>Delete</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {exercisesWithParameters.map((ExerciseWithParameters) => (
-                                        <tr key={ExerciseWithParameters.id}>
-                                        <td>{ExerciseWithParameters.exercise.name}</td>
-                                        <td><input className='trainingPlanInput' type="text" onChange={(e) => handleUpdateExerciseParameters(ExerciseWithParameters.exercise.id, e.target.value)} defaultValue={ExerciseWithParameters.parameters}/></td>
+                                    {exercisesWithParameters.map((ExerciseWithParameters, index) => (
+                                        <tr key={index}>
+                                            <td>{ExerciseWithParameters.exercise.name}</td>
+                                            <td><input className='trainingPlanInput' type="text" onChange={(e) => handleUpdateExerciseParameters(ExerciseWithParameters.exercise.id, e.target.value)} defaultValue={ExerciseWithParameters.parameters}/></td>
+                                            <td><button className='deleteExerciseButton' onClick={() => handleDeleteExercise(index, ExerciseWithParameters.id)}>x</button></td>
                                         </tr>
                                     ))}
                                     </tbody>
@@ -297,10 +316,11 @@ const EditTrainingPlan = () => {
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {exercisesWithParameters.map((ExerciseWithParameters) => (
-                                                        <tr key={ExerciseWithParameters.id}>
-                                                        <td>{ExerciseWithParameters.exercise.name}</td>
-                                                        <td><input className='trainingPlanInput' type="text" onChange={(e) => handleUpdateExerciseParameters(ExerciseWithParameters.exercise.id, e.target.value)} defaultValue={ExerciseWithParameters.parameters}/></td>
+                                                    {exercisesWithParameters.map((ExerciseWithParameters, index) => (
+                                                        <tr key={index}>
+                                                            <td>{ExerciseWithParameters.exercise.name}</td>
+                                                            <td><input className='trainingPlanInput' type="text" onChange={(e) => handleUpdateExerciseParameters(ExerciseWithParameters.exercise.id, e.target.value)} defaultValue={ExerciseWithParameters.parameters}/></td>
+                                                            <td><div className='deleteExerciseButtonWrapper'><button className='deleteExerciseButton' onClick={() => handleDeleteExercise(index, ExerciseWithParameters.id)}>x</button></div></td>
                                                         </tr>
                                                     ))}
                                                     </tbody>

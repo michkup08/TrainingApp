@@ -230,16 +230,19 @@ const PostsList = () => {
                             <ul className="chat-messages">
                                 {post.comments.map((comment, i) => (
                                     <li key={i} className={`message ${comment.senderId === user.id ? 'self' : ''}`}>
-                                        {comment.senderId !== user.id ? <div className="avatar">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div> :
+                                        {comment.senderId !== user.id ? <AvatarComponent senderId={comment.senderId} senderFullName={comment.senderName + ' ' + comment.senderSurname}/> :
                                             <div className="avatar self">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div>}
                                         <div className="message-data">
                                             {comment.content}
                                         </div>
                                     </li>
                                 ))}
-                                <button onClick={() => handleLoadMoreComments(post)} disabled={loading} className="load-more-btn">
+                                {post.comments.length > 0 ? <button onClick={() => handleLoadMoreComments(post)} disabled={loading} className="load-more-btn">
                                     {loading ? 'Loading...' : 'More comments'}
-                                </button>
+                                </button> : 
+                                <div className="message-data">
+                                    No comments            
+                                </div>}
                             </ul>
                             <div className="send-message">
                                 <input

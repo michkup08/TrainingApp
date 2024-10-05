@@ -1,9 +1,5 @@
 import axios from "axios";
-import TrainingPlan from "../DTO/TrainingPlan";
-import Training from "../DTO/Training";
 import Exercise from "../DTO/Exercise";
-import ExerciseWithParameters from "../DTO/ExerciseWithParameters";
-
 
 export const axiosInstance= axios.create();
 
@@ -22,5 +18,9 @@ export class ExerciseApi {
 
         return exercises;
     }
+
+    DeleteExerciseWithParameters = async(exerciseWithParametersId: number) => {
+        await axiosInstance.delete(this.baseURL + `/exerciseWithParameters/${exerciseWithParametersId}`);
+    } 
 
 }

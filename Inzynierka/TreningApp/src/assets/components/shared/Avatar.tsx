@@ -17,24 +17,19 @@ const AvatarComponent = ({ senderId, senderFullName }: AvatarComponentProps) => 
         getUsersAvatar(senderId, senderFullName).then((a) => {
             setAvatar(a);
         })
-    }, [])
-    
-  
-    
-  
-  
+    }, [senderId, senderFullName])
+
     const getUsersAvatar = async (userId:number, senderFullName:string) => {
         try {
         const imageURL = await usersApi.fetchProfileImage(userId);
-    
         if (imageURL) {
             return <div className="avatar"><img src={imageURL} className="profileImageAvatar" /></div>;
         } else {
             return <div className="avatar">{getInitials(senderFullName)}</div>;
         }
         } catch (error) {
-        console.error('Error fetching user avatar:', error);
-        return <div className="avatar">{getInitials(senderFullName)}</div>;
+            console.error('Error fetching user avatar:', error);
+            return <div className="avatar">{getInitials(senderFullName)}</div>;
         }
     };
   

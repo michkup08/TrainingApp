@@ -22,9 +22,12 @@ export class UsersApi {
           const response = await axios.get(this.baseURL + `/image/${userId}`, {
             responseType: 'blob'
           });
-      
-          const url = URL.createObjectURL(new Blob([response.data]));
-          return url;
+          if(response.status === 200)
+          {
+            const url = URL.createObjectURL(new Blob([response.data]));
+            return url;
+          }
+          return '';
         } catch (error) {
           return '';
         }

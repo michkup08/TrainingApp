@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import TrainingPlan from '../DTO/TrainingPlan';
 import { TrainingApi } from '../service/TrainingApi';
 import { useWebSocket } from '../hooks/useWebSocket';
+import AvatarComponent from './shared/Avatar';
 
 
 const ChatsPage = () => {
@@ -211,8 +212,8 @@ const ChatsPage = () => {
                             .map((chat, index) =>
                                 (chat.messages || []).map((message, i) => (
                                     <li key={i} className={`message ${message.senderId === user.id ? 'self' : ''}`} ref={ i === (chat.messages.length - 1) ? lastMessageRef : null}>
-                                        {message.senderId !== user.id ? <div className="avatar">{getInitials(message.senderName)}</div> :
-                                        <div className="avatar self">{getInitials(message.senderName)}</div>}
+                                        {message.senderId !== user.id ? <div className="avatar"><AvatarComponent senderId={message.senderId} senderFullName={message.senderName}/></div> :
+                                        <div className="avatar self"><AvatarComponent senderId={message.senderId} senderFullName={message.senderName}/></div>}
                                         <div className="message-data">
                                             {
                                                 !message.trainingId ? 

@@ -25,7 +25,7 @@ public class Training {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL, CascadeType.REMOVE})
     @JsonIgnore
     @JoinTable(
             name = "exercises_with_parameters_training",

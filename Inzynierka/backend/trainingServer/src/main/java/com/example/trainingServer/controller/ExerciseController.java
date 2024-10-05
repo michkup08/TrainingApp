@@ -33,6 +33,12 @@ public class ExerciseController {
         return exerciseWithParameters.getExercises_with_parameters_id();
     }
 
+    @DeleteMapping("/exerciseWithParameters/{ewpId}")
+    void deleteExerciseWithParameters(@PathVariable Long ewpId) {
+        exerciseWithParametersRepository.deleteById(ewpId);
+        exerciseWithParametersRepository.flush();
+    }
+
     @PostMapping("/addExercise")
     void addExercise(@RequestBody ExerciseDTO exerciseDTO) {
         Exercise exercise = exerciseMapper.toExerciseEntity(exerciseDTO);

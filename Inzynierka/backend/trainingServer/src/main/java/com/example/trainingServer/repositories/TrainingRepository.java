@@ -1,6 +1,7 @@
 package com.example.trainingServer.repositories;
 
 import com.example.trainingServer.entities.Exercise;
+import com.example.trainingServer.entities.ExerciseWithParameters;
 import com.example.trainingServer.entities.Training;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,8 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     @Transactional
     void setCompletePercent(@Param("newVal") int percent, @Param("trainingId") long trainingId);
 
+//    @Query("")
+//    @Modifying
+//    @Transactional
+//    Training deleteConnectionWithExerciseWithParameters(Long exerciseWithParametersId);
 }
