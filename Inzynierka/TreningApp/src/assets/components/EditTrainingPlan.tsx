@@ -141,6 +141,7 @@ const EditTrainingPlan = () => {
 
     const handleUpdateTraining = async() => {
         setAddTrainingDialogVisible(false);
+        setDetailsTrainingDialogVisible(false);
         if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
             const training = trainings.find(training => training.id === selectedTrainingId)!;
             training.startTime = trainingStart;

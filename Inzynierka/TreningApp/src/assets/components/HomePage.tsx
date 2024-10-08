@@ -4,13 +4,11 @@ import '../css/HomePage.css'; // Import stylizacji
 import Post from "../DTO/Post";
 import { PostsApi } from "../service/PostsApi";
 import { UserContext } from "../context/UserContext";
-import { UsersApi } from "../service/UsersApi";
 import AvatarComponent from "./shared/Avatar";
 
 const PostsList = () => {
     const user = useContext(UserContext);
     const postsApi = new PostsApi();
-    const usersApi = new UsersApi();
     const [posts, setPosts] = useState<Post[]>([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -20,21 +18,18 @@ const PostsList = () => {
     const [commentMessage, setCommandMessage] = useState('');
 
     const fetchPosts = async () => {
-        if(user && user.id)
-        {
-            setLoading(true);
-            const newPosts = await postsApi.getPostsList(page, user.id!);
-            if(page!=0)
-            {
-                setPosts(prevPosts => [...prevPosts, ...newPosts]);
-            }
-            else
-            {
-                setPosts(newPosts);
-            }
-            setLoading(false);
-        }
         
+        setLoading(true);
+        const newPosts = await postsApi.getPostsList(page, user.id!);
+        if(page!=0)
+        {
+            setPosts(prevPosts => [...prevPosts, ...newPosts]);
+        }
+        else
+        {
+            setPosts(newPosts);
+        }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -161,21 +156,9 @@ const PostsList = () => {
         
     }
 
-    const getUsersAvatar = async(userId: number, username: string) => {
-        const imageURL = await usersApi.fetchProfileImage(userId);
-        if(imageURL)
-        {
-            (<img src="imageURL"/>)
-        }
-        else 
-        {
-            return (<>{getInitials(username)}</>)
-        }
-    }
-
     return (
         <div className="posts-container">
-            {user.id!=0 && <div className="post-card">
+            {user.id && <div className="post-card">
                 <div className="post-header">
                 <div className="avatar">+</div>
                     <div className="post-info">
@@ -219,7 +202,7 @@ const PostsList = () => {
                         className="post-image"
                     />)}
                     <div className="post-actions">
-                        <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "grey"}}>{post.liked ? "❤️":"🖤"}</button>
+                        {user.id && <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "grey"}}>{post.liked ? "❤️":"🖤"}</button>}
                         <button className="comment-btn" onClick={() => handleCommentsActivaton(post)} style={{backgroundColor: post.showComments ? "white" : "grey"}}>💬</button>
                     </div>
                     <div className="post-details">
@@ -244,7 +227,7 @@ const PostsList = () => {
                                     No comments            
                                 </div>}
                             </ul>
-                            <div className="send-message">
+                            {user.id && <div className="send-message">
                                 <input
                                     type="text"
                                     className="input-message"
@@ -258,7 +241,7 @@ const PostsList = () => {
                                     onClick={() => handleSendComment(post)}>
                                     Send
                                 </button>
-                            </div>
+                            </div>}
                         </>
                     )}
                 </div>

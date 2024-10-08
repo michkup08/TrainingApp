@@ -199,11 +199,18 @@ public class TrainingController {
         training.setName(trainingDTO.getName());
         List<ExerciseWithParameters> ewpl = new ArrayList<>();
         for (ExerciseWithParametersDTO ex : trainingDTO.getExercises()) {
-            ExerciseWithParameters e = exerciseWithParametersMapper.toExerciseWithParametersEntity(ex);
-            e.setExercise(exerciseMapper.toExerciseEntity(ex.getExercise()));
-            e.setTraining(training);
-            exerciseWithParametersRepository.saveAndFlush(e);
-            ewpl.add(e);
+            Optional<ExerciseWithParameters> current = exerciseWithParametersRepository.findById(ex.getId());
+            if(current.isPresent()) {
+                ExerciseWithParameters exerciseWithParameters = current.get();
+                ewpl.add(exerciseWithParameters);
+            }
+            else {
+                ExerciseWithParameters e = exerciseWithParametersMapper.toExerciseWithParametersEntity(ex);
+                e.setExercise(exerciseMapper.toExerciseEntity(ex.getExercise()));
+                e.setTraining(training);
+                exerciseWithParametersRepository.saveAndFlush(e);
+                ewpl.add(e);
+            }
         }
         training.setExerciseWithParameters(ewpl);
         trainingRepository.saveAndFlush(training);

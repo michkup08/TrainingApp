@@ -148,11 +148,6 @@ const ChatsPage = () => {
         }
     };
 
-    const getInitials = (name:string) => {
-        const parts = name.split(' ');
-        return parts.map(part => part[0].toUpperCase()).join('');
-    }
-
     const findPlanById = (id: number) => {
         return trainingPlans.find(plan => plan.id === id);
     };
@@ -177,6 +172,7 @@ const ChatsPage = () => {
                 <div className="member-list">
                 <input
                     type="text"
+                    value={searchQuery}
                     onChange={handleSearchChange}
                     placeholder="Search user"
                 />
@@ -187,7 +183,7 @@ const ChatsPage = () => {
                 <ul>
                     {users.length === 0 && !loadingUsers && <p>No records</p>}
                     {users.map(user => (
-                        <li key={user.id} onClick={() => selectUserToChat(user.id!, user.name!)}>
+                        <li key={user.id} onClick={() => {selectUserToChat(user.id!, user.name!); setSearchQuery(""); setUsers([])}}>
                             {user.name}
                         </li>
                     ))}
@@ -199,7 +195,12 @@ const ChatsPage = () => {
                                 onClick={() => { setTabName(chat.userName); setTabId(chat.userId); optionalFetchHistory(chat.id); handleTurnOffNotification(chat); chat.notification=false; }}
                                 className={`member ${tabId === chat.userId ? 'active' : ''}`}
                             >
-                                {chat.userName} {chat.notification && '🟠'}
+                                <AvatarComponent senderId={chat.userId} senderFullName={chat.userName}/>
+                                <div className='chatHeaderNameDateWrapper'>
+                                    <div className='chatHeaderName'>{chat.userName} {chat.notification && '🟠'}</div> 
+                                    <div className='chatHeaderDate'>{chat.lastMessageDate}</div>
+                                </div>
+                                
                             </li>
                         ))}
                     </ul>
@@ -209,7 +210,7 @@ const ChatsPage = () => {
                     {
                         privateChats
                             .filter(chat => chat.userId === tabId)
-                            .map((chat, index) =>
+                            .map((chat) =>
                                 (chat.messages || []).map((message, i) => (
                                     <li key={i} className={`message ${message.senderId === user.id ? 'self' : ''}`} ref={ i === (chat.messages.length - 1) ? lastMessageRef : null}>
                                         {message.senderId !== user.id ? <div className="avatar"><AvatarComponent senderId={message.senderId} senderFullName={message.senderName}/></div> :
@@ -237,7 +238,7 @@ const ChatsPage = () => {
                                                             ))}
                                                         </div>
                                                         {(
-                                                            <button className='planActivationButton' onClick={() => handleCopyPlanToMyPlans(message.trainingId)}>Add to my plans</button>
+                                                            <button className='planActivationButton' onClick={() => handleCopyPlanToMyPlans(message.trainingId!)}>Add to my plans</button>
                                                         )}
                                                     </div>
                                                 )
