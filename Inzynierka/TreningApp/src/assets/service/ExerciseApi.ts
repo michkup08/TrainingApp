@@ -23,4 +23,8 @@ export class ExerciseApi {
         await axiosInstance.delete(this.baseURL + `/exerciseWithParameters/${exerciseWithParametersId}`);
     } 
 
+    exerciseSearch = async (req:string): Promise<Exercise[]> => {
+        const resp = await axiosInstance.get(this.baseURL + `/exercisesByReg/${req}`);
+        return resp.data;
+    }
 }

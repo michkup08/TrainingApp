@@ -1,6 +1,6 @@
-import "./init";
+import "../init";
 import { useState } from 'react'
-import { AuthApi } from "../service/AuthApi";
+import { AuthApi } from "../../service/AuthApi";
 
 
 const RegisterPage = () => {

@@ -1,13 +1,13 @@
-import HomePage from './assets/components/HomePage.tsx'
+import HomePage from './assets/components/pages/HomePage.tsx'
 import { Route, Routes, useLocation } from 'react-router-dom';
-import ChatsPage from './assets/components/ChatsPage.tsx';
-import LoginPage from './assets/components/LoginPage.tsx';
-import RegisterPage from './assets/components/RegisterPage.tsx';
-import MainTrainingPlan from './assets/components/MainTrainingPlanPage.tsx';
-import EditTrainingPlan from './assets/components/EditTrainingPlan.tsx';
-import MyPlansPage from './assets/components/MyPlansPage.tsx';
-import ProfileEdition from './assets/components/ProfileEdition.tsx';
-import TrainersList from './assets/components/TrainersPage.tsx';
+import ChatsPage from './assets/components/pages/ChatsPage.tsx';
+import LoginPage from './assets/components/pages/LoginPage.tsx';
+import RegisterPage from './assets/components/pages/RegisterPage.tsx';
+import MainTrainingPlan from './assets/components/pages/MainTrainingPlanPage.tsx';
+import EditTrainingPlan from './assets/components/pages/EditTrainingPlan.tsx';
+import MyPlansPage from './assets/components/pages/MyPlansPage.tsx';
+import ProfileEdition from './assets/components/pages/ProfileEdition.tsx';
+import TrainersList from './assets/components/pages/TrainersPage.tsx';
 
 import { AnimatePresence } from 'framer-motion';
 import MoveSideways from './assets/components/motion/MoveSideways.tsx';

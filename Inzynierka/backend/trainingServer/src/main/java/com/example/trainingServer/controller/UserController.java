@@ -1,10 +1,12 @@
 package com.example.trainingServer.controller;
 
+import com.example.trainingServer.DTO.UserDTO;
 import com.example.trainingServer.DTO.UserStatisticsDTO;
 import com.example.trainingServer.entities.Role;
 import com.example.trainingServer.entities.TrainerProfile;
 import com.example.trainingServer.entities.UserStatistics;
 import com.example.trainingServer.functionalities.AuthTokenGenerator;
+import com.example.trainingServer.mapper.UserMapper;
 import com.example.trainingServer.mapper.UserStatisticsMapper;
 import com.example.trainingServer.repositories.TrainerProfileRepository;
 import com.example.trainingServer.repositories.UserStatisticsRepository;
@@ -45,6 +47,8 @@ public class UserController {
     private final UserStatisticsRepository userStatisticsRepository;
     private final UserStatisticsMapper userStatisticsMapper;
     private final TrainerProfileRepository trainerProfileRepository;
+
+    private final UserMapper userMapper;
 
     @PostMapping("/login")
     AuthResponse login(@RequestBody LoginRequest loginRequest)
@@ -185,6 +189,13 @@ public class UserController {
     {
         User user = userRepository.findByUserId(userId);
         return user.getName()+" "+user.getSurname();
+    }
+
+    @GetMapping("/getById/{userId}")
+    UserDTO getUser(@PathVariable long userId)
+    {
+        User user = userRepository.findByUserId(userId);
+        return userMapper.toUserDTO(user);
     }
 
     @PostMapping("/image")

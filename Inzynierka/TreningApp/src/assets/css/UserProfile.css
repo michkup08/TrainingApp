@@ -1,0 +1,8 @@
+.userDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.userDetail {
+    font-size: 16px;
+}

@@ -1,14 +1,16 @@
 import { useContext, useEffect, useState } from 'react';
-import TrainingPlan from '../DTO/TrainingPlan';
-import { TrainingApi } from '../service/TrainingApi';
-import { UserContext } from '../context/UserContext';
-import '../css/MyPlans.css'
+import TrainingPlan from '../../DTO/TrainingPlan';
+import { TrainingApi } from '../../service/TrainingApi';
+import { UserContext } from '../../context/UserContext';
+import '../../css/MyPlans.css'
 import { Link, useNavigate } from 'react-router-dom';
-import User from '../DTO/User';
-import { UsersApi } from '../service/UsersApi';
-import { useWebSocket } from '../hooks/useWebSocket';
+import User from '../../DTO/User';
+import { UsersApi } from '../../service/UsersApi';
+import { useWebSocket } from '../../hooks/useWebSocket';
+import { useChatNavigation } from '../../hooks/useChatNavigation';
 
 function MyPlansPage() {
+    const { openChatWithUser } = useChatNavigation();
     const {sendPrivateValue} = useWebSocket();
     const trainingApi = new TrainingApi();
     const usersApi = new UsersApi();
@@ -89,6 +91,7 @@ function MyPlansPage() {
 
     const handleSendPlan = (userId:number, userFullName:string, trainingPlanId:number) => {
         sendPrivateValue(userId, userFullName, trainingPlanId);
+        navigate('/chats', { state: { trainerId:userId, fullName:userFullName } });
     }
 
     return (
@@ -139,13 +142,14 @@ function MyPlansPage() {
                             type="text"
                             onChange={handleSearchChange}
                             placeholder="Search user"
+                            className='trainingPlanInput'
                         />
-                        <ul>
+                        <ul className='usersList'>
                             {users.length === 0 && !loadingUsers && <p>No records</p>}
                             {users.map(user => (
-                                <li key={user.id} onClick={() => handleSendPlan(user.id!, `${user.name!} ${user.surname!}`, selectedPlan)}>
+                                <li className='member' key={user.id}>
                                     {user.name}
-                                    <button>Send</button>
+                                    <button onClick={() => handleSendPlan(user.id!, `${user.name!}`, selectedPlan)}>Send</button>
                                 </li>
                             ))}
                         </ul>

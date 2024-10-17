@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
-import '../css/TrainingPlan.css';
-import { TrainingApi } from '../service/TrainingApi';
-import { UserContext } from '../context/UserContext';
-import Training from '../DTO/Training';
+import '../../css/TrainingPlan.css';
+import { TrainingApi } from '../../service/TrainingApi';
+import { UserContext } from '../../context/UserContext';
+import Training from '../../DTO/Training';
 import { Link, useNavigate } from 'react-router-dom';
-import UserStats from '../DTO/UserStats';
-import { StatsApi } from '../service/StatsApi';
+import UserStats from '../../DTO/UserStats';
+import { StatsApi } from '../../service/StatsApi';
+import DialogComponent from '../shared/Dialog';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -159,18 +160,18 @@ const MainTrainingPlan = () => {
                 (
                     <>
                         <div className='portal_background' onClick={() => setDetailsTrainingDialogVisible(false)}/>
-                        <div className="dialog">
+                        <DialogComponent level={1}>
                             {trainings.map((training)=>(
                                 training.id==selectedTrainingId && (
                                     <>
                                         <div key={selectedTrainingId}>
                                             <div className='training_details_header'>{training.name}</div>
                                             
-                                            <div>{daysOfWeek[training.day]}</div>
+                                            <div className='trainingDayOfWeek'>{daysOfWeek[training.day]}</div>
                                             <br/><br/>
-                                            <div>
+                                            <div className='trainingExercises'>
                                                 {training.exercises.map((exercise)=>(
-                                                    <div className='training_details_header'>{ 
+                                                    <div className='training_details_header' key={exercise.id}>{ 
                                                         exercise.exercise.name + ' : ' + exercise.parameters
                                                     }</div>
                                                 ))}
@@ -190,7 +191,7 @@ const MainTrainingPlan = () => {
                                     </>
                                 )
                             ))}
-                        </div>
+                        </DialogComponent>
                     </>
                 )}
             </div>

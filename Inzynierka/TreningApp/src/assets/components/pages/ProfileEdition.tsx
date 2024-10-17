@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
-import { UserContext } from '../context/UserContext';
-import UserStats from '../DTO/UserStats';
-import { StatsApi } from '../service/StatsApi';
-import '../css/ProfileEdition.css'
-import { UsersApi } from '../service/UsersApi';
-import { TrainerApi } from '../service/TrainerApi';
-import TrainerProfile from '../DTO/TrainerProfile';
+import { UserContext } from '../../context/UserContext';
+import UserStats from '../../DTO/UserStats';
+import { StatsApi } from '../../service/StatsApi';
+import '../../css/ProfileEdition.css'
+import { UsersApi } from '../../service/UsersApi';
+import { TrainerApi } from '../../service/TrainerApi';
+import TrainerProfile from '../../DTO/TrainerProfile';
 
 export default function ProfileEdition() {
   const usersApi = new UsersApi();

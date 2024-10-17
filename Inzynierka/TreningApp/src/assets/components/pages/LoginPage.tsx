@@ -1,7 +1,7 @@
 import { useState } from "react";
-import "./init";
-import "../css/Auth.css"
-import { AuthApi } from "../service/AuthApi";
+import "../init";
+import "../../css/Auth.css"
+import { AuthApi } from "../../service/AuthApi";
 
 const LoginPage = () => {
     const authApi = new AuthApi();

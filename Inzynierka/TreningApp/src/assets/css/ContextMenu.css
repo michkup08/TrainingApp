@@ -1,0 +1,16 @@
+.contextMenuButtons {
+    background-color: aliceblue;
+    border-radius: 20px;
+}
+
+.contextMenuButton {
+    transition: .5s;
+    color: black;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.contextMenuButton:hover {
+    background-color: rgb(220, 80, 65);
+    transition: .5s;
+}

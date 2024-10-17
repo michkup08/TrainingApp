@@ -3,4 +3,5 @@ export default interface Exercise {
     name: string;
     description?: string;
     defaultValue: string;
+    showDesc: boolean;
 }

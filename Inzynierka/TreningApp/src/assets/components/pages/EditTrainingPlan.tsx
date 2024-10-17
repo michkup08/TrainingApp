@@ -1,12 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
-import '../css/TrainingPlan.css';
-import { TrainingApi } from '../service/TrainingApi';
-import { UserContext } from '../context/UserContext';
-import Training from '../DTO/Training';
-import Exercise from '../DTO/Exercise';
+import '../../css/TrainingPlan.css';
+import { TrainingApi } from '../../service/TrainingApi';
+import { UserContext } from '../../context/UserContext';
+import Training from '../../DTO/Training';
+import Exercise from '../../DTO/Exercise';
 import { Link, useNavigate } from 'react-router-dom';
-import ExerciseWithParameters from '../DTO/ExerciseWithParameters';
-import { ExerciseApi } from '../service/ExerciseApi';
+import ExerciseWithParameters from '../../DTO/ExerciseWithParameters';
+import { ExerciseApi } from '../../service/ExerciseApi';
+import DialogComponent from '../shared/Dialog';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -28,14 +29,8 @@ const EditTrainingPlan = () => {
     const [trainingStart, setTrainingStart] = useState('');
     const [trainingEnd, setTrainingEnd] = useState('');
     const [exercisesWithParameters, setExercisesWithParameters] = useState<ExerciseWithParameters[]>([]);
-
-    const fetchExercises = async() => {
-        const resp = await trainingApi.AllExercises();
-        if(resp)
-        {
-            setExercises(resp);
-        }
-    }
+    const [searchQuery, setSearchQuery] = useState('');
+    const [dialogPosition, setDialogPosition] = useState({ top: 0, left: "50%" });
 
     const confirm = () => {
         sessionStorage.removeItem('editTrainingPlan');
@@ -43,7 +38,6 @@ const EditTrainingPlan = () => {
     }
 
     const fetchTrainingPlan = async() => {
-        console.log("planid ", planId);
         const resp = await trainingApi.TrainingPlanById((Number) (sessionStorage.getItem('editTrainingPlan')!));
         if(resp)
         {
@@ -51,6 +45,21 @@ const EditTrainingPlan = () => {
             setPlanName(resp.name);
         }
     }
+
+    const handleSearchChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+        if (!event.target.value) {
+            setExercises([]);
+            return;
+        }
+        try {
+            const resp = await exerciseApi.exerciseSearch(event.target.value);
+            setExercises(resp);
+        } 
+        catch (err) {
+            console.log("error during searching users");
+        }
+    };
 
     const initializeTraining = async() => {
         const resp = await trainingApi.AddEmptyTrainingPlan(user.id!, 'New plan');
@@ -63,11 +72,6 @@ const EditTrainingPlan = () => {
     }
 
     useEffect(() => {
-        fetchExercises();
-    }, []);
-
-    useEffect(() => {
-        console.log(user);
         if(user)
         {
             if(sessionStorage.getItem('editTrainingPlan'))
@@ -95,7 +99,6 @@ const EditTrainingPlan = () => {
             const training = trainings.find(training => training.id === selectedTrainingId);
             if(training)
             {
-                console.log(training!.exercises);
                 setExercisesWithParameters(training!.exercises);
                 setTrainingName(training!.name);
                 setTrainingStart(training!.startTime);
@@ -105,22 +108,20 @@ const EditTrainingPlan = () => {
         }
     }, [addTrainingDialogVisible, detailsTrainingDialogVisible])
 
+    useEffect(() => {
+        updateDialogPosition();
+        window.addEventListener('scroll', updateDialogPosition);
+        return () => {
+            window.removeEventListener("scroll", updateDialogPosition);
+        }
+    }, [])
+
     const updatePlanName = (newName:string) => {
         trainingApi.UpdatePlanName(planId, newName);
     }
 
-    const handleAddExercise = (e) => {
-        console.log(e.target.value);
-        exercises.map((exercise) => {
-            console.log(exercise.id, Number(e.target.value), exercise.id === Number(e.target.value));
-            if(exercise.id === Number(e.target.value))
-            {
-                const selectedExercise = exercise;
-                console.log(selectedExercise);
-                setExercisesWithParameters([...exercisesWithParameters, {exercise: selectedExercise!, parameters: selectedExercise!.defaultValue}]);
-            }
-        });
-        
+    const handleAddExercise = (selectedExercise:Exercise) => {
+        setExercisesWithParameters([...exercisesWithParameters, {exercise: selectedExercise!, parameters: selectedExercise!.defaultValue}]);
     }
 
     const handleRightClick = (dayIndex: number, e) => {
@@ -177,6 +178,15 @@ const EditTrainingPlan = () => {
         }
     }
 
+    const updateDialogPosition = () => {
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        setDialogPosition({
+          top: scrollY + windowHeight / 2,
+          left: "50%",
+        });
+    };
+
     return (
         <div className='trainingPlan'>
             <div className='trainingPlanManager'>
@@ -197,7 +207,6 @@ const EditTrainingPlan = () => {
                         </div>
                     ))}
                 </div>
-                
                 <div className="table-body">
                     {hoursOfDay.map((hour) => (
                         <div key={hour} className="hour-label" style={{
@@ -236,7 +245,7 @@ const EditTrainingPlan = () => {
                 (
                     <>
                         <div className='portal_background' onClick={() => setAddTrainingDialogVisible(false)}/>
-                        <div className="dialog">
+                        <DialogComponent level={2}>
                             <div>
                                 <label>Name: <input className='trainingPlanInput' value={trainingName} onChange={(e) => setTrainingName(e.target.value)} /></label>
                             </div>
@@ -272,7 +281,6 @@ const EditTrainingPlan = () => {
                                         Select exercise for add it to training
                                 </option>
                                 {exercises.map((exercise) => (
-                                    
                                     <option key={exercise.id} value={exercise.id}>
                                         {exercise.name}
                                     </option>
@@ -280,16 +288,14 @@ const EditTrainingPlan = () => {
                             </select>
                             <button className='buttonGreen' onClick={handleAddTraining}>Add Training</button>
                             <button className='buttonRed' onClick={() => setAddTrainingDialogVisible(false)}>Cancel</button>
-                        </div>
-                        
+                        </DialogComponent>
                     </>
-                    
                 )}
                 {detailsTrainingDialogVisible && 
                 (
                     <>
                         <div className='portal_background' onClick={() => setDetailsTrainingDialogVisible(false)}/>
-                        <div className="dialog">
+                        <DialogComponent level={2}>
                             {trainings.map((training)=>(
                                 training.id==selectedTrainingId && (
                                     <>
@@ -306,7 +312,7 @@ const EditTrainingPlan = () => {
                                             </div>
                                             
                                             <div>{daysOfWeek[training.day]}</div>
-                                            <br/>
+                                            <br/> 
                                             
                                             {exercisesWithParameters.length > 0 && (
                                                 <table>
@@ -327,30 +333,37 @@ const EditTrainingPlan = () => {
                                                     </tbody>
                                                 </table>
                                             )}
-                                            <h3>Select your exercises</h3>
-                                            <select className='trainingPlanSelect' onChange={handleAddExercise} defaultValue=''>
-                                                <option value='' disabled >
-                                                        Select exercise for add it to training
-                                                </option>
-                                                {exercises.map((exercise) => (
-                                                    
-                                                    <option key={exercise.id} value={exercise.id}>
-                                                        {exercise.name}
-                                                    </option>
+                                            <input
+                                                className='trainingPlanInput'
+                                                type="text"
+                                                value={searchQuery}
+                                                onChange={handleSearchChange}
+                                                placeholder="Search exercise"
+                                            />
+                                            <ul className='exerciseList'>
+                                                {exercises.length === 0 && searchQuery != '' && <p>No records</p>}
+                                                {exercises.map(exercise => (
+                                                    <li key={exercise.id} >
+                                                        <div className='member'>
+                                                            <div className='memberName' onClick={() => {handleAddExercise(exercise); setSearchQuery(""); setExercises([]);}}>{exercise.name}</div>
+                                                            <div className='moreInfo' onClick={() => setExercises((prev) => {
+                                                                return prev.map((exe) =>
+                                                                    exe === exercise ? {...exercise, showDesc:!exe.showDesc} : exe
+                                                                )
+                                                            })}>🛈</div>
+                                                        </div>
+                                                        {exercise.showDesc && <div className='exerciseDescription'>{exercise.description}</div>}
+                                                    </li>
                                                 ))}
-                                            </select>
+                                            </ul>
                                             <button className='buttonGreen' onClick={handleUpdateTraining}>Update Training</button>
                                             <button className='buttonRed' onClick={() => setDetailsTrainingDialogVisible(false)}>Cancel</button>
-                                            
                                         </div>
                                     </>
                                 )
                             ))}
-                            
-                        </div>
-                        
+                        </DialogComponent>
                     </>
-                    
                 )}
             </div>
         </div>

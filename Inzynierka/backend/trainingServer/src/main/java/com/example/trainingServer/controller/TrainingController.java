@@ -168,7 +168,6 @@ public class TrainingController {
         trainingPlanRepository.saveAndFlush(tp);
     }
 
-
     @PostMapping("/addTraining")
     public Long addTraining(@RequestBody TrainingDTO trainingDTO) {
         Training training = trainingMapper.toTrainingEntity(trainingDTO);
@@ -215,6 +214,4 @@ public class TrainingController {
         training.setExerciseWithParameters(ewpl);
         trainingRepository.saveAndFlush(training);
     }
-
-
 }

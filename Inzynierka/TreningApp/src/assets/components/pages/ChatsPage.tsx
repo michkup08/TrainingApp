@@ -1,16 +1,16 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import './init';
-import { UserContext } from '../context/UserContext';
-import Chat from '../DTO/Chat';
-import { UsersApi } from '../service/UsersApi';
-import User from '../DTO/User';
-import { ChatsApi } from '../service/ChatsApi';
-import '../css/Chats.css'
+import '../init';
+import { UserContext } from '../../context/UserContext';
+import Chat from '../../DTO/Chat';
+import { UsersApi } from '../../service/UsersApi';
+import User from '../../DTO/User';
+import { ChatsApi } from '../../service/ChatsApi';
+import '../../css/Chats.css'
 import { useLocation } from 'react-router-dom';
-import TrainingPlan from '../DTO/TrainingPlan';
-import { TrainingApi } from '../service/TrainingApi';
-import { useWebSocket } from '../hooks/useWebSocket';
-import AvatarComponent from './shared/Avatar';
+import TrainingPlan from '../../DTO/TrainingPlan';
+import { TrainingApi } from '../../service/TrainingApi';
+import { useWebSocket } from '../../hooks/useWebSocket';
+import AvatarComponent from '../shared/Avatar';
 
 
 const ChatsPage = () => {
@@ -200,7 +200,6 @@ const ChatsPage = () => {
                                     <div className='chatHeaderName'>{chat.userName} {chat.notification && '🟠'}</div> 
                                     <div className='chatHeaderDate'>{chat.lastMessageDate}</div>
                                 </div>
-                                
                             </li>
                         ))}
                     </ul>

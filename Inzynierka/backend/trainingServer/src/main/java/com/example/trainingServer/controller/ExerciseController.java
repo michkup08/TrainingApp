@@ -4,16 +4,20 @@ import com.example.trainingServer.DTO.ExerciseDTO;
 import com.example.trainingServer.DTO.ExerciseWithParametersDTO;
 import com.example.trainingServer.entities.Exercise;
 import com.example.trainingServer.entities.ExerciseWithParameters;
+import com.example.trainingServer.entities.User;
 import com.example.trainingServer.mapper.ExerciseMapper;
 import com.example.trainingServer.mapper.ExerciseWithParametersMapper;
 import com.example.trainingServer.repositories.ExerciseRepository;
 import com.example.trainingServer.repositories.ExerciseWithParametersRepository;
 
+import com.example.trainingServer.reqAndResp.IdAndNameReqResp;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/exercise")
@@ -63,5 +67,35 @@ public class ExerciseController {
             dtos.add(exerciseMapper.toExerciseDTO(e));
         }
         return dtos;
+    }
+
+    @GetMapping("/exercisesByReg/{fragment}")
+    List<ExerciseDTO> getUsersByNameFragment(@PathVariable String fragment)
+    {
+        try
+        {
+            String reg = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*"+fragment+"[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*";
+            Pattern pattern = Pattern.compile(reg);
+            List<Exercise> all = exerciseRepository.findAll();
+            List<ExerciseDTO> fits = new ArrayList<>();
+            for(Exercise exercise: all)
+            {
+                if(fits.size()>=20)
+                {
+                    break;
+                }
+                Matcher matcher = pattern.matcher(exercise.getName());
+                if(matcher.matches())
+                {
+                    fits.add(exerciseMapper.toExerciseDTO(exercise));
+                }
+            }
+            return fits;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

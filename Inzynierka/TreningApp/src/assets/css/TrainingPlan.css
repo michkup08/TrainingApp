@@ -131,7 +131,6 @@
 .day-header {
     flex: 1;
     text-align: center;
-    
     padding: 10px 0;
     border-bottom: 2px solid #ddd;
 }
@@ -205,16 +204,15 @@
 .dialog {
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -40%);
+    transform: translate(-50%, -50%);
     background-color: black;
     border: 1px solid #ccc;
     border-radius: 40px;
     padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 100;
 }
 
 .dialog label {
@@ -235,7 +233,7 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
+    z-index: 99;
 }
 
 .buttonGreen {
@@ -248,7 +246,6 @@
 
 .training_details_header {
     font-size: 20px;
-    
 }
 
 .training_details_day {
@@ -269,4 +266,26 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.exerciseList .member {
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+}
+
+.member .memberName:hover {
+    background-color: rgb(78, 77, 77);
+    border-radius: 20px;
+}
+
+.member .moreInfo:hover {
+    background-color: rgb(78, 77, 77);
+    border-radius: 20px;
+}
+
+.exerciseDescription {
+    margin-left: 5%;
+    margin-top: 15px;
+    width: 90%;
 }

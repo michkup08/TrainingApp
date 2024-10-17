@@ -1,19 +1,14 @@
-import "./init";
-import { useState, useEffect, useContext } from 'react';
-import '../css/Trainers.css'; // Import stylizacji
-import Post from "../DTO/Post";
-import { PostsApi } from "../service/PostsApi";
-import { UserContext } from "../context/UserContext";
-import Trainer from "../DTO/Trainer";
-import { TrainerApi } from "../service/TrainerApi";
+import "../init";
+import { useState, useEffect } from 'react';
+import '../../css/Trainers.css'; // Import stylizacji
+import Trainer from "../../DTO/Trainer";
+import { TrainerApi } from "../../service/TrainerApi";
 import { useNavigate } from "react-router-dom";
-import MoveSideways from "./motion/MoveSideways";
 
 const TrainersList = () => {
     const navigate = useNavigate();
     const trainerApi = new TrainerApi();
-    const user = useContext(UserContext);
-    const [trainers, setTrainers] = useState<Trainer>([]);
+    const [trainers, setTrainers] = useState<Trainer[]>([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
 
@@ -43,7 +38,6 @@ const TrainersList = () => {
     };
 
     return (
-        <MoveSideways>
             <div className="trainers-container">
                 {trainers.map((trainer:Trainer, index:number) => (
                     <div key={index} className="trainer-card">
@@ -76,17 +70,12 @@ const TrainersList = () => {
                                 </div>
                             </div>
                         </div>
-                        
-                        
-                        
                     </div>
                 ))}
                 <button onClick={handleLoadMore} disabled={loading} className="load-more-btn">
                     {loading ? 'Loading...' : 'More trainers'}
                 </button>
             </div>
-        </MoveSideways>
-        
     );
 };
 
