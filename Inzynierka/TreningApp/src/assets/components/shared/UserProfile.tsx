@@ -39,13 +39,19 @@ function UserProfile({userId}:{userId:number}) {
                 })
             }
         });
-
     }, [])
 
     useEffect(() => {
         setLoading(true);
-        postsApi.getUsersPostsList(page, userId).then((p) => {
-            setPosts(p);
+        postsApi.getUsersPostsList(page, userId).then((newPosts) => {
+            if(page!=0)
+            {
+                setPosts(prevPosts => [...prevPosts, ...newPosts]);
+            }
+            else
+            {
+                setPosts(newPosts);
+            }
         })
         setLoading(false);
     }, [page])
@@ -78,15 +84,6 @@ function UserProfile({userId}:{userId:number}) {
     const handleLoadMore = () => {
         setPage(prevPage => prevPage + 1);
     };
-
-    const handleLike = (postClicked: &Post) => {
-        postsApi.likeDislikePost(postClicked.id, user.id!).then(() => {
-            setPosts((prevPosts) => 
-                prevPosts.map((post) =>
-                    post === postClicked ? { ...post, liked: !post.liked, likes: postClicked.liked ? post.likes - 1 : post.likes + 1 } : post
-            )
-        )})
-    }
 
     const handleSendComment = (postClicked: Post) => {
         if(commentMessage.length > 0)
@@ -190,7 +187,6 @@ function UserProfile({userId}:{userId:number}) {
                                 className="post-image"
                             />)}
                             <div className="post-actions">
-                                {userProfile.id && <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "grey"}}>{post.liked ? "❤️":"🖤"}</button>}
                                 <button className="comment-btn" onClick={() => handleCommentsActivaton(post)} style={{backgroundColor: post.showComments ? "white" : "grey"}}>💬</button>
                             </div>
                             <div className="post-details">
@@ -232,8 +228,13 @@ function UserProfile({userId}:{userId:number}) {
                                     </div>}
                                 </>
                             )}
+
                         </div>
+                        
                     ))}
+                    <button onClick={handleLoadMore} disabled={loading} className="load-more-btn">
+                        {loading ? 'Loading...' : 'More posts'}
+                    </button>
                 </div>
                 
             }
