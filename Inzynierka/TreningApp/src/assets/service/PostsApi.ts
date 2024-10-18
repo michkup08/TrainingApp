@@ -70,6 +70,25 @@ export class PostsApi {
     return [];
   }
 
+  getUsersPostsList = async (page:number, userId:number): Promise<Post[]> => {
+    try {
+      const response = await axios.post(this.baseURL +'/usersPosts', {
+          page: page,
+          userId: userId
+      });
+      const posts:Post[] = response.data;
+      posts.forEach(post => {
+        post.comments = [];
+        post.commentsPage = 0;
+        post.showComments = false;
+      })
+      return posts;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
+    return [];
+  }
+
   likeDislikePost = async (postId:number, userId:number) => {
     await axios.put(this.baseURL +'/likeDislike', {
       objectId: postId,

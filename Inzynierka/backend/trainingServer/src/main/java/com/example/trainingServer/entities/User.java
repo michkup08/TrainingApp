@@ -44,12 +44,10 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
-    //@JoinColumn(name = "training_plan_id")
     private Set<TrainingPlan> training_plans;
 
     @OneToOne(mappedBy = "userActivated")
     @JsonIgnore
-    //@JoinColumn(name = "training_plan_id")
     private TrainingPlan activePlan;
 
     @OneToOne

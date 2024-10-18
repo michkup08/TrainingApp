@@ -4,6 +4,7 @@
 }
 
 .contextMenuButton {
+    cursor: pointer;
     transition: .5s;
     color: black;
     padding: 10px;

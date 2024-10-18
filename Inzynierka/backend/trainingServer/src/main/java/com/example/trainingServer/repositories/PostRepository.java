@@ -1,7 +1,9 @@
 package com.example.trainingServer.repositories;
 
 import com.example.trainingServer.entities.Post;
+import com.example.trainingServer.entities.User;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +21,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Transactional
     List<Post> getPosts(@Param("earlierFeched") long[] postsIds, Pageable pageable);
 
+    Page<Post> findBySenderId(@Param("senderId") User senderId, Pageable pageable);
 }

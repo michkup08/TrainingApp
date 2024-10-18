@@ -98,6 +98,34 @@ public class PostsController {
         return new ArrayList<>();
     }
 
+    @PostMapping("/usersPosts")
+    public List<PostDTO> getUsersPosts(@RequestBody PostsFetchRequest postsFetchRequest)
+    {
+        try {
+            Pageable pageable = PageRequest.of(postsFetchRequest.getPage(), 5, Sort.by(Sort.Direction.DESC, "dateTime"));
+            Page<Post> posts = postRepository.findBySenderId(userRepository.findByUserId(postsFetchRequest.getUserId()), pageable);
+            List<PostDTO> postDTOs = new ArrayList<>();
+            for (Post post : posts)
+            {
+                PostDTO postDTO = postMapper.toDTO(post);
+                String image = postService.getBase64ImageForPost(post);
+                postDTO.setImage(image);
+                User sender = userRepository.findByUserId(post.getSenderId().getUserId());
+                postDTO.setSenderFullName(sender.getName()+" "+sender.getSurname());
+                List<Like> likes = likeRepository.findByPost(post);
+                List<Like> positiveLikes = likes.stream().filter(like -> like.isPositive()).collect(Collectors.toList());
+                postDTO.setLikes(positiveLikes.size());
+                postDTO.setLiked(positiveLikes.stream().anyMatch(like -> like.getSender().getUserId()==postsFetchRequest.getUserId()));
+                postDTOs.add(postDTO);
+            }
+            return postDTOs;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     @GetMapping("/comments/{postId}/{page}")
     public List<CommentDTO> getComments(@PathVariable Long postId, @PathVariable Integer page)
     {

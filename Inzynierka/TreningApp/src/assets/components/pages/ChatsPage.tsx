@@ -6,7 +6,7 @@ import { UsersApi } from '../../service/UsersApi';
 import User from '../../DTO/User';
 import { ChatsApi } from '../../service/ChatsApi';
 import '../../css/Chats.css'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TrainingPlan from '../../DTO/TrainingPlan';
 import { TrainingApi } from '../../service/TrainingApi';
 import { useWebSocket } from '../../hooks/useWebSocket';
@@ -15,6 +15,7 @@ import AvatarComponent from '../shared/Avatar';
 
 const ChatsPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const user = useContext(UserContext);
     const usersApi = new UsersApi();
     const chatsApi = new ChatsApi();
@@ -154,6 +155,7 @@ const ChatsPage = () => {
 
     const handleCopyPlanToMyPlans = (trainingId: number) => {
         trainingsApi.CopyPlanAndSetUser(user.id!, trainingId);
+        navigate('/trainingPlan/usersPlans');
     }
 
     const handleTurnOffNotification = (chat:Chat) => {
