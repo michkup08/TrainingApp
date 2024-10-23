@@ -12,17 +12,19 @@ import TrainersList from './assets/components/pages/TrainersPage.tsx';
 import { AnimatePresence } from 'framer-motion';
 import MoveSideways from './assets/components/motion/MoveSideways.tsx';
 import { useEffect, useRef} from 'react';
+import AdminPanel from './assets/components/pages/AdminPanel.tsx';
 
 const routeValues: Record<string, number> = {
     '/': 0,
     '/trainingPlan': 1,
-    '/trainingPlan/edit': 3,
     '/trainingPlan/usersPlans': 2,
-    '/profileEdition': 6,
+    '/trainingPlan/edit': 3,
     '/chats': 4,
     '/trainers': 5,
-    '/login': 7,
-    '/register': 8,
+    '/adminPanel': 6,
+    '/profileEdition': 7,
+    '/login': 8,
+    '/register': 9,
   };
 
 const AnimatedRoutes = () => {
@@ -52,6 +54,7 @@ const AnimatedRoutes = () => {
                 <Route path='/trainingPlan' element={<MoveSideways direction={getDirection()}><MainTrainingPlan/></MoveSideways>}/>
                 <Route path='/trainingPlan/edit' element={<MoveSideways direction={getDirection()}><EditTrainingPlan/></MoveSideways>}/>
                 <Route path='/trainingPlan/usersPlans' element={<MoveSideways direction={getDirection()}><MyPlansPage/></MoveSideways>}/>
+                <Route path= '/adminPanel' element= {<MoveSideways direction={getDirection()}><AdminPanel/></MoveSideways>} />
             </Routes>
         </AnimatePresence>
         

@@ -1,0 +1,32 @@
+.reportsContainer {
+    margin: 0 auto;
+    margin-top: 55px;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+.reportedUserHeader {
+    display: flex;
+    flex-direction: row;
+    margin: 15px;
+}
+
+.reportedFullName {
+    font-size: 24px;
+}
+
+.userReportsContainer {
+    background-color: rgb(78, 78, 78);
+    padding: 20px;
+    margin: 30px;
+    border-radius: 30px;
+}
+
+.reportContainer {
+    background-color: rgb(48, 47, 47);
+    padding: 20px;
+    margin: 30px;
+    border-radius: 30px;
+}

@@ -1,11 +1,9 @@
 package com.example.trainingServer.controller;
 
 import com.example.trainingServer.DTO.CommentDTO;
+import com.example.trainingServer.DTO.MessageDTO;
 import com.example.trainingServer.DTO.PostDTO;
-import com.example.trainingServer.entities.Comment;
-import com.example.trainingServer.entities.Like;
-import com.example.trainingServer.entities.Post;
-import com.example.trainingServer.entities.User;
+import com.example.trainingServer.entities.*;
 import com.example.trainingServer.mapper.CommentMapper;
 import com.example.trainingServer.mapper.PostMapper;
 import com.example.trainingServer.repositories.CommentRepository;
@@ -254,5 +252,23 @@ public class PostsController {
 
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/postById/{postId}")
+    public PostDTO getPostById(@PathVariable long postId) {
+        Optional<Post> post = postRepository.findById(postId);
+        if (post.isPresent()) {
+            return postMapper.toDTO(post.get());
+        }
+        return null;
+    }
+
+    @GetMapping("/commentById/{commentId}")
+    public CommentDTO getCommentById(@PathVariable long commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isPresent()) {
+            return commentMapper.toDTO(comment.get());
+        }
+        return null;
     }
 }

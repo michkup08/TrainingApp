@@ -10,9 +10,10 @@ interface ContextMenuProps {
     userId: number;
     userFullName: string;
     showProfileFunc: () => void;
+    showReportFunc: () => void;
 }
 
-const UserContextMenu = ({closeContextMenu, left, top, userId, userFullName, showProfileFunc}:ContextMenuProps) => {
+const UserContextMenu = ({closeContextMenu, left, top, userId, userFullName, showProfileFunc, showReportFunc}:ContextMenuProps) => {
     const navigate = useNavigate();
     const contextMenu = useRef(null);
     useOnClickOutside(contextMenu, closeContextMenu);
@@ -33,7 +34,7 @@ const UserContextMenu = ({closeContextMenu, left, top, userId, userFullName, sho
                     <div className='contextMenuButton' onClick={() => handleStartChat(userId, userFullName)}>
                         Open chat with {userFullName}
                     </div>
-                    <div className='contextMenuButton'>
+                    <div className='contextMenuButton' onClick={() => {showReportFunc(); closeContextMenu();}}>
                         Report {userFullName}
                     </div>
                 </div>

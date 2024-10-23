@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name = "reports")
-public class Reports {
+public class Report {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -30,4 +30,10 @@ public class Reports {
 
     @Column(name = "reported_id")
     private long reportedId;
+
+    @Column(name = "reported_full_name")
+    private String reportedFullName;
+
+    @Column(name = "checked")
+    private boolean checked;
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/chats")
@@ -66,4 +67,12 @@ public class ChatsController {
         return messageDTOs;
     }
 
+    @GetMapping("/messageById/{messageId}")
+    public MessageDTO getMessageById(@PathVariable long messageId) {
+        Optional<Message> messages = messageRepository.findById(messageId);
+        if (messages.isPresent()) {
+            return messageMapper.toDTO(messages.get());
+        }
+        return null;
+    }
 }

@@ -8,6 +8,8 @@ import AvatarComponent from "../shared/Avatar";
 import UserContextMenu from "../shared/UserContextMenu";
 import DialogComponent from "../shared/Dialog";
 import UserProfile from "../shared/UserProfile";
+import UserReport from "../shared/UserReport";
+import PostsComment from "../../DTO/Comment";
 
 const PostsList = () => {
     const user = useContext(UserContext);
@@ -15,12 +17,15 @@ const PostsList = () => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [newImageUrl, setNewImageUrl] = useState(null);
+    const [newImageUrl, setNewImageUrl] = useState<string | null>(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [newPostText, setNewPostText] = useState('');
     const [commentMessage, setCommandMessage] = useState('');
     const [userContextMenu, setUserContextMenu] = useState({top:0, left:0, show:false, userId:0, userFullName:''});
+    const [clickedElement, setClickedElement] = useState<Post | PostsComment>(null);
+    const [clickedElementType, setClickedElementType] = useState<'POST' | 'COMMENT'>('POST');
     const [detailsUserDialogVisible,setDetailsUserDialogVisible] = useState(false);
+    const [reportUserDialogVisible,setReportUserDialogVisible] = useState(false);
 
     const fetchPosts = async () => {
         
@@ -159,9 +164,18 @@ const PostsList = () => {
         }
     }
 
-    const handleContextMenu = (e:MouseEvent, userId:number, userFullName:string) => {
+    const handleContextMenuOnPost = (e:MouseEvent, userId:number, userFullName:string, post:Post) => {
         e.preventDefault();
         setUserContextMenu({top:e.pageY, left:e.pageX, show:true, userId:userId, userFullName:userFullName});
+        setClickedElement(post);
+        setClickedElementType('POST');
+    }
+
+    const handleContextMenuOnComment = (e:MouseEvent, userId:number, userFullName:string, comment:PostsComment) => {
+        e.preventDefault();
+        setUserContextMenu({top:e.pageY, left:e.pageX, show:true, userId:userId, userFullName:userFullName});
+        setClickedElement(comment);
+        setClickedElementType('COMMENT');
     }
 
     const hideUserContextMenu = () => {
@@ -178,6 +192,7 @@ const PostsList = () => {
                     userId = {userContextMenu.userId}
                     userFullName = {userContextMenu.userFullName}
                     showProfileFunc={() => {setDetailsUserDialogVisible(true);}}
+                    showReportFunc={() => {setReportUserDialogVisible(true);}}
                 />
             }
             {detailsUserDialogVisible && 
@@ -188,7 +203,25 @@ const PostsList = () => {
                             <UserProfile userId={userContextMenu.userId}/>
                         </DialogComponent>
                     </>
-                )}
+                )
+            }
+            {reportUserDialogVisible && 
+                (
+                    <>
+                        <div className='portal_background' onClick={() => setReportUserDialogVisible(false)}/>
+                        <DialogComponent level={1}>
+                            <UserReport 
+                                senderId={user.id!} 
+                                reportedId={userContextMenu.userId} 
+                                reportedFullName={userContextMenu.userFullName} 
+                                invalidCommunicate={clickedElement} 
+                                communicateType={clickedElementType}
+                                closeReportInterfaceFunction={() => setReportUserDialogVisible(false)}
+                                />
+                        </DialogComponent>
+                    </>
+                )
+            }
             <div className="posts-container">
                 {user.id && <div className="post-card">
                     <div className="post-header">
@@ -218,7 +251,7 @@ const PostsList = () => {
                 }
                 {posts.map((post:Post, index:number) => (
                     <div key={index} className="post-card">
-                        <div className="post-header"  onContextMenu={(e) => {handleContextMenu(e, post.senderId, post.senderFullName)}}>
+                        <div className="post-header"  onContextMenu={(e) => {handleContextMenuOnPost(e, post.senderId, post.senderFullName, post)}}>
                             {<AvatarComponent senderId={post.senderId} senderFullName={post.senderFullName}/>}
                             <div className="post-info">
                                 <span className="username">{post.senderFullName}</span>
@@ -245,7 +278,7 @@ const PostsList = () => {
                             <>
                                 <ul className="chat-messages">
                                     {post.comments.map((comment, i) => (
-                                        <li key={i} className={`message ${comment.senderId === user.id ? 'self' : ''}`}>
+                                        <li key={i} className={`message ${comment.senderId === user.id ? 'self' : ''}`} onContextMenu={(e) => {handleContextMenuOnComment(e, comment.senderId, comment.senderName + ' ' + comment.senderSurname, comment)}}>
                                             {comment.senderId !== user.id ? <AvatarComponent senderId={comment.senderId} senderFullName={comment.senderName + ' ' + comment.senderSurname}/> :
                                                 <div className="avatar self">{getInitials(comment.senderName + ' ' + comment.senderSurname)}</div>}
                                             <div className="message-data">

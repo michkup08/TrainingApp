@@ -22,28 +22,23 @@ const Navbar = () => {
                         <NavLink to="/trainingPlan">Training Plan</NavLink>
                         <NavLink to="/chats">Chats</NavLink>
                         <NavLink to="/trainers">Trainers</NavLink>
+                        {user.role === 'ADMIN' && <NavLink to="/adminPanel">Admin Panel</NavLink>}
                     </>
                 )}
-                
             </div>
             <div className="nav-buttons">
-
                 {fullName && <NavLink to='/profileEdition'>{fullName}</NavLink>}
                 {!user.id ? (
-                    <>
-                        <NavLink to="/login">Login</NavLink>
-                        <NavLink to="/register">Register</NavLink> 
-                    </>
-                    
-                ) : (
-                    <>
-                        <a href='/login' onClick={resetContext}>Logout</a> 
-                    </>
-                )
-                 
-            
-            }
-                      
+                        <>
+                            <NavLink to="/login">Login</NavLink>
+                            <NavLink to="/register">Register</NavLink> 
+                        </>
+                    ) : (
+                        <>
+                            <a href='/login' onClick={resetContext}>Logout</a> 
+                        </>
+                    )
+                }  
             </div>
         </nav>
     );
