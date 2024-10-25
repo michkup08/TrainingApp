@@ -25,7 +25,7 @@ const PostsList = () => {
     const [clickedElement, setClickedElement] = useState<Post | PostsComment>(null);
     const [clickedElementType, setClickedElementType] = useState<'POST' | 'COMMENT'>('POST');
     const [detailsUserDialogVisible,setDetailsUserDialogVisible] = useState(false);
-    const [reportUserDialogVisible,setReportUserDialogVisible] = useState(false);
+    const [reportUserDialogVisible, setReportUserDialogVisible] = useState(false);
 
     const fetchPosts = async () => {
         
@@ -193,6 +193,7 @@ const PostsList = () => {
                     userFullName = {userContextMenu.userFullName}
                     showProfileFunc={() => {setDetailsUserDialogVisible(true);}}
                     showReportFunc={() => {setReportUserDialogVisible(true);}}
+                    dontShowChatNav = {false}
                 />
             }
             {detailsUserDialogVisible && 
@@ -213,7 +214,7 @@ const PostsList = () => {
                             <UserReport 
                                 senderId={user.id!} 
                                 reportedId={userContextMenu.userId} 
-                                reportedFullName={userContextMenu.userFullName} 
+                                reportedFullName={userContextMenu.userFullName}
                                 invalidCommunicate={clickedElement} 
                                 communicateType={clickedElementType}
                                 closeReportInterfaceFunction={() => setReportUserDialogVisible(false)}

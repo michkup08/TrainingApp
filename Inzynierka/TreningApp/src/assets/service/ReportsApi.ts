@@ -8,6 +8,7 @@ export class ReportsApi {
 
     GetReports = async (): Promise<Map<number, Report[]>> => {
         const resp = await axiosInstance.get(this.baseURL);
+        console.log(resp);
         const reportsData:Report[] = resp.data;
         const usersReports = new Map<number, Report[]>();
         reportsData.forEach(r => {
@@ -22,5 +23,9 @@ export class ReportsApi {
 
     PostReport = async(report:Report) => {
         await axiosInstance.post(this.baseURL, report);
+    }
+
+    CheckUsersReports = async(userId: number, blockUser:boolean) => {
+        return await axiosInstance.put(`${this.baseURL}/checkReportsForUser/${userId}/${blockUser}`);
     }
 }

@@ -29,6 +29,7 @@ const UserReport = ({senderId, reportedId, reportedFullName, invalidCommunicate,
                 setTrainingPlan(resp);
             })
         }
+        console.log(reportedFullName);
     }, [])
 
     const handleSendReport = () => {
@@ -42,6 +43,16 @@ const UserReport = ({senderId, reportedId, reportedFullName, invalidCommunicate,
             communicateId: invalidCommunicate.id!, 
             id: undefined}).then(() => {
             closeReportInterfaceFunction();
+        })
+        console.log({
+            senderId: senderId, 
+            reportedId: reportedId, 
+            reportedFullName: reportedFullName, 
+            description: reportDesc, 
+            checked: false, 
+            communicateType: communicateType, 
+            communicateId: invalidCommunicate.id!, 
+            id: undefined
         })
     }
 

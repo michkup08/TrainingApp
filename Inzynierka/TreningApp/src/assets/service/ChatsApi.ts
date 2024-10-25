@@ -39,6 +39,7 @@ export class ChatsApi {
         const resp = await axiosInstance.get(this.baseURL + `/messagesHistory/${chatId}`);
         const messagesData = resp.data;
         const messages: Message[] = messagesData.map((message) => ({
+            id: message.id,
             senderId: message.senderId,
             senderName: message.senderName,
             receiverId: message.receiverId,

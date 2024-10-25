@@ -276,16 +276,29 @@ const EditTrainingPlan = () => {
                                 </table>
                             )}
                             <h3>Select your exercises</h3>
-                            <select className='trainingPlanSelect' onChange={handleAddExercise} defaultValue=''>
-                                <option value='' disabled >
-                                        Select exercise for add it to training
-                                </option>
-                                {exercises.map((exercise) => (
-                                    <option key={exercise.id} value={exercise.id}>
-                                        {exercise.name}
-                                    </option>
+                            <input
+                                className='trainingPlanInput'
+                                type="text"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                placeholder="Search exercise"
+                            />
+                            <ul className='exerciseList'>
+                                {exercises.length === 0 && searchQuery != '' && <p>No records</p>}
+                                {exercises.map(exercise => (
+                                    <li key={exercise.id} >
+                                        <div className='member'>
+                                            <div className='memberName' onClick={() => {handleAddExercise(exercise); setSearchQuery(""); setExercises([]);}}>{exercise.name}</div>
+                                            <div className='moreInfo' onClick={() => setExercises((prev) => {
+                                                return prev.map((exe) =>
+                                                    exe === exercise ? {...exercise, showDesc:!exe.showDesc} : exe
+                                                )
+                                            })}>🛈</div>
+                                        </div>
+                                        {exercise.showDesc && <div className='exerciseDescription'>{exercise.description}</div>}
+                                    </li>
                                 ))}
-                            </select>
+                            </ul>
                             <button className='buttonGreen' onClick={handleAddTraining}>Add Training</button>
                             <button className='buttonRed' onClick={() => setAddTrainingDialogVisible(false)}>Cancel</button>
                         </DialogComponent>

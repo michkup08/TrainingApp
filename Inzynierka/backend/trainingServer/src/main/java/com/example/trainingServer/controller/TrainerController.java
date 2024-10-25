@@ -39,7 +39,7 @@ public class TrainerController {
     public List<TrainerProfileDTO> getTrainers(@PathVariable int page)
     {
         try {
-            Pageable pageable = PageRequest.of(page, 5);
+            Pageable pageable = PageRequest.of(page, 3);
             Page<TrainerProfile> trainerProfiles = trainerProfileRepository.findAll(pageable);
             List<TrainerProfileDTO> trainersDTOs = new ArrayList<>();
             for (TrainerProfile trainerProfile : trainerProfiles)

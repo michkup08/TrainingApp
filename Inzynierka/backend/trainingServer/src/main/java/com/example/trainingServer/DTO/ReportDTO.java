@@ -11,7 +11,7 @@ public class ReportDTO {
     private long id;
     private String description;
     private String communicateType;
-    private long comumnicateId;
+    private long communicateId;
     private long senderId;
     private long reportedId;
     private String reportedFullName;

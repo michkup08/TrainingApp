@@ -13,6 +13,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageDTO {
+    private long id;
     private long senderId;
     private String senderName;
     private long receiverId;

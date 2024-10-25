@@ -30,3 +30,17 @@
     margin: 30px;
     border-radius: 30px;
 }
+
+.reportCheckButton {
+    margin: 15px;
+    margin-top: 0px;
+    background-color: rgb(243, 93, 76);
+    color: white;
+    transition: .5s;
+}
+
+.reportCheckButton:hover {
+    background-color: white;
+    color: black;
+    transition: .5s;
+}

@@ -7,6 +7,7 @@
 }
 
 .profileImageAvatar {
-    max-height: 50px;
+    height: 50px;
+    width: 50px;
     border-radius: 40px;
 }

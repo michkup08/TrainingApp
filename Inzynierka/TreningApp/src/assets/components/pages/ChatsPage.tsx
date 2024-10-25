@@ -11,6 +11,11 @@ import TrainingPlan from '../../DTO/TrainingPlan';
 import { TrainingApi } from '../../service/TrainingApi';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import AvatarComponent from '../shared/Avatar';
+import Message from '../../DTO/Message';
+import UserContextMenu from '../shared/UserContextMenu';
+import DialogComponent from '../shared/Dialog';
+import UserProfile from '../shared/UserProfile';
+import UserReport from '../shared/UserReport';
 
 
 const ChatsPage = () => {
@@ -28,6 +33,10 @@ const ChatsPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [trainingPlans, setTrainingPlans] = useState<TrainingPlan[]>([]);
     const lastMessageRef = useRef<HTMLLIElement | null>(null);
+    const [userContextMenu, setUserContextMenu] = useState({top:0, left:0, show:false, userId:0, userFullName:''});
+    const [clickedElement, setClickedElement] = useState<Message>(null);
+    const [detailsUserDialogVisible,setDetailsUserDialogVisible] = useState(false);
+    const [reportUserDialogVisible, setReportUserDialogVisible] = useState(false);
 
     useEffect(() => {
         const initializeChats = async () => {
@@ -124,7 +133,6 @@ const ChatsPage = () => {
         console.log(privateChats);
         if (!existingChat) {
             const newChat = new Chat(id!, name!, '', []);
-            
             setPrivateChats(prev => [...prev, newChat]);
             console.log(newChat);
         }
@@ -154,8 +162,9 @@ const ChatsPage = () => {
     };
 
     const handleCopyPlanToMyPlans = (trainingId: number) => {
-        trainingsApi.CopyPlanAndSetUser(user.id!, trainingId);
-        navigate('/trainingPlan/usersPlans');
+        trainingsApi.CopyPlanAndSetUser(user.id!, trainingId).then(() => {
+            navigate('/trainingPlan/usersPlans');
+        })
     }
 
     const handleTurnOffNotification = (chat:Chat) => {
@@ -168,8 +177,58 @@ const ChatsPage = () => {
         }
     };
 
+    const handleContextMenuOnMessage = (e:MouseEvent, userId:number, userFullName:string, message:Message) => {
+        e.preventDefault();
+        setUserContextMenu({top:e.pageY, left:e.pageX, show:true, userId:userId, userFullName:userFullName});
+        setClickedElement(message);
+        console.log(message);
+    }
+
+    const hideUserContextMenu = () => {
+        setUserContextMenu(prev => ({...prev, show:false}));
+    }
+
     return (
         <div className="container">
+            {userContextMenu.show && 
+                <UserContextMenu 
+                    closeContextMenu= {hideUserContextMenu}
+                    top = {userContextMenu.top}
+                    left = {userContextMenu.left}
+                    userId = {userContextMenu.userId}
+                    userFullName = {userContextMenu.userFullName}
+                    showProfileFunc={() => {setDetailsUserDialogVisible(true);}}
+                    showReportFunc={() => {setReportUserDialogVisible(true);}}
+                    dontShowChatNav = {true}
+                />
+            }
+            {detailsUserDialogVisible && 
+                (
+                    <>
+                        <div className='portal_background' onClick={() => setDetailsUserDialogVisible(false)}/>
+                        <DialogComponent level={1}>
+                            <UserProfile userId={userContextMenu.userId}/>
+                        </DialogComponent>
+                    </>
+                )
+            }
+            {reportUserDialogVisible && 
+                (
+                    <>
+                        <div className='portal_background' onClick={() => setReportUserDialogVisible(false)}/>
+                        <DialogComponent level={1}>
+                            <UserReport 
+                                senderId={user.id!} 
+                                reportedId={userContextMenu.userId} 
+                                reportedFullName={userContextMenu.userFullName} 
+                                invalidCommunicate={clickedElement} 
+                                communicateType={'MESSAGE'}
+                                closeReportInterfaceFunction={() => setReportUserDialogVisible(false)}
+                                />
+                        </DialogComponent>
+                    </>
+                )
+            }
             <div className="chat-box">
                 <div className="member-list">
                 <input
@@ -213,7 +272,11 @@ const ChatsPage = () => {
                             .filter(chat => chat.userId === tabId)
                             .map((chat) =>
                                 (chat.messages || []).map((message, i) => (
-                                    <li key={i} className={`message ${message.senderId === user.id ? 'self' : ''}`} ref={ i === (chat.messages.length - 1) ? lastMessageRef : null}>
+                                    <li key={i} 
+                                        className={`message ${message.senderId === user.id ? 'self' : ''}`} 
+                                        ref={ i === (chat.messages.length - 1) ? lastMessageRef : null}
+                                        onContextMenu={(e) => {handleContextMenuOnMessage(e, message.senderId, message.senderName, message)}}
+                                        >
                                         {message.senderId !== user.id ? <div className="avatar"><AvatarComponent senderId={message.senderId} senderFullName={message.senderName}/></div> :
                                         <div className="avatar self"><AvatarComponent senderId={message.senderId} senderFullName={message.senderName}/></div>}
                                         <div className="message-data">

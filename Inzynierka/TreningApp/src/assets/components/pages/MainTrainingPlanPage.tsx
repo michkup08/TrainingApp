@@ -163,32 +163,30 @@ const MainTrainingPlan = () => {
                         <DialogComponent level={1}>
                             {trainings.map((training)=>(
                                 training.id==selectedTrainingId && (
-                                    <>
-                                        <div key={selectedTrainingId}>
-                                            <div className='training_details_header'>{training.name}</div>
-                                            
-                                            <div className='trainingDayOfWeek'>{daysOfWeek[training.day]}</div>
-                                            <br/><br/>
-                                            <div className='trainingExercises'>
-                                                {training.exercises.map((exercise)=>(
-                                                    <div className='training_details_header' key={exercise.id}>{ 
-                                                        exercise.exercise.name + ' : ' + exercise.parameters
-                                                    }</div>
-                                                ))}
-                                            </div>
-                                            <br/>
-                                            Complete: {trainingCompleteSlider} %
-                                            {isToday && (
-                                                <>
-                                                    <br/>
-                                                    {training.completePercent!=100 && <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
-                                                        onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
-                                                        onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
-                                                        /> }
-                                                </>
-                                            )}
+                                    <div key={selectedTrainingId}>
+                                        <div className='training_details_header'>{training.name}</div>
+                                        
+                                        <div className='trainingDayOfWeek'>{daysOfWeek[training.day]}</div>
+                                        <br/><br/>
+                                        <div className='trainingExercises'>
+                                            {training.exercises.map((exercise)=>(
+                                                <div className='training_details_header' key={exercise.id}>{ 
+                                                    exercise.exercise.name + ' : ' + exercise.parameters
+                                                }</div>
+                                            ))}
                                         </div>
-                                    </>
+                                        <br/>
+                                        Complete: {trainingCompleteSlider} %
+                                        {isToday && (
+                                            <>
+                                                <br/>
+                                                {training.completePercent!=100 && <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
+                                                    onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
+                                                    onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
+                                                    /> }
+                                            </>
+                                        )}
+                                    </div>
                                 )
                             ))}
                         </DialogComponent>

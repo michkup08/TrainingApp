@@ -12,7 +12,7 @@ const AdminPanel = () => {
     const [reports, setReports] = useState<Map<number, Report[]> | null>(null);
     const [trainingPlans, setTrainingPlans] = useState<TrainingPlan[]>([]);
 
-    useEffect(() => {
+    const fetchReports = () => {
         reportsApi.GetReports().then((rep) => {
             setReports(rep);
             Array.from(rep.entries()).map(([key, reportList]) => {
@@ -29,11 +29,24 @@ const AdminPanel = () => {
                 })
             })
         })
+    }
+
+    useEffect(() => {
+        fetchReports();
     }, [])
 
     const findPlanById = (id: number) => {
         return trainingPlans.find(plan => plan.id === id);
     };
+
+    const handleCheckUsersReports = async(userId:number, blockUser:boolean) => {
+        reportsApi.CheckUsersReports(userId, blockUser).then((resp) => {
+            if(resp.data === 'ok')
+            {
+                fetchReports();
+            }
+        })
+    }
 
     return (
         <div className='reportsContainer'>
@@ -43,6 +56,8 @@ const AdminPanel = () => {
                     <div className='reportedUserHeader'>
                         <AvatarComponent senderId={key} senderFullName={reportList[0].reportedFullName}/>
                         <label className='reportedFullName'>{reportList[0].reportedFullName}</label>
+                        <button className='reportCheckButton' onClick={() => {handleCheckUsersReports(key, false)}}>Ignore</button>
+                        <button className='reportCheckButton' onClick={() => {handleCheckUsersReports(key, true)}}>Block user</button>
                     </div>
                     
                     {reportList.map((report, index) => (

@@ -55,14 +55,14 @@ export const useWebSocket = () => {
         connect();
     };
 
-    const sendPrivateValue = (tabId: number, tabName: string, trainingId?:number|undefined) => {
-        if (stompClientRef.current && (message.trim() || trainingId)) {
-            const chatMessage = trainingId ? {
+    const sendPrivateValue = (tabId: number, tabName: string, userId?:number|undefined) => {
+        if (stompClientRef.current && (message.trim() || userId)) {
+            const chatMessage = userId ? {
                 senderId: user.id,
                 senderName: `${user.name} ${user.surname}`,
                 receiverName: tabName,
                 receiverId: tabId,
-                trainingId: trainingId,
+                trainingId: userId,
                 status: 'MESSAGE'
             } : {
                 senderId: user.id,

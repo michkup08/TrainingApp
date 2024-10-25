@@ -29,6 +29,7 @@ public class MessageMapper {
             return null;
         }
         MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setId(message.getId());
         messageDTO.setSenderId(message.getSenderId());
         messageDTO.setSenderName(message.getSenderName());
         messageDTO.setReceiverId(message.getReceiverId());
