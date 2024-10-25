@@ -15,9 +15,8 @@ const Navbar = () => {
         <nav className="navbar">
             
             <div className="left">
-                {/* <NavLink to="/"><img src='/images/home.png' className='homeImage'/></NavLink> */}
                 <NavLink to="/">Home</NavLink>
-                {user.id && (
+                {user.id!=undefined && user.id!=0 && (
                     <>
                         <NavLink to="/trainingPlan">Training Plan</NavLink>
                         <NavLink to="/chats">Chats</NavLink>

@@ -84,6 +84,8 @@ public class ReportController {
         {
             User user = userRepository.findById(userId).get();
             user.setAuthToken("*");
+            user.setPassword("*");
+            userRepository.save(user);
         }
         return ResponseEntity.ok("Ok");
     }

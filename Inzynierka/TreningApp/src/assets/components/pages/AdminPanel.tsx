@@ -40,11 +40,8 @@ const AdminPanel = () => {
     };
 
     const handleCheckUsersReports = async(userId:number, blockUser:boolean) => {
-        reportsApi.CheckUsersReports(userId, blockUser).then((resp) => {
-            if(resp.data === 'ok')
-            {
-                fetchReports();
-            }
+        reportsApi.CheckUsersReports(userId, blockUser).then(() => {
+            fetchReports();
         })
     }
 

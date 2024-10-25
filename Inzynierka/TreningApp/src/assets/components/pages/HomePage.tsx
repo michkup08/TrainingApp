@@ -224,7 +224,7 @@ const PostsList = () => {
                 )
             }
             <div className="posts-container">
-                {user.id && <div className="post-card">
+                {user.id!=undefined && user.id!=0 && <div className="post-card">
                     <div className="post-header">
                         <div className="avatar">+</div>
                             <div className="post-info">
@@ -269,7 +269,7 @@ const PostsList = () => {
                             className="post-image"
                         />)}
                         <div className="post-actions">
-                            {user.id && <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "grey"}}>{post.liked ? "❤️":"🖤"}</button>}
+                            {user.id!=undefined && user.id!=0 && <button className="like-btn" onClick={() => handleLike(post)} style={{backgroundColor: post.liked ? "white" : "grey"}}>{post.liked ? "❤️":"🖤"}</button>}
                             <button className="comment-btn" onClick={() => handleCommentsActivaton(post)} style={{backgroundColor: post.showComments ? "white" : "grey"}}>💬</button>
                         </div>
                         <div className="post-details">
@@ -294,7 +294,7 @@ const PostsList = () => {
                                         No comments            
                                     </div>}
                                 </ul>
-                                {user.id && <div className="send-message">
+                                {user.id!=undefined && user.id!=0 && <div className="send-message">
                                     <input
                                         type="text"
                                         className="input-message"
