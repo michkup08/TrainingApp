@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ExerciseWithParameters from '../../DTO/ExerciseWithParameters';
 import { ExerciseApi } from '../../service/ExerciseApi';
 import DialogComponent from '../shared/Dialog';
+import { GeminiApi } from '../../service/GeminiApi';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -16,6 +17,7 @@ const EditTrainingPlan = () => {
     const navigate = useNavigate();
     const trainingApi = new TrainingApi();
     const exerciseApi = new ExerciseApi();
+    const geminiApi = new GeminiApi();
     const user = useContext(UserContext);
     const [planId, setPlanId] = useState(0);
     const [trainings, setTrainings] = useState<Training[]>([]);
@@ -31,6 +33,7 @@ const EditTrainingPlan = () => {
     const [exercisesWithParameters, setExercisesWithParameters] = useState<ExerciseWithParameters[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [dialogPosition, setDialogPosition] = useState({ top: 0, left: "50%" });
+    const [planRate, setPlanRate] = useState('');
 
     const confirm = () => {
         sessionStorage.removeItem('editTrainingPlan');
@@ -178,6 +181,12 @@ const EditTrainingPlan = () => {
         }
     }
 
+    const handleRatePlan = () => {
+        geminiApi.GetPlanRate(trainings).then((resp) => {
+            setPlanRate(resp.candidates[0].content.parts[0].text)
+        })
+    }
+
     const updateDialogPosition = () => {
         const scrollY = window.scrollY;
         const windowHeight = window.innerHeight;
@@ -197,6 +206,10 @@ const EditTrainingPlan = () => {
                 <div className='planName'><input className='planNameInput' type="text" defaultValue={planName} onChange={(e) => updatePlanName(e.target.value)}/></div>
                 <div className='planNavLinkWrapper'>
                     <button className='planNavLink' onClick={confirm}>Confirm</button>
+                    <button className='planNavLink' onClick={handleRatePlan}>Rate my plan</button>
+                </div>
+                <div className='planRates'>
+                    {planRate}
                 </div>
             </div>
             <div className="weekly-calendar">

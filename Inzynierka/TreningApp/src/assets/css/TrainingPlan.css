@@ -291,3 +291,11 @@
     margin-top: 15px;
     width: 90%;
 }
+
+.planRates {
+    background-color: rgb(23, 23, 23);
+    border-radius: 20px;
+    padding: 15px;
+    max-height: 35%;
+    overflow-y: auto;
+}
