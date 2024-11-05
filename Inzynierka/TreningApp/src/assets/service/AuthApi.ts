@@ -5,13 +5,12 @@ import User from "../DTO/User";
 export const axiosInstance= axios.create();
 
 export class AuthApi {
-    baseURL: string = "http://localhost:8080/trainingappdb/users";
+    baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/users`;
 
     Register = async (login:string, password:string, email:string, name:string, surname:string, isTrainer:boolean, description:string, price:string, availability:string): Promise<User> => {
         const resp = await axiosInstance.post(this.baseURL + '/register', isTrainer ? 
             {login:login, password:password, email:email, role: "TRAINER", name:name, surname:surname, description:description, price:price, availability:availability}
             : {login:login, password:password, email:email, role: "CLIENT", name:name, surname:surname});
-        console.log(resp);
         const user:User = {
             id : resp.data.user_id,
             login : resp.data.login,
@@ -26,7 +25,6 @@ export class AuthApi {
 
     Login = async (login:string, password:string): Promise<User> => {
         const resp = await axiosInstance.post(this.baseURL + '/login', {login:login, password:password});
-        console.log(resp);
         const user:User = {
             id : resp.data.user_id,
             login : resp.data.login,

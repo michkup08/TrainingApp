@@ -12,10 +12,10 @@ import { TrainingApi } from '../../service/TrainingApi';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import AvatarComponent from '../shared/Avatar';
 import Message from '../../DTO/Message';
-import UserContextMenu from '../shared/UserContextMenu';
+import UserContextMenu from '../shared/userComponents/UserContextMenu';
 import DialogComponent from '../shared/Dialog';
-import UserProfile from '../shared/UserProfile';
-import UserReport from '../shared/UserReport';
+import UserProfile from '../shared/userComponents/UserProfile';
+import UserReport from '../shared/userComponents/UserReport';
 
 
 const ChatsPage = () => {
@@ -130,11 +130,9 @@ const ChatsPage = () => {
 
     const selectUserToChat = (id:number, name:string) => {
         const existingChat = privateChats.find(chat => chat.userId === id);
-        console.log(privateChats);
         if (!existingChat) {
             const newChat = new Chat(id!, name!, '', []);
             setPrivateChats(prev => [...prev, newChat]);
-            console.log(newChat);
         }
         setTabId(id!);
         setTabName(name!);
@@ -181,7 +179,6 @@ const ChatsPage = () => {
         e.preventDefault();
         setUserContextMenu({top:e.pageY, left:e.pageX, show:true, userId:userId, userFullName:userFullName});
         setClickedElement(message);
-        console.log(message);
     }
 
     const hideUserContextMenu = () => {
@@ -203,31 +200,21 @@ const ChatsPage = () => {
                 />
             }
             {detailsUserDialogVisible && 
-                (
-                    <>
-                        <div className='portal_background' onClick={() => setDetailsUserDialogVisible(false)}/>
-                        <DialogComponent level={1}>
-                            <UserProfile userId={userContextMenu.userId}/>
-                        </DialogComponent>
-                    </>
-                )
+                <DialogComponent level={1} closeDialogFunction={() => setDetailsUserDialogVisible(false)} moveUp={false}>
+                    <UserProfile userId={userContextMenu.userId}/>
+                </DialogComponent>
             }
             {reportUserDialogVisible && 
-                (
-                    <>
-                        <div className='portal_background' onClick={() => setReportUserDialogVisible(false)}/>
-                        <DialogComponent level={1}>
-                            <UserReport 
-                                senderId={user.id!} 
-                                reportedId={userContextMenu.userId} 
-                                reportedFullName={userContextMenu.userFullName} 
-                                invalidCommunicate={clickedElement} 
-                                communicateType={'MESSAGE'}
-                                closeReportInterfaceFunction={() => setReportUserDialogVisible(false)}
-                                />
-                        </DialogComponent>
-                    </>
-                )
+                    <DialogComponent level={1} closeDialogFunction={() => setReportUserDialogVisible(false)} moveUp={false}>
+                        <UserReport 
+                            senderId={user.id!} 
+                            reportedId={userContextMenu.userId} 
+                            reportedFullName={userContextMenu.userFullName} 
+                            invalidCommunicate={clickedElement} 
+                            communicateType={'MESSAGE'}
+                            closeReportInterfaceFunction={() => setReportUserDialogVisible(false)}
+                            />
+                    </DialogComponent>
             }
             <div className="chat-box">
                 <div className="member-list">

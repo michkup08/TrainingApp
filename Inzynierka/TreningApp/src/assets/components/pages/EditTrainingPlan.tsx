@@ -34,6 +34,7 @@ const EditTrainingPlan = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [dialogPosition, setDialogPosition] = useState({ top: 0, left: "50%" });
     const [planRate, setPlanRate] = useState('');
+    const [aiRespLoading, setAiRespLoading] = useState(false);
 
     const confirm = () => {
         sessionStorage.removeItem('editTrainingPlan');
@@ -182,8 +183,10 @@ const EditTrainingPlan = () => {
     }
 
     const handleRatePlan = () => {
+        setAiRespLoading(true);
         geminiApi.GetPlanRate(trainings).then((resp) => {
-            setPlanRate(resp.candidates[0].content.parts[0].text)
+            setPlanRate(resp.candidates[0].content.parts[0].text);
+            setAiRespLoading(false);
         })
     }
 
@@ -208,9 +211,9 @@ const EditTrainingPlan = () => {
                     <button className='planNavLink' onClick={confirm}>Confirm</button>
                     <button className='planNavLink' onClick={handleRatePlan}>Rate my plan</button>
                 </div>
-                <div className='planRates'>
-                    {planRate}
-                </div>
+                {(aiRespLoading || planRate) && <div className='planRates'>
+                    {aiRespLoading ? <img src='/images/loading.gif'/> : planRate}
+                </div>}
             </div>
             <div className="weekly-calendar">
                 <div className="header">
@@ -256,72 +259,67 @@ const EditTrainingPlan = () => {
                 </div>
                 {addTrainingDialogVisible && 
                 (
-                    <>
-                        <div className='portal_background' onClick={() => setAddTrainingDialogVisible(false)}/>
-                        <DialogComponent level={2}>
-                            <div>
-                                <label>Name: <input className='trainingPlanInput' value={trainingName} onChange={(e) => setTrainingName(e.target.value)} /></label>
-                            </div>
-                            <div>
-                                <label>Start: <input className='trainingPlanInput' type="time" value={trainingStart} onChange={(e) => setTrainingStart(e.target.value)} /></label>
-                            </div>
-                            <div>
-                                <label>End: <input className='trainingPlanInput' type="time" value={trainingEnd} onChange={(e) => setTrainingEnd(e.target.value)} /></label>
-                            </div>
-                            {exercisesWithParameters.length > 0 && (
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Parameters</th>
-                                        <th>Delete</th>
+                    <DialogComponent level={2} closeDialogFunction={() => setAddTrainingDialogVisible(false)}>
+                        <div>
+                            <label>Name: <input className='trainingPlanInput' value={trainingName} onChange={(e) => setTrainingName(e.target.value)} /></label>
+                        </div>
+                        <div>
+                            <label>Start: <input className='trainingPlanInput' type="time" value={trainingStart} onChange={(e) => setTrainingStart(e.target.value)} /></label>
+                        </div>
+                        <div>
+                            <label>End: <input className='trainingPlanInput' type="time" value={trainingEnd} onChange={(e) => setTrainingEnd(e.target.value)} /></label>
+                        </div>
+                        {exercisesWithParameters.length > 0 && (
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Parameters</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {exercisesWithParameters.map((ExerciseWithParameters, index) => (
+                                    <tr key={index}>
+                                        <td>{ExerciseWithParameters.exercise.name}</td>
+                                        <td><input className='trainingPlanInput' type="text" onChange={(e) => handleUpdateExerciseParameters(ExerciseWithParameters.exercise.id, e.target.value)} defaultValue={ExerciseWithParameters.parameters}/></td>
+                                        <td><button className='deleteExerciseButton' onClick={() => handleDeleteExercise(index, ExerciseWithParameters.id)}>x</button></td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    {exercisesWithParameters.map((ExerciseWithParameters, index) => (
-                                        <tr key={index}>
-                                            <td>{ExerciseWithParameters.exercise.name}</td>
-                                            <td><input className='trainingPlanInput' type="text" onChange={(e) => handleUpdateExerciseParameters(ExerciseWithParameters.exercise.id, e.target.value)} defaultValue={ExerciseWithParameters.parameters}/></td>
-                                            <td><button className='deleteExerciseButton' onClick={() => handleDeleteExercise(index, ExerciseWithParameters.id)}>x</button></td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            )}
-                            <h3>Select your exercises</h3>
-                            <input
-                                className='trainingPlanInput'
-                                type="text"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                placeholder="Search exercise"
-                            />
-                            <ul className='exerciseList'>
-                                {exercises.length === 0 && searchQuery != '' && <p>No records</p>}
-                                {exercises.map(exercise => (
-                                    <li key={exercise.id} >
-                                        <div className='member'>
-                                            <div className='memberName' onClick={() => {handleAddExercise(exercise); setSearchQuery(""); setExercises([]);}}>{exercise.name}</div>
-                                            <div className='moreInfo' onClick={() => setExercises((prev) => {
-                                                return prev.map((exe) =>
-                                                    exe === exercise ? {...exercise, showDesc:!exe.showDesc} : exe
-                                                )
-                                            })}>🛈</div>
-                                        </div>
-                                        {exercise.showDesc && <div className='exerciseDescription'>{exercise.description}</div>}
-                                    </li>
                                 ))}
-                            </ul>
-                            <button className='buttonGreen' onClick={handleAddTraining}>Add Training</button>
-                            <button className='buttonRed' onClick={() => setAddTrainingDialogVisible(false)}>Cancel</button>
-                        </DialogComponent>
-                    </>
+                                </tbody>
+                            </table>
+                        )}
+                        <h3>Select your exercises</h3>
+                        <input
+                            className='trainingPlanInput'
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Search exercise"
+                        />
+                        <ul className='exerciseList'>
+                            {exercises.length === 0 && searchQuery != '' && <p>No records</p>}
+                            {exercises.map(exercise => (
+                                <li key={exercise.id} >
+                                    <div className='member'>
+                                        <div className='memberName' onClick={() => {handleAddExercise(exercise); setSearchQuery(""); setExercises([]);}}>{exercise.name}</div>
+                                        <div className='moreInfo' onClick={() => setExercises((prev) => {
+                                            return prev.map((exe) =>
+                                                exe === exercise ? {...exercise, showDesc:!exe.showDesc} : exe
+                                            )
+                                        })}>🛈</div>
+                                    </div>
+                                    {exercise.showDesc && <div className='exerciseDescription'>{exercise.description}</div>}
+                                </li>
+                            ))}
+                        </ul>
+                        <button className='buttonGreen' onClick={handleAddTraining}>Add Training</button>
+                        <button className='buttonRed' onClick={() => setAddTrainingDialogVisible(false)}>Cancel</button>
+                    </DialogComponent>
                 )}
                 {detailsTrainingDialogVisible && 
                 (
-                    <>
-                        <div className='portal_background' onClick={() => setDetailsTrainingDialogVisible(false)}/>
-                        <DialogComponent level={2}>
+                        <DialogComponent level={2} closeDialogFunction={() => setDetailsTrainingDialogVisible(false)}>
                             {trainings.map((training)=>(
                                 training.id==selectedTrainingId && (
                                     <>
@@ -389,7 +387,6 @@ const EditTrainingPlan = () => {
                                 )
                             ))}
                         </DialogComponent>
-                    </>
                 )}
             </div>
         </div>

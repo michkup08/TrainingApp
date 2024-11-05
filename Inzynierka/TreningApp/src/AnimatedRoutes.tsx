@@ -1,4 +1,3 @@
-import HomePage from './assets/components/pages/HomePage.tsx'
 import { Route, Routes, useLocation } from 'react-router-dom';
 import ChatsPage from './assets/components/pages/ChatsPage.tsx';
 import LoginPage from './assets/components/pages/LoginPage.tsx';
@@ -13,6 +12,7 @@ import { AnimatePresence } from 'framer-motion';
 import MoveSideways from './assets/components/motion/MoveSideways.tsx';
 import { useEffect, useRef} from 'react';
 import AdminPanel from './assets/components/pages/AdminPanel.tsx';
+import PostsListPage from './assets/components/pages/PostsPage.tsx';
 
 const routeValues: Record<string, number> = {
     '/': 0,
@@ -45,7 +45,7 @@ const AnimatedRoutes = () => {
     <div>
         <AnimatePresence mode='wait'>
             <Routes location={location} key={location.pathname}>
-                <Route path= '/' element= {<MoveSideways direction={getDirection()}><HomePage/></MoveSideways>} />
+                <Route path= '/' element= {<MoveSideways direction={getDirection()}><PostsListPage/></MoveSideways>} />
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/register" element={<RegisterPage/>}/>
                 <Route path="/profileEdition" element={<MoveSideways direction={getDirection()}><ProfileEdition/></MoveSideways>}/>

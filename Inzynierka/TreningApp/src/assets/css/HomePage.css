@@ -11,10 +11,6 @@ body {
     color: #fff;
 }
 
-.posts-container input {
-    background-color: rgb(243, 93, 76);
-}
-
 .custom-file-upload {
     display: inline-block;
     padding: 8px 12px;

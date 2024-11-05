@@ -235,7 +235,7 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: 99;
+    z-index: 0;
 }
 
 .buttonGreen {
@@ -298,4 +298,6 @@
     padding: 15px;
     max-height: 35%;
     overflow-y: auto;
+    display: flex;
+    justify-content: center;
 }

@@ -21,12 +21,12 @@ import java.util.List;
 @AllArgsConstructor
 public class TrainerController {
 
-    UserRepository userRepository;
-    TrainerProfileRepository trainerProfileRepository;
+    private final UserRepository userRepository;
+    private final TrainerProfileRepository trainerProfileRepository;
 
-    TrainerProfileMapper trainerProfileMapper;
+    private final TrainerProfileMapper trainerProfileMapper;
 
-    TrainerService trainerService;
+    private final TrainerService trainerService;
 
     @GetMapping("/profile/{userId}")
     public TrainerProfileDTO getProfile(@PathVariable long userId)

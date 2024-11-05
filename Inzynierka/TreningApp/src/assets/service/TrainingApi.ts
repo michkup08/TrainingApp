@@ -8,7 +8,7 @@ import ExerciseWithParameters from "../DTO/ExerciseWithParameters";
 export const axiosInstance= axios.create();
 
 export class TrainingApi {
-    baseURL: string = "http://localhost:8080/trainingappdb/training";
+    baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/training`;
 
     TrainingPlan = async (user_id:number): Promise<TrainingPlan> => {
 

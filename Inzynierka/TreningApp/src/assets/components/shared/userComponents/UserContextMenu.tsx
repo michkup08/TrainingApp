@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import useOnClickOutside from "../../hooks/useOnClickOutside";
-import '../../css/ContextMenu.css'
+import useOnClickOutside from "../../../hooks/useOnClickOutside";
+import '../../../css/ContextMenu.css'
 import { useNavigate } from "react-router-dom";
 
 interface ContextMenuProps {

@@ -4,7 +4,7 @@ import UserStats from "../DTO/UserStats";
 export const axiosInstance= axios.create();
 
 export class StatsApi {
-    baseURL: string = "http://localhost:8080/trainingappdb/users";
+    baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/users`;
 
     GetUserStats = async (userId: number): Promise<UserStats> => {
         const resp = await axiosInstance.get(this.baseURL + `/userStatistics/${userId}`);

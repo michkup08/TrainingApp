@@ -4,11 +4,10 @@ import Report from "../DTO/Report";
 export const axiosInstance= axios.create();
 
 export class ReportsApi {
-    baseURL: string = "http://localhost:8080/trainingappdb/reports";
+    baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/reports`;
 
     GetReports = async (): Promise<Map<number, Report[]>> => {
         const resp = await axiosInstance.get(this.baseURL);
-        console.log(resp);
         const reportsData:Report[] = resp.data;
         const usersReports = new Map<number, Report[]>();
         reportsData.forEach(r => {

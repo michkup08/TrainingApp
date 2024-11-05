@@ -5,7 +5,7 @@ import Message from "../DTO/Message";
 export const axiosInstance= axios.create();
 
 export class ChatsApi {
-    baseURL: string = "http://localhost:8080/trainingappdb/chats";
+    baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/chats`;
 
     parseDateTime = (dateTimeStr:string): Date => {
         const [day, month, year, time] = dateTimeStr.split(/[- ]/);

@@ -6,7 +6,7 @@ import User from "../DTO/User";
 export const axiosInstance= axios.create();
 
 export class PostsApi {
-  baseURL: string = "http://localhost:8080/trainingappdb/posts";
+  baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/posts`;
 
   GetPostImage = async (postId:number) => {
     if (!postId) 

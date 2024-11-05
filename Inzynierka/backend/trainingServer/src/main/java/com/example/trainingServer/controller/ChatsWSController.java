@@ -8,7 +8,9 @@ import com.example.trainingServer.mapper.ChatMapper;
 import com.example.trainingServer.repositories.ChatRepository;
 import com.example.trainingServer.repositories.MessageRepository;
 import com.example.trainingServer.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -21,29 +23,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
+@AllArgsConstructor
 public class ChatsWSController {
+    private final SimpMessagingTemplate messagingTemplate;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ChatRepository chatRepository;
-    @Autowired
-    private MessageRepository messageRepository;
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MessageMapper messageMapper;
+    private final MessageMapper messageMapper;
 
     @MessageMapping("/message")
     @SendTo("/chatroom/public")
-    public MessageDTO receivePublicMessage(@Payload MessageDTO messageDTO) {
-        return messageDTO;
+    public ResponseEntity<MessageDTO> receivePublicMessage(@Payload MessageDTO messageDTO) {
+        return ResponseEntity.ok(messageDTO);
     }
 
     @MessageMapping("/private-message")
-    public MessageDTO receivePrivateMessage(@Payload MessageDTO messageDTO) {
+    public ResponseEntity<MessageDTO> receivePrivateMessage(@Payload MessageDTO messageDTO) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         Optional<Chat> chat = chatRepository.findByUsers(messageDTO.getReceiverId(), messageDTO.getSenderId());
@@ -76,7 +73,7 @@ public class ChatsWSController {
             messageRepository.save(newMessage);
         }
         messagingTemplate.convertAndSendToUser(""+messageDTO.getReceiverId(), "/private", messageDTO);
-        return messageDTO;
+        return ResponseEntity.ok(messageDTO);
     }
 
 }

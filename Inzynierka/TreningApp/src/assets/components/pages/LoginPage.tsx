@@ -9,6 +9,7 @@ const LoginPage = () => {
     const [ login, setLogin ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ errorInfo, setErrorInfo ] = useState('');
+    const cantLogin = password === "" || login === "" ;
 
     const handleLogin = async() => {
         if(!(password =="" || login==""))
@@ -30,6 +31,12 @@ const LoginPage = () => {
         }
     }
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    };
+
     return (
         <div className ="form">
             
@@ -39,6 +46,11 @@ const LoginPage = () => {
                 name="Login" 
                 placeholder="Login"
                 onChange={(e) => setLogin(e.target.value)}
+                onKeyDown={(e) => {
+                    if(e.key === 'Enter') {
+                        handleLogin();
+                    }
+                }}
                 />
             <h3 className="authHeader">Password</h3>
             <input 
@@ -47,8 +59,9 @@ const LoginPage = () => {
                 placeholder="Password"
                 value={password} 
                 type='password'
-                onChange={(e) => setPassword(e.target.value)}/>
-            
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
+                />
             <h3 
                 className="authHeader"
                 id="errorInfo" 
@@ -61,8 +74,9 @@ const LoginPage = () => {
                 className="authButton"
                 name = "login"
                 onClick={handleLogin}
+                disabled = {cantLogin}
                 style={{
-                    backgroundColor: (password =="" || login=="") ? 'grey' : 'green'}}
+                    backgroundColor: (cantLogin) ? 'grey' : 'green'}}
                     >Login</button>
         </div>
     )

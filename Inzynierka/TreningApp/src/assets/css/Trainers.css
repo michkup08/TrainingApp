@@ -29,6 +29,12 @@
     padding: 15px;
 }
 
+.profilePictureContainer img {
+    width: 230px;
+    height: 230px;
+    border-radius: 20px;
+}
+
 .trainer-header {
     flex: 4;
     display: flex;

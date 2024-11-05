@@ -17,11 +17,11 @@ const AdminPanel = () => {
             setReports(rep);
             Array.from(rep.entries()).map(([key, reportList]) => {
                 reportList.map((report) => {
-                    if(report.communicateType == 'MESSAGE' && report.invalidCommunicate.trainingId)
+                    if(report.communicateType == 'MESSAGE' && report.invalidMessageDTO.trainingId)
                     {
-                        const existingPlan = findPlanById(report.invalidCommunicate.trainingId);
+                        const existingPlan = findPlanById(report.invalidMessageDTO.trainingId);
                         if (!existingPlan) {
-                            trainingsApi.TrainingPlanById(report.invalidCommunicate.trainingId).then(resp => {
+                            trainingsApi.TrainingPlanById(report.invalidMessageDTO.trainingId).then(resp => {
                                 setTrainingPlans(prev => [...prev, resp]);
                             })
                         }
@@ -96,9 +96,9 @@ const AdminPanel = () => {
                                             report.invalidMessageDTO.message:
                                             (
                                                 <div className={"plan"}>
-                                                    <div className="plan-name">{findPlanById(report.invalidMessageDTO.message.trainingId)?.name}</div>
+                                                    <div className="plan-name">{findPlanById(report.invalidMessageDTO.trainingId)?.name}</div>
                                                     <div className="trainings-container">
-                                                        {findPlanById(report.invalidMessageDTO.message.trainingId)?.trenings.map((training, trainingIndex) => (
+                                                        {findPlanById(report.invalidMessageDTO.trainingId)?.trenings.map((training, trainingIndex) => (
                                                             <div key={trainingIndex} className={"training"}>
                                                                 <div className="training-name">{training.name}</div>
                                                                 <div className="exercises-container">
@@ -112,9 +112,6 @@ const AdminPanel = () => {
                                                             </div>
                                                         ))}
                                                     </div>
-                                                    {(
-                                                        <button className='planActivationButton' onClick={() => handleCopyPlanToMyPlans(message.trainingId!)}>Add to my plans</button>
-                                                    )}
                                                 </div>
                                             )
                                         }

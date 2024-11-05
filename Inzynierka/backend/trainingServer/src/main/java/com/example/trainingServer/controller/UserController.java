@@ -103,9 +103,11 @@ public class UserController {
             UserStatistics userStatistics = new UserStatistics();
             userStatisticsRepository.saveAndFlush(userStatistics);
             User newUser = new User(registerRequest.getLogin(), stringBuilder.toString(), registerRequest.getEmail(), role, registerRequest.getName(), registerRequest.getSurname(), newToken);
+            userRepository.saveAndFlush(newUser);
             if(role.equals(Role.TRAINER))
             {
                 TrainerProfile trainerProfile = new TrainerProfile(registerRequest.getDescription(), registerRequest.getPrice(), registerRequest.getAvailability());
+                trainerProfile.setUser(newUser);
                 trainerProfileRepository.saveAndFlush(trainerProfile);
                 newUser.setTrainer_profile(trainerProfile);
             }

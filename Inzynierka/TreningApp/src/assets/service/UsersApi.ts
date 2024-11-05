@@ -4,7 +4,7 @@ import User from "../DTO/User";
 export const axiosInstance = axios.create();
 
 export class UsersApi {
-  baseURL: string = "http://localhost:8080/trainingappdb/users";
+  baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/users`;
 
   usersSearch = async (req:string): Promise<User[]> => {
     const resp = await axiosInstance.get(this.baseURL + `/usersByReg/${req}`);

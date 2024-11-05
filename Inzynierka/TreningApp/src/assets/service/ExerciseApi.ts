@@ -4,7 +4,7 @@ import Exercise from "../DTO/Exercise";
 export const axiosInstance= axios.create();
 
 export class ExerciseApi {
-    baseURL: string = "http://localhost:8080/trainingappdb/exercise";
+    baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/exercise`;
 
     AllExercises = async (): Promise<Exercise[]> => {
         const resp = await axiosInstance.get(this.baseURL + `/allExercises`);

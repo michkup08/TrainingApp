@@ -41,13 +41,13 @@ const TrainersList = () => {
             <div className="trainers-container">
                 {trainers.map((trainer:Trainer, index:number) => (
                     <div key={index} className="trainer-card">
-                        <div className="profilePictureContainer">
-                            {trainer.profileImage && (<img 
+                        {trainer.profileImage && <div className="profilePictureContainer">
+                            <img 
                                 src={`data:image/jpeg;base64,${trainer.profileImage}`} 
                                 alt="Post image" 
                                 className="post-image"
-                            />)}
-                        </div>
+                            />
+                        </div>}
                         <div className="trainer-header">
                             <div className="trainerNameAndButtons">
                                 <span className="username">{trainer.fullName}</span>

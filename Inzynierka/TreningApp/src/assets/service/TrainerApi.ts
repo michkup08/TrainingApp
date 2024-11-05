@@ -5,7 +5,7 @@ import Trainer from "../DTO/Trainer";
 export const axiosInstance= axios.create();
 
 export class TrainerApi {
-    baseURL: string = "http://localhost:8080/trainingappdb/trainer";
+    baseURL: string = `${import.meta.env.VITE_BACKEND_LINK}/trainingappdb/trainer`;
     
     trainerProfile = async (userId:number): Promise<TrainerProfile> => {
       const resp = await axiosInstance.get(this.baseURL + `/profile/${userId}`);

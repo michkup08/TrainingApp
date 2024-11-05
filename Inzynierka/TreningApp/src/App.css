@@ -78,11 +78,6 @@ button{
   flex-direction: row;
 }
 
-.input-message{
-  width:90%;
-  border-radius: 50px;
-}
-
 ul {
   padding: 0;
   list-style-type: none;

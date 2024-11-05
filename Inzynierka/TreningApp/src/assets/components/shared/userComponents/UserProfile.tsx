@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { TrainerApi } from "../../service/TrainerApi";
-import { UsersApi } from "../../service/UsersApi"
-import User from "../../DTO/User";
-import TrainerProfile from "../../DTO/TrainerProfile";
-import '../../css/UserProfile.css'
+import { TrainerApi } from "../../../service/TrainerApi";
+import { UsersApi } from "../../../service/UsersApi"
+import User from "../../../DTO/User";
+import TrainerProfile from "../../../DTO/TrainerProfile";
+import '../../../css/UserProfile.css'
 import { useNavigate } from "react-router-dom";
-import { PostsApi } from "../../service/PostsApi";
-import Post from "../../DTO/Post";
-import AvatarComponent from "./Avatar";
-import { UserContext } from "../../context/UserContext";
+import { PostsApi } from "../../../service/PostsApi";
+import Post from "../../../DTO/Post";
+import AvatarComponent from "../Avatar";
+import { UserContext } from "../../../context/UserContext";
 
 function UserProfile({userId}:{userId:number}) {
     const user = useContext(UserContext);
@@ -30,7 +30,6 @@ function UserProfile({userId}:{userId:number}) {
         })
 
         usersApi.userById(userId).then((u) => {
-            console.log(u);
             setUserProfile(u);
             if(u.role==='TRAINER')
             {
