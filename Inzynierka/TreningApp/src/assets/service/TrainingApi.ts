@@ -187,4 +187,12 @@ export class TrainingApi {
     CopyPlanAndSetUser = async(userId:number, planId:number) => {
         await axiosInstance.post(this.baseURL + `/copyTrainingPlan`, {planId:planId, userId:userId});
     }
+
+    DeletePlan = async (planId:number) => {
+        await axiosInstance.delete(this.baseURL + `/trainingPlanById/${planId}`);
+    }
+
+    DeleteTraining = async (trainingId:number) => {
+        await axiosInstance.delete(this.baseURL + `/trainingById/${trainingId}`);
+    }
 }

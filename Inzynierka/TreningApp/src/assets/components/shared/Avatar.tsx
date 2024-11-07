@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { UsersApi } from "../../service/UsersApi";
 import '../../css/Avatar.css'
+import { getInitials } from "../../utils/StringFunc";
 
 const usersApi = new UsersApi();
 
@@ -32,11 +33,6 @@ const AvatarComponent = ({ senderId, senderFullName }: AvatarComponentProps) => 
             return <div className="avatar">{getInitials(senderFullName)}</div>;
         }
     };
-  
-    const getInitials = (name:string) => {
-        const parts = name.split(' ');
-        return parts.map(part => part[0].toUpperCase()).join('');
-    }
 
     return avatar;
 };

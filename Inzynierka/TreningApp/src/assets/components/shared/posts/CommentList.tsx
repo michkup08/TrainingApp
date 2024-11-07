@@ -32,7 +32,6 @@ const CommentsList: React.FC<CommentsListProps> = ({ comments, postId, user, set
         
         if(!comments || comments.length==0) {
             postsApi.getCommentsList(commentsPage, postId).then((resp) => {
-                console.log(resp);
                 resp = resp.reverse();
                 setCommentsPage(commentsPage + 1),
                 setCommentsList(resp);
@@ -105,7 +104,7 @@ const CommentsList: React.FC<CommentsListProps> = ({ comments, postId, user, set
                     </div>
                 }
             </ul>
-            <div className="send-message">
+            {user.id && user.id != 0 && <div className="send-message">
                 <input
                     type="text"
                     value={newCommentText}
@@ -117,7 +116,7 @@ const CommentsList: React.FC<CommentsListProps> = ({ comments, postId, user, set
                     onClick={handleAddComment}
                     className='send-button'
                     >Send</button>
-            </div>
+            </div>}
         </div>
     );
 };

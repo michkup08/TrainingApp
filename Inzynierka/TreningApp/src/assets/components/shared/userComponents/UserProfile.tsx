@@ -9,6 +9,7 @@ import { PostsApi } from "../../../service/PostsApi";
 import Post from "../../../DTO/Post";
 import AvatarComponent from "../Avatar";
 import { UserContext } from "../../../context/UserContext";
+import { getInitials } from "../../../utils/StringFunc";
 
 function UserProfile({userId}:{userId:number}) {
     const user = useContext(UserContext);
@@ -74,11 +75,6 @@ function UserProfile({userId}:{userId:number}) {
             )
         })
     };
-
-    const getInitials = (name:string) => {
-        const parts = name.split(' ');
-        return parts.map(part => part[0].toUpperCase()).join('');
-    }
 
     const handleLoadMore = () => {
         setPage(prevPage => prevPage + 1);

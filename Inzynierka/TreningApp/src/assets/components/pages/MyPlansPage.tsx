@@ -59,6 +59,13 @@ function MyPlansPage() {
         navigate('/trainingPlan/edit');
     } 
 
+    const handleDeletePlan = (e: React.MouseEvent<HTMLDivElement>, planId: number) => {
+        e.stopPropagation();
+        trainingApi.DeletePlan(planId).then(() => {
+            fetchPlans();
+        })
+    }
+
     const handlePlanActivation = async(e: React.MouseEvent<HTMLButtonElement>, planId:number) => {
         e.stopPropagation();
         planActivate(planId).then(() =>{ 
@@ -100,7 +107,16 @@ function MyPlansPage() {
             <div className="plans-container">
                 {plans.map((plan, planIndex) => (
                     <div key={planIndex} className={plan.id === activeId ? "activePlan":"plan"} onClick={() => handleSelectPlanToEdit(plan.id)}>
-                        <div className="plan-name">{plan.name}</div>
+                        <div className="plan-header">
+                            <div className='plan-name'>
+                                {plan.name}
+                            </div>
+                            {plan.id != activeId && 
+                                <div className='DeleteTrainingPlan' onClick={(e) => handleDeletePlan(e, plan.id)}>
+                                    X
+                                </div>
+                            }
+                        </div>
                         <div className="trainings-container">
                             {plan.trenings.map((training, trainingIndex) => (
                                 <div key={trainingIndex} className={plan.id === activeId ? "activeTraining":"training"}>

@@ -41,7 +41,7 @@ const PostsListPage = () => {
     const fetchPosts = useCallback(async () => {
         setState(prev => ({ ...prev, loading: true }));
         try {
-            const newPosts = await postsApi.getPostsList(state.page, user.id!);
+            const newPosts = await postsApi.getPostsList(state.page, user.id! || 0);
             setState(prev => ({
                 ...prev,
                 posts: state.page === 0 ? newPosts : [...prev.posts, ...newPosts],
@@ -54,10 +54,7 @@ const PostsListPage = () => {
     }, [state.page, user.id]);
 
     useEffect(() => {
-        if(user.id)
-        {
-            fetchPosts();
-        }
+        fetchPosts();
     }, [fetchPosts]);
 
     const handleLoadMore = () => {

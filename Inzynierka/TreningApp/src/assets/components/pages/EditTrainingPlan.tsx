@@ -125,10 +125,10 @@ const EditTrainingPlan = () => {
     }
 
     const handleAddExercise = (selectedExercise:Exercise) => {
-        setExercisesWithParameters([...exercisesWithParameters, {exercise: selectedExercise!, parameters: selectedExercise!.defaultValue}]);
+        setExercisesWithParameters([...exercisesWithParameters, {exercise: selectedExercise!, parameters: selectedExercise!.defaultValue, id: 0}]);
     }
 
-    const handleRightClick = (dayIndex: number, e) => {
+    const handleRightClick = (dayIndex: number, e:React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
         setSelectedDay(dayIndex);
         setAddTrainingDialogVisible(true);
@@ -137,10 +137,13 @@ const EditTrainingPlan = () => {
     const handleAddTraining = async() => {
         setAddTrainingDialogVisible(false);
         if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
-            const training: Training = {day: selectedDay, startTime: trainingStart, stopTime: trainingEnd, exercises: exercisesWithParameters, name:trainingName};
+            const training: Training = {day: selectedDay, startTime: trainingStart, stopTime: trainingEnd, exercises: exercisesWithParameters, name:trainingName, completePercent:0, id:0};
             trainingApi.AddTrainingToPlan(training, planId).then(() => {
                 fetchTrainingPlan();
             })
+        }
+        else {
+            alert('Select correct time values')
         }
     };
 
@@ -157,6 +160,17 @@ const EditTrainingPlan = () => {
                 fetchTrainingPlan();
             })
         }
+        else {
+            alert('Select correct time values')
+        }
+    }
+
+    const handleDeleteTraining = async() => {
+        setAddTrainingDialogVisible(false);
+        setDetailsTrainingDialogVisible(false);
+        trainingApi.DeleteTraining(selectedTrainingId).then(() => {
+            fetchTrainingPlan();
+        })
     }
 
     const timeToPosition = (time: string) => {
@@ -259,7 +273,7 @@ const EditTrainingPlan = () => {
                 </div>
                 {addTrainingDialogVisible && 
                 (
-                    <DialogComponent level={2} closeDialogFunction={() => setAddTrainingDialogVisible(false)}>
+                    <DialogComponent level={2} closeDialogFunction={() => setAddTrainingDialogVisible(false)} moveUp={false}>
                         <div>
                             <label>Name: <input className='trainingPlanInput' value={trainingName} onChange={(e) => setTrainingName(e.target.value)} /></label>
                         </div>
@@ -319,7 +333,7 @@ const EditTrainingPlan = () => {
                 )}
                 {detailsTrainingDialogVisible && 
                 (
-                        <DialogComponent level={2} closeDialogFunction={() => setDetailsTrainingDialogVisible(false)}>
+                        <DialogComponent level={2} closeDialogFunction={() => setDetailsTrainingDialogVisible(false)} moveUp={false}>
                             {trainings.map((training)=>(
                                 training.id==selectedTrainingId && (
                                     <>
@@ -381,6 +395,7 @@ const EditTrainingPlan = () => {
                                                 ))}
                                             </ul>
                                             <button className='buttonGreen' onClick={handleUpdateTraining}>Update Training</button>
+                                            <button className='buttonRed' onClick={handleDeleteTraining}>Delete</button>
                                             <button className='buttonRed' onClick={() => setDetailsTrainingDialogVisible(false)}>Cancel</button>
                                         </div>
                                     </>
