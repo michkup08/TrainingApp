@@ -29,8 +29,8 @@ export default function ProfileEdition() {
   const [newAvailability, setNewAvailability] = useState('');
 
   const [oldPassword, setOldPassword] = useState('');
-  const [newImageUrl, setNewImageUrl] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [newImageUrl, setNewImageUrl] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const [trainerProfile, setTrainerProfile] = useState<TrainerProfile|null>(null);
 
@@ -66,13 +66,14 @@ export default function ProfileEdition() {
     }
   }
 
-  const handleImageSelect = (event) => {
-    const file = event.target.files[0];
+  const handleImageSelect = (event:React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    const file = files ? files[0] : null;
     if (file && file.type.startsWith('image/')) {
       setSelectedImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setNewImageUrl(reader.result);
+        setNewImageUrl(String(reader.result));
       };
       reader.readAsDataURL(file);
     } else {
@@ -197,6 +198,7 @@ export default function ProfileEdition() {
         }
         {(Boolean(newLogin) || Boolean(newPassword) || Boolean(newEmail) || Boolean(selectedImage) || Boolean(newDescription) || Boolean(newPrice) || Boolean(newAvailability)) && (
           <>
+            Enter current password to confrm changes
             <input className='userDataInput' type='password' value={oldPassword} onChange={e => {setOldPassword(e.target.value)}} placeholder='CurrentPassword'/>
             <button className='changeUserButton' onClick={() => {handleUpdateUser().then(() => {loadUser();})}} >Confirm changes</button>
           </>

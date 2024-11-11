@@ -34,7 +34,7 @@ const ChatsPage = () => {
     const [trainingPlans, setTrainingPlans] = useState<TrainingPlan[]>([]);
     const lastMessageRef = useRef<HTMLLIElement | null>(null);
     const [userContextMenu, setUserContextMenu] = useState({top:0, left:0, show:false, userId:0, userFullName:''});
-    const [clickedElement, setClickedElement] = useState<Message>(null);
+    const [clickedElement, setClickedElement] = useState<Message>();
     const [detailsUserDialogVisible,setDetailsUserDialogVisible] = useState(false);
     const [reportUserDialogVisible, setReportUserDialogVisible] = useState(false);
 
@@ -124,7 +124,7 @@ const ChatsPage = () => {
         }
     }
 
-    const handleMessage = (event) => {
+    const handleMessage = (event:React.ChangeEvent<HTMLInputElement>) => {
         setMessage(event.target.value);
     };
 
@@ -175,7 +175,7 @@ const ChatsPage = () => {
         }
     };
 
-    const handleContextMenuOnMessage = (e:MouseEvent, userId:number, userFullName:string, message:Message) => {
+    const handleContextMenuOnMessage = (e:React.MouseEvent<HTMLLIElement>, userId:number, userFullName:string, message:Message) => {
         e.preventDefault();
         setUserContextMenu({top:e.pageY, left:e.pageX, show:true, userId:userId, userFullName:userFullName});
         setClickedElement(message);
@@ -224,10 +224,7 @@ const ChatsPage = () => {
                     onChange={handleSearchChange}
                     placeholder="Search user"
                 />
-
                 {loadingUsers && <p>Ładowanie...</p>}
-                
-
                 <ul>
                     {users.length === 0 && !loadingUsers && <p>No records</p>}
                     {users.map(user => (
@@ -304,7 +301,7 @@ const ChatsPage = () => {
                         <input
                             type="text"
                             className="input-message"
-                            placeholder="enter the message"
+                            placeholder="Enter the message"
                             value={message}
                             onChange={handleMessage}
                         />
