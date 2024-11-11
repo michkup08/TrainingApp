@@ -101,7 +101,6 @@ const RegisterPage = () => {
                 {["Email", "Login", "Password", "Name", "Surname"].map((field) => (
                     <div key={field}>
                         <h3 className="authHeader">{field}</h3>
-                        {/* {field === "Password" && 'Password should have big and small letter, number, special sign, and 8 sings'} */}
                         <input
                             className="authInput"
                             name={field.toLowerCase()}
@@ -114,6 +113,7 @@ const RegisterPage = () => {
                                 borderColor: (field === "Email" && formErrors.emailIncorrect) || (field === "Password" && formErrors.passwordIncorrect) ? 'red' : '',
                             }}
                         />
+                        <h5>{field === "Password" && formErrors.passwordIncorrect && 'Password should have big and small letter, number, special sign, and 8 sings'}</h5>
                     </div>
                 ))}
                 <h2 className="authHeader"><input

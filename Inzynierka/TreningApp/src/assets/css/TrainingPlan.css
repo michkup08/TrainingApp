@@ -183,6 +183,9 @@
 
 .event {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     left: 10px;
     right: 10px;
@@ -253,6 +256,14 @@
 .training_details_day {
     font-size: 16px;
     justify-content: center;
+}
+
+.trainingTimeRange {
+    margin: 0px;
+}
+
+.trainingname {
+    margin: 0px;
 }
 
 .deleteExerciseButton {

@@ -128,7 +128,7 @@ const EditTrainingPlan = () => {
         setExercisesWithParameters([...exercisesWithParameters, {exercise: selectedExercise!, parameters: selectedExercise!.defaultValue, id: 0}]);
     }
 
-    const handleRightClick = (dayIndex: number, e:React.MouseEvent<HTMLDivElement>) => {
+    const handleAddTrainingClick = (dayIndex: number, e:React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
         setSelectedDay(dayIndex);
         setAddTrainingDialogVisible(true);
@@ -136,7 +136,7 @@ const EditTrainingPlan = () => {
 
     const handleAddTraining = async() => {
         setAddTrainingDialogVisible(false);
-        if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
+        if (trainingStart && trainingEnd && trainingStart < trainingEnd && trainingStart>='3' && trainingEnd <= '24') {
             const training: Training = {day: selectedDay, startTime: trainingStart, stopTime: trainingEnd, exercises: exercisesWithParameters, name:trainingName, completePercent:0, id:0};
             trainingApi.AddTrainingToPlan(training, planId).then(() => {
                 fetchTrainingPlan();
@@ -249,13 +249,14 @@ const EditTrainingPlan = () => {
                         <div
                             key={dayIndex}
                             className={`day-column`}
-                            onContextMenu={(e) => handleRightClick(dayIndex, e)}
+                            onClick={(e) => handleAddTrainingClick(dayIndex, e)}
                         >
                             {trainings.filter(training => training.day === dayIndex).map((training, idx) => (
                                 <div
                                     key={idx}
                                     className="event"
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         setSelectedTrainingId(training.id);
                                         setDetailsTrainingDialogVisible(true);
                                     }}
@@ -265,7 +266,8 @@ const EditTrainingPlan = () => {
                                         background: `rgb(243, 93, 76)`
                                     }}
                                 >
-                                    {training.startTime} - {training.stopTime}
+                                    <h3 className='trainingTimeRange'>{training.startTime} - {training.stopTime}</h3>
+                                    <h3 className='trainingname'>{training.name}</h3>
                                 </div>
                             ))}
                         </div>

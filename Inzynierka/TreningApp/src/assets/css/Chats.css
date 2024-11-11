@@ -22,6 +22,8 @@
     max-width: 400px;
     background-color: #242526;
     border-right: 1px solid #3a3b3c;
+    max-height: 100%;
+    overflow-y: auto;
     padding: 10px;
     display: flex;
     flex-direction: column;
