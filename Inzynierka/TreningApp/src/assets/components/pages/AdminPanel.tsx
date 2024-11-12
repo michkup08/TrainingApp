@@ -1,16 +1,24 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Report from "../../DTO/Report";
 import { ReportsApi } from "../../service/ReportsApi";
 import '../../css/AdminPanel.css'
 import AvatarComponent from "../shared/Avatar";
 import TrainingPlan from "../../DTO/TrainingPlan";
 import { TrainingApi } from "../../service/TrainingApi";
+import { UserContext } from "../../context/UserContext";
+import useCheckAuth from "../../hooks/useCheckAuth";
 
 const AdminPanel = () => {
+    const user = useContext(UserContext);
     const reportsApi = new ReportsApi();
     const trainingsApi = new TrainingApi();
     const [reports, setReports] = useState<Map<number, Report[]> | null>(null);
     const [trainingPlans, setTrainingPlans] = useState<TrainingPlan[]>([]);
+    const { checkIsUserAuthorizedAsAdmin } = useCheckAuth();
+
+    useEffect(() => {
+        checkIsUserAuthorizedAsAdmin(user.id!, user.role!);
+    }, [user.id, user.role, checkIsUserAuthorizedAsAdmin])
 
     const fetchReports = () => {
         reportsApi.GetReports().then((rep) => {

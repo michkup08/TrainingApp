@@ -7,10 +7,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import User from '../../DTO/User';
 import { UsersApi } from '../../service/UsersApi';
 import { useWebSocket } from '../../hooks/useWebSocket';
-import { useChatNavigation } from '../../hooks/useChatNavigation';
+import useCheckAuth from '../../hooks/useCheckAuth';
 
 function MyPlansPage() {
-    const { openChatWithUser } = useChatNavigation();
     const {sendPrivateValue} = useWebSocket();
     const trainingApi = new TrainingApi();
     const usersApi = new UsersApi();
@@ -23,6 +22,7 @@ function MyPlansPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
     const [selectReceiverDialogVisible, setSelectReceiverDialogVisible] = useState(false);
+    const { checkIsUserAuthorized } = useCheckAuth();
 
     const fetchPlans = async() => {
         const resp = await trainingApi.TrainingPlans(user.id!);
@@ -43,6 +43,7 @@ function MyPlansPage() {
     }
 
     useEffect(() => {
+        checkIsUserAuthorized(user.id!);
         if (user && user.id) {
             fetchPlans();
             fetchActive();

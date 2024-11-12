@@ -54,7 +54,7 @@ export class AuthApi {
             return user;
         }
         sessionStorage.setItem('trainingAppAuthToken', '');
-        const user:User = {};
+        const user:User = {id: -1};
         return user;
     }
 

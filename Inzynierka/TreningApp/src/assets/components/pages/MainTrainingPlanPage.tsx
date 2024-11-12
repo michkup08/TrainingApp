@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import UserStats from '../../DTO/UserStats';
 import { StatsApi } from '../../service/StatsApi';
 import DialogComponent from '../shared/Dialog';
+import useCheckAuth from '../../hooks/useCheckAuth';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -26,6 +27,7 @@ const MainTrainingPlan = () => {
     const [isToday, setIsToday] = useState(false);
     const [trainingCompleteSlider, setTrainingCompleteSlider] = useState(0);
     const [userStats, setUserStats] = useState<UserStats>({id: 0, daysInARow: 0, totalTrainings: 0, totalExercises: 0});
+    const { checkIsUserAuthorized } = useCheckAuth();
 
     const fetchTrainingPlan = async() => {
         const resp = await trainingApi.TrainingPlan(user.id!);
@@ -58,6 +60,7 @@ const MainTrainingPlan = () => {
     }, []);
 
     useEffect(() => {
+        checkIsUserAuthorized(user.id!);
         fetchTrainingPlan();
         fetchStats();
     }, [user]);

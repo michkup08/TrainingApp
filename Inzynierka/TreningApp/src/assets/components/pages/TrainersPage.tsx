@@ -1,16 +1,20 @@
 import "../init";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import '../../css/Trainers.css';
 import Trainer from "../../DTO/Trainer";
 import { TrainerApi } from "../../service/TrainerApi";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
+import useCheckAuth from "../../hooks/useCheckAuth";
 
 const TrainersList = () => {
     const navigate = useNavigate();
     const trainerApi = new TrainerApi();
+    const user = useContext(UserContext);
     const [trainers, setTrainers] = useState<Trainer[]>([]);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(false);
+    const { checkIsUserAuthorized } = useCheckAuth();
 
     const fetchTrainers = async () => {
         setLoading(true);
@@ -28,6 +32,10 @@ const TrainersList = () => {
     useEffect(() => {
         fetchTrainers();
     }, [page]);
+
+    useEffect(() => {
+        checkIsUserAuthorized(user.id!);
+    }, [user.id, checkIsUserAuthorized])
 
     const handleLoadMore = () => {
         setPage(prevPage => prevPage + 1);

@@ -6,6 +6,7 @@ import '../../css/ProfileEdition.css'
 import { UsersApi } from '../../service/UsersApi';
 import { TrainerApi } from '../../service/TrainerApi';
 import TrainerProfile from '../../DTO/TrainerProfile';
+import useCheckAuth from '../../hooks/useCheckAuth';
 
 export default function ProfileEdition() {
   const usersApi = new UsersApi();
@@ -33,8 +34,10 @@ export default function ProfileEdition() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const [trainerProfile, setTrainerProfile] = useState<TrainerProfile|null>(null);
+  const { checkIsUserAuthorized } = useCheckAuth();
 
   useEffect(() => {
+    checkIsUserAuthorized(user.id!);
     loadUser();
   }, [user]);
 

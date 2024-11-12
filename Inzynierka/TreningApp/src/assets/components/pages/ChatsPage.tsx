@@ -16,6 +16,7 @@ import UserContextMenu from '../shared/userComponents/UserContextMenu';
 import DialogComponent from '../shared/Dialog';
 import UserProfile from '../shared/userComponents/UserProfile';
 import UserReport from '../shared/userComponents/UserReport';
+import useCheckAuth from '../../hooks/useCheckAuth';
 
 
 const ChatsPage = () => {
@@ -24,6 +25,7 @@ const ChatsPage = () => {
     const user = useContext(UserContext);
     const usersApi = new UsersApi();
     const chatsApi = new ChatsApi();
+    const { checkIsUserAuthorized } = useCheckAuth();
     const { privateChats, setPrivateChats, connected, message, setMessage, sendPrivateValue } = useWebSocket();
     const trainingsApi = new TrainingApi();
     const [tabId, setTabId] = useState(0);
@@ -39,6 +41,7 @@ const ChatsPage = () => {
     const [reportUserDialogVisible, setReportUserDialogVisible] = useState(false);
 
     useEffect(() => {
+        checkIsUserAuthorized(user.id!);
         const initializeChats = async () => {
             if (user.id && !connected) {
                 await fetchChats(); 
@@ -58,7 +61,7 @@ const ChatsPage = () => {
                 });
             }
         };
-    
+        
         initializeChats();
     }, [user.id]);
     

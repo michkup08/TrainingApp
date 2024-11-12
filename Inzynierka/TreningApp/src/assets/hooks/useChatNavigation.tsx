@@ -8,6 +8,6 @@ export const useChatNavigation = () => {
     };
 
     return (
-        openChatWithUser
+        {openChatWithUser}
     )
 }

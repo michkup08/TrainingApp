@@ -9,6 +9,7 @@ import ExerciseWithParameters from '../../DTO/ExerciseWithParameters';
 import { ExerciseApi } from '../../service/ExerciseApi';
 import DialogComponent from '../shared/Dialog';
 import { GeminiApi } from '../../service/GeminiApi';
+import useCheckAuth from '../../hooks/useCheckAuth';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -35,6 +36,7 @@ const EditTrainingPlan = () => {
     const [dialogPosition, setDialogPosition] = useState({ top: 0, left: "50%" });
     const [planRate, setPlanRate] = useState('');
     const [aiRespLoading, setAiRespLoading] = useState(false);
+    const { checkIsUserAuthorized } = useCheckAuth();
 
     const confirm = () => {
         sessionStorage.removeItem('editTrainingPlan');
@@ -76,6 +78,7 @@ const EditTrainingPlan = () => {
     }
 
     useEffect(() => {
+        checkIsUserAuthorized(user.id!);
         if(user)
         {
             if(sessionStorage.getItem('editTrainingPlan'))

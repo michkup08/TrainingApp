@@ -16,7 +16,7 @@ const Navbar = () => {
             
             <div className="left">
                 <NavLink to="/">Home</NavLink>
-                {user.id!=undefined && user.id!=0 && (
+                {user.id!=undefined && user.id>0 && (
                     <>
                         <NavLink to="/trainingPlan">Training Plan</NavLink>
                         <NavLink to="/chats">Chats</NavLink>
@@ -26,14 +26,14 @@ const Navbar = () => {
                 )}
             </div>
             <div className="nav-buttons">
-                {fullName && <NavLink to='/profileEdition'>{fullName}</NavLink>}
-                {!user.id ? (
+                {user.id && user.id<=0 ? (
                         <>
                             <NavLink to="/login">Login</NavLink>
                             <NavLink to="/register">Register</NavLink> 
                         </>
                     ) : (
                         <>
+                            {fullName && <NavLink to='/profileEdition'>{fullName}</NavLink>}
                             <a href='/login' onClick={resetContext}>Logout</a> 
                         </>
                     )
