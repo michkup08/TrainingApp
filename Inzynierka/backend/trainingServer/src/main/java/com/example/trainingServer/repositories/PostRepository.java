@@ -15,11 +15,8 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("select distinct p from Post p " +
-            "join p.senderId as s" +
-            "p where p.post_id not in :earlierFeched")
-    @Transactional
-    List<Post> getPosts(@Param("earlierFeched") long[] postsIds, Pageable pageable);
+    @Query("SELECT p FROM Post p ORDER BY STR_TO_DATE(p.dateTime, '%d-%m-%Y %H:%i:%s') DESC")
+    Page<Post> findAllSortedByDateTime(Pageable pageable);
 
     Page<Post> findBySenderId(@Param("senderId") User senderId, Pageable pageable);
 }

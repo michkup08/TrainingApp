@@ -1,7 +1,6 @@
 package com.example.trainingServer.controller;
 
 import com.example.trainingServer.DTO.CommentDTO;
-import com.example.trainingServer.DTO.MessageDTO;
 import com.example.trainingServer.DTO.PostDTO;
 import com.example.trainingServer.entities.*;
 import com.example.trainingServer.mapper.CommentMapper;
@@ -73,7 +72,7 @@ public class PostsController {
         try {
 
             Pageable pageable = PageRequest.of(postsFetchRequest.getPage(), 5, Sort.by(Sort.Direction.DESC, "dateTime"));
-            Page<Post> posts = postRepository.findAll(pageable);
+            Page<Post> posts = postRepository.findAllSortedByDateTime(pageable);
             List<PostDTO> postDTOs = new ArrayList<>();
             for (Post post : posts)
             {
@@ -130,7 +129,7 @@ public class PostsController {
         try {
 
             Pageable pageable = PageRequest.of(page, 3, Sort.by(Sort.Direction.DESC, "dateTime"));
-            Page<Comment> comments = commentRepository.findByPost(postRepository.getReferenceById(postId), pageable);
+            Page<Comment> comments = commentRepository.findByPostSortedByDateTime(postId, pageable);
             List<CommentDTO> commentDTOs = new ArrayList<>();
             for (Comment comment : comments)
             {

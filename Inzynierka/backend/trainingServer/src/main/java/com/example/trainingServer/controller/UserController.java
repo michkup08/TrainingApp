@@ -56,7 +56,7 @@ public class UserController {
         List<User> correctLogins = userRepository.findByLogin(loginRequest.getLogin());
         if(correctLogins.isEmpty())
         {
-            return new AuthResponse(0, null, null, null, null, null,  null);
+            return new AuthResponse(-1, null, null, null, null, null,  null);
         }
         for(User user : correctLogins)
         {
@@ -82,7 +82,7 @@ public class UserController {
                 e.printStackTrace();
             }
         }
-        return new AuthResponse(0, null, null, null, null, null, null);
+        return new AuthResponse(-1, null, null, null, null, null, null);
     }
 
     @PostMapping("/register")
@@ -119,7 +119,7 @@ public class UserController {
         {
             e.printStackTrace();
         }
-        return new AuthResponse(0, null, null, null, null, null, null);
+        return new AuthResponse(-1, null, null, null, null, null, null);
     }
 
     @GetMapping("/authorization/{authToken}")
@@ -136,7 +136,7 @@ public class UserController {
         {
             e.printStackTrace();
         }
-        return new AuthResponse(0, null, null, null, null, null, null);
+        return new AuthResponse(-1, null, null, null, null, null, null);
     }
 
     @GetMapping("/userStatistics/{userId}")
@@ -162,7 +162,7 @@ public class UserController {
         try
         {
             String reg = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*"+fragment+"[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*";
-            Pattern pattern = Pattern.compile(reg);
+            Pattern pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
             List<User> all = userRepository.findAll();
             List<IdAndNameReqResp> fits = new ArrayList<>();
             for(User user: all)

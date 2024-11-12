@@ -75,6 +75,16 @@ public class TrainingController {
         return null;
     }
 
+    @DeleteMapping("/trainingPlanById/{planId}")
+    public void deleteTrainingPlanById(@PathVariable long planId) {
+        trainingPlanRepository.deleteById(planId);
+    }
+
+    @DeleteMapping("/trainingById/{trainingId}")
+    public void deleteTrainingById(@PathVariable long trainingId) {
+        trainingRepository.deleteById(trainingId);
+    }
+
     @GetMapping("/trainingPlan/{userId}")
     public TrainingPlanDTO getTrainingPlan(@PathVariable long userId) {
         Optional<TrainingPlan> tp = trainingPlanRepository.findByUserActivatedUserIdExtended(userId);
@@ -198,12 +208,17 @@ public class TrainingController {
         training.setName(trainingDTO.getName());
         List<ExerciseWithParameters> ewpl = new ArrayList<>();
         for (ExerciseWithParametersDTO ex : trainingDTO.getExercises()) {
-            Optional<ExerciseWithParameters> current = exerciseWithParametersRepository.findById(ex.getId());
-            if(current.isPresent()) {
-                ExerciseWithParameters exerciseWithParameters = current.get();
-                ewpl.add(exerciseWithParameters);
+            boolean isPresent = false;
+            if(ex.getId() != null)
+            {
+                Optional<ExerciseWithParameters> current = exerciseWithParametersRepository.findById(ex.getId());
+                if(current.isPresent()) {
+                    isPresent = true;
+                    ExerciseWithParameters exerciseWithParameters = current.get();
+                    ewpl.add(exerciseWithParameters);
+                }
             }
-            else {
+            if(!isPresent) {
                 ExerciseWithParameters e = exerciseWithParametersMapper.toExerciseWithParametersEntity(ex);
                 e.setExercise(exerciseMapper.toExerciseEntity(ex.getExercise()));
                 e.setTraining(training);

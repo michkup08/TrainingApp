@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExerciseWithParametersMapper {
 
-    // Converts ExerciseWithParameters entity to ExerciseWithParametersDTO
     public ExerciseWithParametersDTO toExerciseWithParametersDTO(ExerciseWithParameters exerciseWithParameters) {
         if (exerciseWithParameters == null) {
             return null;
@@ -24,15 +23,12 @@ public class ExerciseWithParametersMapper {
         );
     }
 
-    // Converts ExerciseWithParametersDTO to ExerciseWithParameters entity
     public ExerciseWithParameters toExerciseWithParametersEntity(ExerciseWithParametersDTO exerciseWithParametersDTO) {
         if (exerciseWithParametersDTO == null) {
             return null;
         }
-
         ExerciseWithParameters exerciseWithParameters = new ExerciseWithParameters();
         exerciseWithParameters.setParameters(exerciseWithParametersDTO.getParameters());
-        // Exercise relationship should be set outside this method
         return exerciseWithParameters;
     }
 }

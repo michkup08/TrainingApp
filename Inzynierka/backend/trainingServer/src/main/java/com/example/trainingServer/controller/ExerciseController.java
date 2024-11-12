@@ -75,7 +75,7 @@ public class ExerciseController {
         try
         {
             String reg = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*"+fragment+"[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]*";
-            Pattern pattern = Pattern.compile(reg);
+            Pattern pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
             List<Exercise> all = exerciseRepository.findAll();
             List<ExerciseDTO> fits = new ArrayList<>();
             for(Exercise exercise: all)
