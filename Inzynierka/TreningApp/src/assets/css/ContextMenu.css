@@ -12,6 +12,6 @@
 }
 
 .contextMenuButton:hover {
-    background-color: rgb(220, 80, 65);
+    background-color: var(--orange4);
     transition: .5s;
 }

@@ -15,7 +15,7 @@ body {
     display: inline-block;
     padding: 8px 12px;
     cursor: pointer;
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     border-radius: 5px;
     font-size: 16px;
@@ -23,7 +23,7 @@ body {
 }
 
 .custom-file-upload:hover {
-    background-color: rgb(220, 80, 65);
+    background-color: var(--orange4);
 }
 
 .sendPostButton {
@@ -117,7 +117,7 @@ body {
     margin: 20px auto;
     padding: 10px 20px;
     font-size: 18px;
-    background-color: rgb(255, 122, 82);
+    background-color: var(--orange1);
     color: white;
     border: none;
     border-radius: 5px;

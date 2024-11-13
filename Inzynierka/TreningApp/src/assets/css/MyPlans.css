@@ -18,7 +18,7 @@
     margin-top: 10px;
     align-items: center;
     border-radius: 15px;
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     height: 40px;
     justify-content: center;
@@ -41,7 +41,7 @@
 }
 
 .plan {
-    background-color: rgb(52, 50, 50);
+    background-color: var(--grey1);
     padding: 10px;
     border-radius: 30px;
     transition: .5s;
@@ -115,7 +115,7 @@
 
 .activeTraining {
     color: white;
-    background-color: rgb(52, 50, 50);
+    background-color: var(--grey1);
     border-radius: 30px;
     padding: 5px;
 }
@@ -132,7 +132,7 @@
 }
 
 .exercise {
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     padding: 3px;
     border-radius: 30px;
@@ -158,14 +158,14 @@
 .planActivationButton {
     margin-top: 20px;
     background-color: white;
-    color: rgb(243, 93, 76);
+    color: var(--orange2);
     border-radius: 30px;
     width: 100%;
     transition: .5s;
 }
 
 .planActivationButton:hover {
-    background-color: rgb(180, 51, 37);
+    background-color: var(--red1);
     color: white;
     transition: .5s;
 }
@@ -180,7 +180,7 @@
     display: flex;
     width: 70px;
     border-radius: 30px;
-    color: rgb(243, 93, 76);
+    color: var(--orange2);
     background-color: white;
     height: 70px;
     justify-content: center;

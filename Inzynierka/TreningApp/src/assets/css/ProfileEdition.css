@@ -30,7 +30,7 @@
     display: inline-block;
     padding: 8px 12px;
     cursor: pointer;
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     border-radius: 5px;
     font-size: 16px;
@@ -61,7 +61,7 @@
     margin: 10px;
     align-items: center;
     border-radius: 15px;
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     height: 40px;
     width: 200px;

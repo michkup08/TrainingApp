@@ -266,7 +266,7 @@ const EditTrainingPlan = () => {
                                     style={{
                                         top: `${timeToPosition(training.startTime)}px`,
                                         height: `${timeToPosition(training.stopTime) - timeToPosition(training.startTime)}px`,
-                                        background: `rgb(243, 93, 76)`
+                                        background: `var(--orange2)`
                                     }}
                                 >
                                     <h3 className='trainingTimeRange'>{training.startTime} - {training.stopTime}</h3>

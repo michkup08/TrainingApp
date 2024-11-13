@@ -8,25 +8,21 @@ import com.example.trainingServer.repositories.TrainingPlanRepository;
 import com.example.trainingServer.repositories.TrainingRepository;
 import com.example.trainingServer.repositories.UserRepository;
 import com.example.trainingServer.repositories.UserStatisticsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserStatisticsService {
 
-    @Autowired
     private UserStatisticsRepository userStatisticsRepository;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private TrainingPlanRepository trainingPlanRepository;
-    @Autowired
     private TrainingRepository trainingRepository;
 
     @Transactional

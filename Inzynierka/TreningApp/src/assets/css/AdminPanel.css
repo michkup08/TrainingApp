@@ -34,7 +34,7 @@
 .reportCheckButton {
     margin: 15px;
     margin-top: 0px;
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     transition: .5s;
 }

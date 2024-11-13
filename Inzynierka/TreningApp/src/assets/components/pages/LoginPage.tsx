@@ -66,7 +66,7 @@ const LoginPage = () => {
                 className="authHeader"
                 id="errorInfo" 
                 style={{
-                    color: success ? 'green' : 'rgb(219, 139, 130)'
+                    color: success ? 'green' : '--salmon1'
                 }}>{errorInfo}</h3>
 
             

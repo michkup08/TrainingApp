@@ -21,8 +21,8 @@
 .authInput {
     font-size: 24px;
     border-radius: 20px;
-    border-color: rgb(219, 139, 130);
-    background-color: rgb(219, 139, 130);
+    border-color: var(--salmon1);
+    background-color: var(--salmon1);
 }
 
 .authInput::placeholder {

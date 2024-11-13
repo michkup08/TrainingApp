@@ -60,7 +60,7 @@
 }
 
 .member-list li.active {
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     transition: .5s;
 }
 
@@ -96,7 +96,7 @@
 .message .avatar {
     width: 40px;
     height: 40px;
-    background-color: rgb(211, 158, 89);
+    background-color: var(--orange3);
     color: white;
     font-weight: bold;
     border-radius: 50%;
@@ -123,7 +123,7 @@
 }
 
 .message.self .message-data {
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
 }
 
 .send-message {
@@ -147,7 +147,7 @@
     display: flex;
     justify-content: center;
     padding: 10px 20px;
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     border: none;
     border-radius: 20px;

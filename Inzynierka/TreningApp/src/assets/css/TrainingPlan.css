@@ -97,7 +97,7 @@
     margin-top: 10px;
     align-items: center;
     border-radius: 15px;
-    background-color: rgb(243, 93, 76);
+    background-color: var(--orange2);
     color: white;
     height: 40px;
     justify-content: center;
@@ -288,12 +288,12 @@
 }
 
 .member .memberName:hover {
-    background-color: rgb(78, 77, 77);
+    background-color: var(-grey2);
     border-radius: 20px;
 }
 
 .member .moreInfo:hover {
-    background-color: rgb(78, 77, 77);
+    background-color: var(-grey2);
     border-radius: 20px;
 }
 

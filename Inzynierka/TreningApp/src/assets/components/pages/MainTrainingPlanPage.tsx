@@ -151,7 +151,7 @@ const MainTrainingPlan = () => {
                                     style={{
                                         top: `${timeToPosition(training.startTime)}px`,
                                         height: `${timeToPosition(training.stopTime) - timeToPosition(training.startTime)}px`,
-                                        background: currentDay < dayIndex ? `rgb(243, 93, 76)` : training.completePercent===100 ? `green` : training.completePercent===0 ? `red` : `linear-gradient(green ${training.completePercent}%, red)`
+                                        background: currentDay < dayIndex ? `var(--orange2)` : training.completePercent===100 ? `green` : training.completePercent===0 ? `red` : `linear-gradient(green ${training.completePercent}%, red)`
                                     }}
                                 >
                                     <h3 className='trainingTimeRange'>{training.startTime} - {training.stopTime}</h3>
