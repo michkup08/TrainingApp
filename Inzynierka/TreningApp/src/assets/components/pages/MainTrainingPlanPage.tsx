@@ -8,6 +8,8 @@ import UserStats from '../../DTO/UserStats';
 import { StatsApi } from '../../service/StatsApi';
 import DialogComponent from '../shared/Dialog';
 import useCheckAuth from '../../hooks/useCheckAuth';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
 const hoursOfDay = Array.from({ length: 21 }, (_, i) => 3 + i); // Godziny od 3:00 do 23:00
@@ -151,7 +153,7 @@ const MainTrainingPlan = () => {
                                     style={{
                                         top: `${timeToPosition(training.startTime)}px`,
                                         height: `${timeToPosition(training.stopTime) - timeToPosition(training.startTime)}px`,
-                                        background: currentDay < dayIndex ? `var(--orange2)` : training.completePercent===100 ? `green` : training.completePercent===0 ? `red` : `linear-gradient(green ${training.completePercent}%, red)`
+                                        background: currentDay < dayIndex ? `var(--orange2)` : training.completePercent===100 ? `green` : training.completePercent===0 ? `red` : `linear-gradient(green ${training.completePercent/2}%, red)`
                                     }}
                                 >
                                     <h3 className='trainingTimeRange'>{training.startTime} - {training.stopTime}</h3>
@@ -185,10 +187,12 @@ const MainTrainingPlan = () => {
                                 {isToday && (
                                     <>
                                         <br/>
-                                        {training.completePercent!=100 && <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
-                                            onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
-                                            onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
-                                            /> }
+                                        {training.completePercent!=100 && 
+                                            <input type='range' min='0' max='100' step='1' defaultValue={training.completePercent}
+                                                onChange={(event) => setTrainingCompleteSlider(Number(event.target.value))}
+                                                onMouseUp={() => handleSetTrainingComplete(trainingCompleteSlider, training.id)}
+                                                /> 
+                                        }
                                     </>
                                 )}
                             </div>

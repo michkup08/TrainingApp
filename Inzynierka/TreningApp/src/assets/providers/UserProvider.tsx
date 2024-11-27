@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import  User from "../DTO/User";
 import { UserContext } from "../context/UserContext";
 import { AuthApi } from "../service/AuthApi";
 
-export const UserProvider = ({ children }) => {
+interface UserProviderProps {
+    children: ReactNode;
+}
+
+export const UserProvider = ({ children }: UserProviderProps) => {
     
     const authApi = new AuthApi();
     const [user, setUser] = useState<User>({});

@@ -39,7 +39,7 @@ export class GeminiApi {
                     {
                     parts: [{ text: `Take on the role of an experienced personal trainer - training specialist. Analyze and evaluate the training plan provided.`+
                         `Give possible alternative choices that could be more beneficial in your opinion. Your entire answer should fit into a few sentences.` + 
-                        `The exact purpose and assumptions of the plan are not given. Try to deduce them based on what the plan looks like. It may turn out that, for example, exercise parameters should be ` + 
+                        `The exact purpose, goals and assumptions of the plan are not given. Try to deduce them based on what the plan looks like. It may turn out that, for example, exercise parameters should be ` + 
                         `the information provided, such as the number of sets and repetitions, is empty or written without meaning, or that the entire plan is empty or missing. In such situations, specify what ` + 
                         `is wrong and propose an example solution. The plan may include a warm-up and breaks between sets. If the plan is missing, write about it. ${formatTrainingsToString(req)}` }]
                     }

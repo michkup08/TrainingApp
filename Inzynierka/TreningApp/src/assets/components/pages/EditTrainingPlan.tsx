@@ -139,7 +139,7 @@ const EditTrainingPlan = () => {
 
     const handleAddTraining = async() => {
         setAddTrainingDialogVisible(false);
-        if (trainingStart && trainingEnd && trainingStart < trainingEnd && trainingStart>='3' && trainingEnd <= '24') {
+        if (trainingStart && trainingEnd && trainingStart < trainingEnd) {
             const training: Training = {day: selectedDay, startTime: trainingStart, stopTime: trainingEnd, exercises: exercisesWithParameters, name:trainingName, completePercent:0, id:0};
             trainingApi.AddTrainingToPlan(training, planId).then(() => {
                 fetchTrainingPlan();

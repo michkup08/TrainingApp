@@ -26,7 +26,18 @@ const NewPostForm: React.FC<NewPostFormProps> = React.memo(({ userId, userFullNa
     const handleAddNewPost = async () => {
         if (!userId || !newPostText) return;
 
-        const postId = await postsApi.addPost({ senderId: userId, senderFullName: userFullName, context: newPostText });
+        const postId = await postsApi.addPost({ 
+            senderId: userId, 
+            senderFullName: userFullName, 
+            context: newPostText, 
+            id: 0, 
+            likes:0, 
+            liked:false, 
+            image:'',
+            dateTime: '',
+            showComments: false,
+            comments: [],
+            commentsPage: 0 });
         if (postId && selectedImage) {
             const formData = new FormData();
             const renamedFile = new File([selectedImage], `${postId}.${selectedImage.name.split('.').pop()}`);

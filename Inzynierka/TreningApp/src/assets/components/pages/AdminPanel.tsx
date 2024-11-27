@@ -24,6 +24,7 @@ const AdminPanel = () => {
         reportsApi.GetReports().then((rep) => {
             setReports(rep);
             Array.from(rep.entries()).map(([key, reportList]) => {
+                console.log(key);
                 reportList.map((report) => {
                     if(report.communicateType == 'MESSAGE' && report.invalidMessageDTO.trainingId)
                     {
